@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -19,6 +20,7 @@ public class Lobby {
     @CreationTimestamp
     private LocalDateTime created;
     @OneToMany(mappedBy = "lobby")
+    @JsonManagedReference
     private List<UserLobby> userLobbies = new ArrayList<>();
 
     public Long getId() {

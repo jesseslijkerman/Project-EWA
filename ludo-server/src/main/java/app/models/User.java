@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 @Entity
 // Order is a reserved keyword, so I'm forcing hibernate to quote an identifier
 @Table(name = "`User`")
+@NamedQuery(name = "find_all_users", query = "select u from User u")
 public class User {
     @Id
     @GeneratedValue
@@ -18,7 +20,11 @@ public class User {
     private char countryCode;
     private String picture;
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<UserLobby> userLobbies = new ArrayList<>();
+
+    public User() {
+    }
 
     public Long getId() {
         return id;
