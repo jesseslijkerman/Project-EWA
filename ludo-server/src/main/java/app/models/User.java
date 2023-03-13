@@ -2,6 +2,9 @@ package app.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 // Order is a reserved keyword, so I'm forcing hibernate to quote an identifier
 @Table(name = "`User`")
@@ -14,6 +17,8 @@ public class User {
     private String username;
     private char countryCode;
     private String picture;
+    @OneToMany(mappedBy = "user")
+    private List<UserLobby> userLobbies = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -61,5 +66,13 @@ public class User {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public List<UserLobby> getUserLobbies() {
+        return userLobbies;
+    }
+
+    public void addUserLobby(UserLobby userLobby) {
+        this.userLobbies.add(userLobby);
     }
 }

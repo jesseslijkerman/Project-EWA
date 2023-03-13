@@ -1,11 +1,11 @@
 package app.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Lobby {
@@ -18,6 +18,8 @@ public class Lobby {
     private String password;
     @CreationTimestamp
     private LocalDateTime created;
+    @OneToMany(mappedBy = "lobby")
+    private List<UserLobby> userLobbies = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -73,5 +75,13 @@ public class Lobby {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
+    }
+
+    public List<UserLobby> getUserLobbies() {
+        return userLobbies;
+    }
+
+    public void setUserLobbies(UserLobby userLobby) {
+        this.userLobbies.add(userLobby);
     }
 }
