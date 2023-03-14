@@ -16,7 +16,7 @@
 
 
   <div v-if="hide">
-    <img class=priorDice @click="rollDice" :src="getRollPicture(priorRoll.eyes)">
+    <img class=priorDice :src="getRollPicture(priorRoll.eyes)">
   </div>
 
 </template>
