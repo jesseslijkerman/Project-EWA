@@ -1,9 +1,11 @@
 
 
 <template>
-  <img class=dice :src="getRollPicture(roll.eyes)">
-  <p>{{ roll.eyes }}</p>
+  <img class=dice @click="rollDice" :src="getRollPicture(currentRoll.eyes)">
   <button :disabled="disabled" @click="rollDice">Roll dice</button>
+  <br>
+  <p>Vorige beurt: </p>
+  <img class=priorDice @click="rollDice" :src="getRollPicture(priorRoll.eyes)">
 
 </template>
 
@@ -15,15 +17,18 @@ export default {
   name: "DiceRoll",
   data(){
     return{
-      roll: 0,
-      disabled: false
+      currentRoll: 0,
+      priorRoll: 0,
+      disabled: false,
+
     }
   },
 
   methods : {
     rollDice(){
+      this.priorRoll = this.currentRoll;
       let roll = Dice.createDiceRoll()
-      this.roll = roll;
+      this.currentRoll = roll;
 
       if (roll.eyes === 6){
         return this.disabled = false;
