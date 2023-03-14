@@ -17,7 +17,7 @@ public class User {
     private String email;
     private String password;
     private String username;
-    private char countryCode;
+    private String countryCode;
     private String picture;
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -58,11 +58,11 @@ public class User {
         this.username = username;
     }
 
-    public char getCountryCode() {
+    public String getCountryCode() {
         return countryCode;
     }
 
-    public void setCountryCode(char countryCode) {
+    public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
 
