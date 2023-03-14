@@ -1,9 +1,9 @@
 <script setup>
-import TheWelcome from "../components/TheWelcome.vue";
+import DiceRoll from "../components/DiceRoll.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <DiceRoll />
   </main>
 </template>
