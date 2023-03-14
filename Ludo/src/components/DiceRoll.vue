@@ -3,9 +3,21 @@
 <template>
   <img class=dice @click="rollDice" :src="getRollPicture(currentRoll.eyes)">
   <button :disabled="disabled" @click="rollDice">Roll dice</button>
+
   <br>
-  <p>Vorige beurt: </p>
-  <img class=priorDice @click="rollDice" :src="getRollPicture(priorRoll.eyes)">
+
+  <div v-if="!hide" v-on:click="hide = !hide">
+    <p>Click to show last roll</p>
+  </div>
+
+  <div v-if="hide" v-on:click="hide = !hide">
+    <p>Click to hide last roll</p>
+  </div>
+
+
+  <div v-if="hide">
+    <img class=priorDice @click="rollDice" :src="getRollPicture(priorRoll.eyes)">
+  </div>
 
 </template>
 
@@ -20,6 +32,7 @@ export default {
       currentRoll: 0,
       priorRoll: 0,
       disabled: false,
+      hide: false
 
     }
   },
