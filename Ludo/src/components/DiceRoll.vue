@@ -4,7 +4,7 @@
   <div class="player" v-for="players in playerList" :key="players">
     <span :style="[currentPlayer == players.id ? { 'background': players.name  }: players.style ]" class="dot"></span>
     <img class=dice @click="rollDice" :src="getRollPicture(players.currentRoll.eyes)">
-    <button :disabled=disabled @click="rollDice">Roll dice</button>
+
 
     <br>
 
@@ -16,10 +16,12 @@
       <p>Click to hide last roll ▲</p>
     </div>
 
-
     <div v-if="hide">
       <img class=priorDice :src="getRollPicture(players.priorRoll.eyes)">
     </div>
+
+    <button v-if="currentPlayer == players.id" :disabled="disabled" @click="rollDice">Roll dice</button>
+
   </div>
 
 </template>
@@ -47,12 +49,13 @@ export default {
 
   methods : {
     rollDice(){
-
       this.playerList[this.currentPlayer].priorRoll = this.playerList[this.currentPlayer].currentRoll;
       let roll = Dice.createDiceRoll()
       this.playerList[this.currentPlayer].currentRoll = roll;
 
-      if (this.currentPlayer === 3){
+      if(this.playerList[this.currentPlayer].currentRoll.eyes == 6)
+      { /* empty */ }
+      else if (this.currentPlayer === 3){
         this.currentPlayer = 0;
       } else {
         this.currentPlayer = this.currentPlayer + 1
