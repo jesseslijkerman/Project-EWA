@@ -9,7 +9,7 @@
     <br>
 
     <div @click="toggleItem(index)">
-      <p @click="toggleCondition"> {{ showText }}</p>
+      <p @click="toggleCondition()">Click to hide/show last roll</p>
     </div>
 
     <div v-if="activeIndices.includes(index)">
@@ -68,26 +68,19 @@ export default {
 
     toggleItem(index) {
       if (this.activeIndices.includes(index)) {
-        // If the item is already active, remove it from the activeIndices array
         this.activeIndices.splice(this.activeIndices.indexOf(index), 1)
       } else {
-        // If the item is not active, add it to the activeIndices array
         this.activeIndices.push(index)
       }
     },
 
     toggleCondition(){
       this.hideAndShowText = !this.hideAndShowText
-    }
+    },
+
 
   },
 
-
-  computed :{
-    showText(){
-      return this.hideAndShowText ? 'Click to show last roll ▼' : 'Click to hide last roll ▼'
-    }
-  }
 
 
 
