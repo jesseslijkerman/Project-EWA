@@ -63,4 +63,25 @@ a,
     margin-right: auto;
     margin-top: 15px;
   }
+
+  .player{
+    float: left;
+    margin: 60px;
+  }
+
+  .dot {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    border-style: solid;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+  }
+
+  main{
+    width: 1200px;
+  }
 }
