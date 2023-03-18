@@ -8,6 +8,7 @@
           <p class="match-description">{{ match.description }}</p>
           <p class="match-turn">Turn: {{ match.whoseTurn }}</p>
           <p class="match-players">Players: {{ match.players }}</p>
+          <p class="match-timeStarted">Time started: {{ formatDateTime(match.timeStarted)}}</p>
         </div>
         <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link>
       </div>
@@ -26,27 +27,40 @@ export default {
           title: 'Tuna town',
           players: '3/4',
           description: 'Jesse 🇨🇦 is ahead with 1 pawn',
-          whoseTurn: 'Player 1'
+          whoseTurn: 'Player 1',
+          timeStarted: '2023-03-16T14:45:00.000Z'
         },
         {
           id: 2,
           title: 'Koala kafe',
           players: '2/4',
           description: 'Tristan 🇳🇱 is ahead with 3 pawns',
-          whoseTurn: 'Player 2'
+          whoseTurn: 'Player 2',
+          timeStarted: '2023-03-18T13:36:00.000Z'
         },
         {
           id: 3,
           title: 'Idiot lobby',
           players: '4/4',
           description: 'Rob 🇵🇱 is ahead with 2 pawns',
-          whoseTurn: 'Player 1'
+          whoseTurn: 'Player 1',
+          timeStarted: '2023-03-20T15:30:00.000Z'
         }
       ]
     }
+  },
+  methods: {
+    formatDateTime(dateTimeStr) {
+      const dateTime = new Date(dateTimeStr)
+      return dateTime.toLocaleString()
+    }
   }
 }
+
+
 </script>
+
+
 
 <style scoped>
 .container {
