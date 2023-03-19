@@ -5,10 +5,7 @@ import OngoingMatches from "../components/OngoingMatches.vue";
 
 <template>
   <main>
-
-    <ongoing-matches>
-    </ongoing-matches>
-
+    <ongoing-matches></ongoing-matches>
     <dice-roll></dice-roll>
   </main>
 </template>
