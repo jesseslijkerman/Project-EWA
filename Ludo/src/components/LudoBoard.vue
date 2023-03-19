@@ -45,7 +45,9 @@
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
 <!--middle box with player colors-->
-      <div class="centerbox"></div>
+      <div class="centerbox">
+        <img src="../assets/Ludo-Logo.jpg" height="120" width="120"/>
+      </div>
 
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
@@ -150,12 +152,7 @@ body {
 .centerbox {
   grid-column: 7/10;
   grid-row: 7/10;
-  width: 0px;
-  height: 0px;
-  border-top: 60px solid #00e34c;
-  border-bottom: 60px solid #04c3c9;
-  border-left: 60px solid #f7162d;
-  border-right: 60px solid #f7bb05;
+  transform: rotate(180deg);
 }
 
 .red {
