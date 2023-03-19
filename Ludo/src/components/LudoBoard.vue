@@ -1,122 +1,120 @@
 <template>
   <div class="mainframe">
     <div class="ludoboard">
-      <div class="red">
+      <div class="red"> <!--Red player home where the pawns are located-->
         <div class="playerzone">
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
         </div>
       </div>
-<!--playfield top part      -->
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="green">
+      <!--playfield top part      -->
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="green"> <!--Green player home where the pawns are located-->
         <div class="playerzone">
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
         </div>
       </div>
 
-      <div class="playfield"></div>
-      <div class="greensafe"></div>
-      <div class="greensafe"></div>
-      <div class="playfield"></div>
-      <div class="greensafe"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="greensafe"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="greensafe"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="greensafe"></div>
-      <div class="playfield"></div>
-<!--playfield middle part      -->
-      <div class="playfield"></div>
-      <div class="redhome"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-
+      <div class="playfield" id=""></div>
+      <div class="greensafe" id=""></div>
+      <div class="greensafe" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="greensafe" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="greensafe" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="greensafe" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="greensafe" id=""></div>
+      <div class="playfield" id=""></div>
+      <!--playfield middle part      -->
+      <div class="playfield" id=""></div>
+      <div class="redhome" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+<!--middle box with player colors-->
       <div class="centerbox"></div>
 
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="redhome" id=""></div>
+      <div class="redhome" id=""></div>
+      <div class="redhome" id=""></div>
+      <div class="redhome" id=""></div>
+      <div class="redhome" id=""></div>
+      <div class="yellowhome" id=""></div>
+      <div class="yellowhome" id=""></div>
+      <div class="yellowhome" id=""></div>
+      <div class="yellowhome" id=""></div>
+      <div class="yellowhome" id=""></div>
+      <div class="playfield" id=""></div>
 
-      <div class="playfield"></div>
-      <div class="redhome"></div>
-      <div class="redhome"></div>
-      <div class="redhome"></div>
-      <div class="redhome"></div>
-      <div class="redhome"></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
 
-      <div class="yellowhome"></div>
-      <div class="yellowhome"></div>
-      <div class="yellowhome"></div>
-      <div class="yellowhome"></div>
-      <div class="yellowhome"></div>
-      <div class="playfield"></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="yellowhome" id=""></div>
+      <div class="playfield" id=""></div>
 
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="yellowhome"></div>
-      <div class="playfield"></div>
-
-      <div class="blue">
+      <div class="blue"> <!--Blue player home where the pawns are located-->
         <div class="playerzone">
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
         </div>
       </div>
-      <div class="playfield"></div>
-      <div class="bluehome"></div>
-      <div class="playfield"></div>
-      <div class="yellow">
+      <div class="playfield" id=""></div>
+      <div class="bluehome" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="yellow"> <!--Yellow player home where the pawns are located-->
         <div class="playerzone">
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
-          <div class="player"></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
+          <div class="player" id=""></div>
         </div>
       </div>
-<!--playfield bottom part      -->
-      <div class="playfield"></div>
-      <div class="bluehome"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="bluehome"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="bluehome"></div>
-      <div class="playfield"></div>
-      <div class="bluehome"></div>
-      <div class="bluehome"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
-      <div class="playfield"></div>
+      <!--playfield bottom part      -->
+      <div class="playfield" id=""></div>
+      <div class="bluehome" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="bluehome" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="bluehome" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="bluehome" id=""></div>
+      <div class="bluehome" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
+      <div class="playfield" id=""></div>
     </div>
   </div>
 </template>
