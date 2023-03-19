@@ -137,17 +137,6 @@ body {
   height: 100vh;
   justify-content: center;
   align-items: center;
-  background-image: linear-gradient(
-    45deg,
-    #c2c2c2 25%,
-    #e6e6e6 25%,
-    #e6e6e6 50%,
-    #c2c2c2 50%,
-    #c2c2c2 75%,
-    #e6e6e6 75%,
-    #e6e6e6 100%
-  );
-  background-size: 56.57px 56.57px;
 }
 
 .ludoboard {
