@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import LudoBoard from "@/components/LudoBoard.vue";
+import Login from "@/components/Login.vue";
+import Register from "@/components/Register.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,9 +20,20 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
-      path:"/game",
-      name: "game",
-      component: LudoBoard,
+      path: "/login",
+      name: "login",
+      component: Login,
+      meta: {
+        hideNavbar: true,
+      }
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: Register,
+      meta: {
+        hideNavbar: true,
+      }
     },
   ],
 });
