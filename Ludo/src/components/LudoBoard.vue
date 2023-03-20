@@ -9,7 +9,7 @@
           <div class="player" id=""></div>
         </div>
       </div>
-      <!--playfield top part      -->
+      <!--playfield top part-->
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
