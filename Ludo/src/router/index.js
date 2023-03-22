@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
 import LudoBoard from "@/components/LudoBoard.vue";
+import OngoingMatches from "@/components/OngoingMatches.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,8 +40,18 @@ const router = createRouter({
       component: Register,
       meta: {
         hideNavbar: true,
-      }
+      },
     },
+    {
+      path: "/ongoing-matches",
+      name: "ongoing_matches",
+      component: OngoingMatches
+    },
+    {
+      path: "/match/:id",
+      name: "clickedMatch",
+      component: LudoBoard
+    }
   ],
 });
 

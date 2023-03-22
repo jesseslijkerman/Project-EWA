@@ -12,8 +12,7 @@
             Time started: {{ formatDateTime(match.timeStarted) }}
           </p>
         </div>
-        <router-link :to="'/match/' + match.id" class="btn btn-primary"
-          >Play</router-link
+        <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link
         >
       </div>
     </div>

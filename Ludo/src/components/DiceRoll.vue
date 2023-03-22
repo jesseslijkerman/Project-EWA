@@ -1,36 +1,38 @@
 <template>
-  <div class="player" v-for="(players, index) in playerList" :key="players">
-    <span
-      :style="[
-        currentPlayer == players.id
-          ? { background: players.name }
-          : players.style,
-      ]"
-      class="dot"
-    ></span>
-    <img
-      class="dice"
-      @click="rollDice"
-      :src="getRollPicture(players.currentRoll.eyes)"
-    />
+  <div class="allPlayerRolls">
+    <div class="playerRoll" v-for="(players, index) in playerList" :key="players">
+      <span
+        :style="[
+          currentPlayer == players.id
+            ? { background: players.name }
+            : players.style,
+        ]"
+        class="dot"
+      ></span>
+      <img
+        class="dice"
+        @click="rollDice"
+        :src="getRollPicture(players.currentRoll.eyes)"
+      />
 
-    <br />
+      <br />
 
-    <div @click="toggleItem(index)">
-      <p @click="toggleCondition()">Click to hide/show last roll</p>
+      <div @click="toggleItem(index)">
+        <p @click="toggleCondition()">Click to hide/show last roll</p>
+      </div>
+
+      <div v-if="activeIndices.includes(index)">
+        <img class="priorDice" :src="getRollPicture(players.priorRoll.eyes)" />
+      </div>
+
+      <button
+        v-if="currentPlayer == players.id"
+        :disabled="disabled"
+        @click="rollDice"
+      >
+        Roll dice
+      </button>
     </div>
-
-    <div v-if="activeIndices.includes(index)">
-      <img class="priorDice" :src="getRollPicture(players.priorRoll.eyes)" />
-    </div>
-
-    <button
-      v-if="currentPlayer == players.id"
-      :disabled="disabled"
-      @click="rollDice"
-    >
-      Roll dice
-    </button>
   </div>
 </template>
 
@@ -98,7 +100,7 @@ export default {
       if (src === undefined) {
         return;
       } else {
-        return "src/assets/dice" + src + ".png";
+        return "/src/assets/dice" + src + ".png";
       }
     },
 

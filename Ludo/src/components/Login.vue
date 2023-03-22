@@ -48,6 +48,7 @@
 import router from "../router";
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   data() {
     return {
@@ -61,6 +62,8 @@ export default {
       const password = this.entered_password
       var val = localStorage.getItem("user_info")
       var object = JSON.parse(val)
+
+      router.push('/ongoing-matches')
 
       if (email === object.register_email && password === object.password) {
         router.push("/")

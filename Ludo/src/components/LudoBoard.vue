@@ -118,12 +118,19 @@
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
     </div>
+    <DiceRoll></DiceRoll>
   </div>
+
+
+
+
 </template>
 
 <script>
+import DiceRoll from "./DiceRoll.vue";
 export default {
   name: "LudoBoard",
+  components: {DiceRoll},
 };
 </script>
 
@@ -133,7 +140,7 @@ body {
 }
 
 .mainframe {
-  display: flex;
+
   height: 100vh;
   justify-content: center;
   align-items: center;
@@ -145,6 +152,14 @@ body {
   width: 600px;
   height: 600px;
   display: grid;
+
+  /*Om te centreren*/
+  position: fixed;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /**/
+
   grid-template-columns: repeat(15, 40px);
   grid-template-rows: repeat(15, 40px);
 }

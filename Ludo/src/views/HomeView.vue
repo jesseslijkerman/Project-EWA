@@ -1,11 +1,9 @@
 <script setup>
-import DiceRoll from "../components/DiceRoll.vue";
-import OngoingMatches from "../components/OngoingMatches.vue";
+import Login from "../components/Login.vue";
 </script>
 
 <template>
   <main>
-    <ongoing-matches></ongoing-matches>
-    <dice-roll></dice-roll>
+    <login></login>
   </main>
 </template>
