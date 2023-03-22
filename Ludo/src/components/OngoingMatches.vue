@@ -86,6 +86,7 @@ export default {
   padding: 1.5rem;
   margin-bottom: 2rem;
   border-radius: 0.25rem;
+  margin: 1px;
   background-color: #333;
   color: #fff;
 }
@@ -116,6 +117,7 @@ export default {
   color: #fff;
   text-decoration: none;
   transition: background-color 0.2s ease;
+  margin-left: 70px;
 }
 
 .btn:hover {
