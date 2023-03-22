@@ -28,7 +28,7 @@ a,
   }
 
   #app {
-    display: grid;
+    /*display: grid;*/
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
@@ -94,6 +94,11 @@ a,
   }
 
   main{
-    width: 1200px;
+    position: fixed;
+    top: 50%;
+    left: 49%;
+    transform: translate(-50%, -50%);
   }
+
+
 }

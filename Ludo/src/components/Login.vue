@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form @submit.prevent="handleLogin">
+    <form class="loginForm" @submit.prevent="handleLogin">
       <!-- Email input -->
       <div class="form-outline mb-4">
         <label class="form-label">Email address</label>
