@@ -11,7 +11,7 @@
     <groupId>hva.nl</groupId>
     <artifactId>ludo-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>ludo-server</name>
     <description>ludo-server</description>
     <properties>
