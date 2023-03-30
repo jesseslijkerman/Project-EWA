@@ -24,7 +24,7 @@ const router = createRouter({
     {
       path: "/game",
       name: "game",
-      component: LudoBoard
+      component: LudoBoard,
     },
     {
       path: "/login",
@@ -45,12 +45,12 @@ const router = createRouter({
     {
       path: "/ongoing-matches",
       name: "ongoing_matches",
-      component: OngoingMatches
+      component: OngoingMatches,
     },
     {
       path: "/match/:id",
       name: "clickedMatch",
-      component: LudoBoard
+      component: LudoBoard,
     }
   ],
 });
