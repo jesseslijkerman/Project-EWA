@@ -23,6 +23,9 @@ public class Lobby {
     @JsonManagedReference
     private List<UserLobby> userLobbies = new ArrayList<>();
 
+    public Lobby(String name, String sessionId, int maxPlayers, LocalDateTime created) {
+    }
+
     public Long getId() {
         return id;
     }
