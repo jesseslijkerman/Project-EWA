@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l")
 public class Lobby {
     @Id
     private Long id;
