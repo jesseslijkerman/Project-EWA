@@ -26,6 +26,10 @@ public class Lobby {
     public Lobby(String name, String sessionId, int maxPlayers, LocalDateTime created) {
     }
 
+    public Lobby() {
+
+    }
+
     public Long getId() {
         return id;
     }
