@@ -61,7 +61,7 @@
         <button
           type="button"
           class="btn btn-primary btn-block mb-4"
-          v-on:click="handleSumbit"
+          v-on:click="createLobby"
         >
           Create game
         </button>
@@ -71,8 +71,11 @@
 </template>
 
 <script>
+import {Lobby} from "../models/Lobby";
+
 export default {
   name: "CreateGame",
+  inject: ["lobbyService"],
   data() {
     return {
       gameMode: null,
@@ -82,9 +85,21 @@ export default {
       turnTimer: null,
     };
   },
+  methods: {
+    async createLobby(){
+      var now = new Date();
+
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
+
+      console.log(lobby)
+
+      await this.lobbyService.asyncSave(JSON.stringify(lobby))
+
+    }
+  }
 };
 </script>
 
 <style scoped>
-*
+
 </style>
