@@ -4,6 +4,7 @@ import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
 import LudoBoard from "@/components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
+import DiceRollTest from "../components/DiceRollTest.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,11 @@ const router = createRouter({
       path: "/match/:id",
       name: "clickedMatch",
       component: LudoBoard,
+    },
+    {
+      path: "/roll",
+      name: "roll",
+      component: DiceRollTest
     }
   ],
 });

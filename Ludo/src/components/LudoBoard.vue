@@ -46,8 +46,10 @@
       <div class="playfield" id=""><span></span></div>
 <!--middle box with player colors-->
       <div class="centerbox">
-        <img src="../assets/Ludo-Logo.jpg" height="120" width="120"/>
+<!--        <img src="../assets/Ludo-Logo.jpg" height="120" width="120"/>-->
+        <DiceRollTest></DiceRollTest>
       </div>
+
 
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
@@ -118,7 +120,7 @@
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
     </div>
-    <DiceRoll></DiceRoll>
+<!--    <DiceRoll></DiceRoll>-->
   </div>
 
 
@@ -127,10 +129,10 @@
 </template>
 
 <script>
-import DiceRoll from "./DiceRoll.vue";
+import DiceRollTest from "./DiceRollTest.vue";
 export default {
   name: "LudoBoard",
-  components: {DiceRoll},
+  components: {DiceRollTest},
 };
 </script>
 
