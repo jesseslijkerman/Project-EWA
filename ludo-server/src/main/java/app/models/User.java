@@ -13,7 +13,7 @@ import java.util.List;
 @NamedQuery(name = "find_all_users", query = "select u from User u")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String password;

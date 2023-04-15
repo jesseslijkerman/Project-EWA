@@ -12,8 +12,8 @@ import java.util.List;
 @Entity
 @NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l")
 public class Lobby {
-    @GeneratedValue
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int maxPlayers;
     private int turnTimer;
