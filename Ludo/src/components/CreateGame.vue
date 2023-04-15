@@ -1,29 +1,65 @@
 <template>
   <div class="container">
     <form @submit.prevent="handleSumbit">
-      <!-- Name input -->
+      <!-- Game mode input -->
       <div class="form-outline mb-4">
-        <label class="form-label">Game Mode</label>
-        <input
-          type="text"
-          class="form-control"
-          v-model="gameMode"
-          placeholder="Game Mode"
-        />
+        <label class="form-label">Game mode</label>
+        <div class="form-check">
+          <input
+              type="radio"
+              class="form-check-label"
+              value=1
+              v-model="gameMode"
+          />
+          <label class="form-check-label">Traditional</label>
+        </div>
+
+        <div class="form-check">
+          <input
+              type="radio"
+              class="form-check-label"
+              value=2
+              v-model="gameMode"
+          />
+          <label class="form-check-label">Wacky</label>
+        </div>
       </div>
 
-      <!-- Username input -->
+      <!-- Max players input -->
       <div class="form-outline mb-4">
-        <label class="form-label">Max Players</label>
-        <input
-          type="text"
-          class="form-control"
-          v-model="maxPlayers"
-          placeholder="Max Players"
-        />
+        <label class="form-label">Max players</label>
+        <div class="form-check">
+          <input
+              type="radio"
+              class="form-check-label"
+              value=1
+              v-model="maxPlayers"
+          />
+          <label class="form-check-label">1</label>
+        </div>
+
+        <div class="form-check">
+          <input
+              type="radio"
+              class="form-check-label"
+              value=2
+              v-model="maxPlayers"
+          />
+          <label class="form-check-label">2</label>
+        </div>
+
+        <div class="form-check">
+          <input
+              type="radio"
+              class="form-check-label"
+              value=3
+              v-model="maxPlayers"
+          />
+          <label class="form-check-label">3</label>
+        </div>
       </div>
 
-      <!-- Email input -->
+      <!-- Lobby name input -->
       <div class="form-outline mb-4">
         <label class="form-label">Name</label>
         <input
@@ -45,11 +81,11 @@
         />
       </div>
 
-      <!-- ConfirmPassword input -->
+      <!-- Turn timer input -->
       <div class="form-outline mb-4">
-        <label class="form-label">Turn Timer</label>
+        <label class="form-label">Turn Timer (in seconds)</label>
         <input
-          type="text"
+          type="number"
           class="form-control"
           v-model="turnTimer"
           placeholder="Turn Timer"
