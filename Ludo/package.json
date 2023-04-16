@@ -27,5 +27,12 @@
     "prettier": "^2.7.1",
     "vite": "^4.0.0",
     "vitest": "^0.25.6"
+  },
+  "rules": {
+    "vue/multi-word-component-names": "off",
+    "vue/no-mutating-props": "off",
+    "no-unused-vars": "off",
+    "no-unreachable": "off",
+    "vue/require-v-for-key": "warn"
   }
 }

@@ -1,3 +1,4 @@
+
 <script >
 import {LobbyAdaptor} from "./services/LobbyAdaptor";
 
@@ -12,10 +13,19 @@ export default {
 </script>
 
 <template>
-
-
   <RouterView />
 </template>
+
+<script>
+import { usersAdaptor } from "@/services/UsersAdaptor";
+export default {
+  provide() {
+    return {
+      registerService: new usersAdaptor("http://localhost:6969/users"),
+    };
+  },
+};
+</script>
 
 <style scoped>
 header {
