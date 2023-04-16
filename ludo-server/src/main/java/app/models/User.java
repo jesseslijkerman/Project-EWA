@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @NamedQuery(name = "find_all_users", query = "select u from User u")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String password;
@@ -20,7 +21,7 @@ public class User {
     private String countryCode;
     private String picture;
     @OneToMany(mappedBy = "user")
-    @JsonManagedReference
+    @JsonIgnoreProperties("user")
     private List<UserLobby> userLobbies = new ArrayList<>();
 
     public User() {
