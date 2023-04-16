@@ -1,38 +1,32 @@
 <template>
   <div class="allPlayerRolls">
     <div class="playerRoll" v-for="(players, index) in playerList" :key="players">
-      <span
-        :style="[
-          currentPlayer == players.id
-            ? { background: players.name }
-            : players.style,
-        ]"
-        class="dot"
-      ></span>
-      <img
-        class="dice"
-        @click="rollDice"
-        :src="getRollPicture(players.currentRoll.eyes)"
-      />
+      <div v-show="currentPlayer == players.id">
+        <br>
+        <img class="dice" :src="getRollPicture(players.currentRoll.eyes)"/>
 
-      <br />
 
-      <div @click="toggleItem(index)">
-        <p @click="toggleCondition()">Click to hide/show last roll</p>
+
+        <span :style="[currentPlayer === players.id ? { background: players.name } : players.style,]" class="dot"></span>
+        <button class="rollButton" v-if="currentPlayer == players.id" :disabled="disabled" @click="rollDice">
+          Roll dice
+        </button>
+
+        <!--        <div @click="toggleItem(index)">-->
+        <!--          <p @click="toggleCondition()">Click to hide/show last roll</p>-->
+        <!--        </div>-->
+
+        <!--        <div v-if="activeIndices.includes(index)">-->
+        <!--          <img class="priorDice" :src="getRollPicture(players.priorRoll.eyes)" />-->
+        <!--        </div>-->
+
       </div>
 
-      <div v-if="activeIndices.includes(index)">
-        <img class="priorDice" :src="getRollPicture(players.priorRoll.eyes)" />
-      </div>
-
-      <button
-        v-if="currentPlayer == players.id"
-        :disabled="disabled"
-        @click="rollDice"
-      >
-        Roll dice
-      </button>
     </div>
+  </div>
+
+  <div>
+
   </div>
 </template>
 
@@ -82,21 +76,28 @@ export default {
 
   methods: {
     rollDice() {
-      this.playerList[this.currentPlayer].priorRoll =
-        this.playerList[this.currentPlayer].currentRoll;
+      this.playerList[this.currentPlayer].priorRoll = this.playerList[this.currentPlayer].currentRoll;
       let roll = Dice.createDiceRoll();
       this.playerList[this.currentPlayer].currentRoll = roll;
+      console.log("current roll: " + roll.eyes)
+      this.getRollPicture(roll.eyes)
+
 
       if (this.playerList[this.currentPlayer].currentRoll.eyes == 6) {
-        /* empty */
-      } else if (this.currentPlayer === 3) {
+        // yep
+      }
+      if (this.currentPlayer === 3) {
         this.currentPlayer = 0;
-      } else {
+        console.log("Aan de beurt: " + this.playerList[this.currentPlayer].name)
+      }
+      else {
         this.currentPlayer = this.currentPlayer + 1;
+        console.log("Aan de beurt: " + this.playerList[this.currentPlayer].name)
       }
     },
 
     getRollPicture(src) {
+      console.log(src)
       if (src === undefined) {
         return;
       } else {
@@ -116,5 +117,10 @@ export default {
       this.hideAndShowText = !this.hideAndShowText;
     },
   },
+  created() {
+    console.log("Start positie: ")
+    console.log("Kleur starter: " + this.playerList[this.currentPlayer].name)
+  }
+
 };
 </script>

@@ -134,7 +134,7 @@ import DiceRoll from "@/components/DiceRoll.vue";
 
 export default {
   name: "LudoBoard",
-  components: DiceRoll,
+  components: {DiceRoll},
 };
 </script>
 
