@@ -5,6 +5,8 @@ import Register from "@/components/Register.vue";
 import LudoBoard from "@/components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
 import CreateGame from "../components/CreateGame.vue";
+import DiceRollTest from "../components/DiceRollTest.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +59,11 @@ const router = createRouter({
       path: "/createGame",
       name: "createGame",
       component: CreateGame,
+    },
+    {
+      path: "/roll",
+      name: "roll",
+      component: DiceRollTest
     }
   ],
 });

@@ -70,14 +70,21 @@ a,
   }
 
   .playerRoll{
-    margin-left: 40px;
+    position: absolute;
+    transform: scaleY(-1) scaleX(-1);
+    height: 120px;
+    width: 120px;
   }
 
+  .rollButton{
+    margin-top: 350px;
+    z-index: 1;
+  }
+
+
   .allPlayerRolls{
-    display: flex;
-    position: fixed;
-    top: 85%;
-    left: 49%;
+    position: relative;
+    left: 50%;
     transform: translate(-50%, -50%);
   }
 
@@ -99,6 +106,7 @@ a,
     left: 49%;
     transform: translate(-50%, -50%);
   }
+
 
 
 }
