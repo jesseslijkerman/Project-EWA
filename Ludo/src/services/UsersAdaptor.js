@@ -1,6 +1,6 @@
-import { User } from "@/models/User";
+import { User } from "../models/User.js";
 
-export class usersAdaptor {
+export class UsersAdaptor {
   resourcesUrl;
 
   constructor(resourcesUrl) {

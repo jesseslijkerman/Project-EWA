@@ -1,13 +1,13 @@
 
 <script >
 import {LobbyAdaptor} from "./services/LobbyAdaptor";
-import { usersAdaptor } from "@/services/UsersAdaptor";
+import {UsersAdaptor} from "./services/UsersAdaptor";
 
 export default {
   provide(){
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
-      registerService: new usersAdaptor("http://localhost:6969/users"),
+      registerService: new UsersAdaptor("http://localhost:6969/users"),
     }
   }
 }

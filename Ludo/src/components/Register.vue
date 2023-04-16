@@ -114,7 +114,8 @@ export default {
         picture: this.picture,
         username: this.username,
       };
-      await this.registerService.asyncSave(result);
+      console.log(JSON.stringify(result))
+      await this.registerService.asyncSave(JSON.stringify(result));
       await router.push("/login");
     },
     handleRedirect() {
