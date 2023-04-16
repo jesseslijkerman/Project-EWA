@@ -127,12 +127,9 @@ export default {
       let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
       console.log(lobby)
 
-      let response = await this.lobbyService.asyncSave(JSON.stringify(lobby))
+      await this.lobbyService.asyncSave(JSON.stringify(lobby))
 
-      if (response.ok){
-        this.$router.push("/ongoing-matches")
-      }
-
+      this.$router.push("/ongoing-matches")
     }
   }
 };
