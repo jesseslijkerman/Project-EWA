@@ -1,11 +1,13 @@
 
 <script >
 import {LobbyAdaptor} from "./services/LobbyAdaptor";
+import { usersAdaptor } from "@/services/UsersAdaptor";
 
 export default {
   provide(){
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
+      registerService: new usersAdaptor("http://localhost:6969/users"),
     }
   }
 }
@@ -15,17 +17,6 @@ export default {
 <template>
   <RouterView />
 </template>
-
-<script>
-import { usersAdaptor } from "@/services/UsersAdaptor";
-export default {
-  provide() {
-    return {
-      registerService: new usersAdaptor("http://localhost:6969/users"),
-    };
-  },
-};
-</script>
 
 <style scoped>
 header {
