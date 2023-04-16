@@ -22,6 +22,8 @@ public class Lobby {
     private String password;
     @CreationTimestamp
     private LocalDateTime created;
+    private String status;
+    private int whoseTurn;
     @OneToMany(mappedBy = "lobby")
     @JsonIgnoreProperties("lobby")
     private List<UserLobby> userLobbies = new ArrayList<>();
@@ -95,5 +97,21 @@ public class Lobby {
 
     public void setUserLobbies(UserLobby userLobby) {
         this.userLobbies.add(userLobby);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getWhoseTurn() {
+        return whoseTurn;
+    }
+
+    public void setWhoseTurn(int whoseTurn) {
+        this.whoseTurn = whoseTurn;
     }
 }
