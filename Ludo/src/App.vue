@@ -1,3 +1,17 @@
+
+<script >
+import {LobbyAdaptor} from "./services/LobbyAdaptor";
+
+export default {
+  provide(){
+    return{
+      lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
+    }
+  }
+}
+
+</script>
+
 <template>
   <RouterView />
 </template>

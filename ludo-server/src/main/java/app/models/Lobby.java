@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l")
 public class Lobby {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int maxPlayers;
     private int turnTimer;
@@ -19,9 +22,18 @@ public class Lobby {
     private String password;
     @CreationTimestamp
     private LocalDateTime created;
+    private String status;
+    private int whoseTurn;
     @OneToMany(mappedBy = "lobby")
-    @JsonManagedReference
+    @JsonIgnoreProperties("lobby")
     private List<UserLobby> userLobbies = new ArrayList<>();
+
+    public Lobby(String name, String sessionId, int maxPlayers, LocalDateTime created) {
+    }
+
+    public Lobby() {
+
+    }
 
     public Long getId() {
         return id;
@@ -85,5 +97,21 @@ public class Lobby {
 
     public void setUserLobbies(UserLobby userLobby) {
         this.userLobbies.add(userLobby);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getWhoseTurn() {
+        return whoseTurn;
+    }
+
+    public void setWhoseTurn(int whoseTurn) {
+        this.whoseTurn = whoseTurn;
     }
 }

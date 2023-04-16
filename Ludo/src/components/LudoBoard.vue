@@ -3,51 +3,53 @@
     <div class="ludoboard">
       <div class="red"> <!--Red player home where the pawns are located-->
         <div class="playerzone">
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
+          <div class="player" id=""><span></span></div>
+          <div class="player" id=""><span></span></div>
+          <div class="player" id=""><span></span></div>
+          <div class="player" id=""><span></span></div>
         </div>
       </div>
       <!--playfield top part-->
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
       <div class="green"> <!--Green player home where the pawns are located-->
         <div class="playerzone">
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
+          <div class="player" id=""><span></span></div>
+          <div class="player" id=""><span></span></div>
+          <div class="player" id=""><span></span></div>
+          <div class="player" id=""><span></span></div>
         </div>
       </div>
 
-      <div class="playfield" id=""></div>
-      <div class="greensafe" id=""></div>
-      <div class="greensafe" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="greensafe" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="greensafe" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="greensafe" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="greensafe" id=""></div>
-      <div class="playfield" id=""></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="greenhome" id=""><span></span></div>
+      <div class="greenhome" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="greenhome" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="greenhome" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="greenhome" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="greenhomeend" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
       <!--playfield middle part      -->
-      <div class="playfield" id=""></div>
-      <div class="redhome" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="redhome" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
+      <div class="playfield" id=""><span></span></div>
 <!--middle box with player colors-->
       <div class="centerbox">
-        <img src="../assets/Ludo-Logo.jpg" height="120" width="120"/>
+<!--        <img src="../assets/Ludo-Logo.jpg" height="120" width="120"/>-->
+        <DiceRoll></DiceRoll>
       </div>
+
 
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
@@ -60,8 +62,8 @@
       <div class="redhome" id=""></div>
       <div class="redhome" id=""></div>
       <div class="redhome" id=""></div>
-      <div class="redhome" id=""></div>
-      <div class="yellowhome" id=""></div>
+      <div class="redhomeend" id=""></div>
+      <div class="yellowhomeend" id=""></div>
       <div class="yellowhome" id=""></div>
       <div class="yellowhome" id=""></div>
       <div class="yellowhome" id=""></div>
@@ -91,7 +93,7 @@
         </div>
       </div>
       <div class="playfield" id=""></div>
-      <div class="bluehome" id=""></div>
+      <div class="bluehomeend" id=""></div>
       <div class="playfield" id=""></div>
       <div class="yellow"> <!--Yellow player home where the pawns are located-->
         <div class="playerzone">
@@ -118,7 +120,7 @@
       <div class="playfield" id=""></div>
       <div class="playfield" id=""></div>
     </div>
-    <DiceRoll></DiceRoll>
+
   </div>
 
 
@@ -127,10 +129,12 @@
 </template>
 
 <script>
-import DiceRoll from "./DiceRoll.vue";
+
+import DiceRoll from "@/components/DiceRoll.vue";
+
 export default {
   name: "LudoBoard",
-  components: {DiceRoll},
+  components: DiceRoll,
 };
 </script>
 
@@ -185,6 +189,11 @@ body {
   border: 0.5px solid #9e0616;
 }
 
+.redhomeend {
+  background-color: #566769;
+  border: 0.5px solid #9e0616;
+}
+
 .playerzone {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -208,8 +217,13 @@ body {
   grid-row: 1/7;
 }
 
-.greensafe {
+.greenhome {
   background-color: #00e34c;
+  border: 0.5px solid #039634;
+}
+
+.greenhomeend {
+  background-color: #566769;
   border: 0.5px solid #039634;
 }
 
@@ -232,6 +246,11 @@ body {
   border: 0.5px solid #027478;
 }
 
+.bluehomeend {
+  background-color: #566769;
+  border: 0.5px solid #027478;
+}
+
 .yellow {
   display: flex;
   justify-content: center;
@@ -246,4 +265,10 @@ body {
   background-color: #f7bb05;
   border: 0.5px solid #9c7605;
 }
+
+.yellowhomeend {
+  background-color: #566769;
+  border: 0.5px solid #9c7605;
+}
+
 </style>

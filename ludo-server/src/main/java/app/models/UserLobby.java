@@ -2,6 +2,8 @@ package app.models;
 
 import app.compositeKeys.UserLobbyPK;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,14 +11,14 @@ import jakarta.persistence.*;
 public class UserLobby {
     @Id
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @Id
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "lobby_id")
+    @JsonIgnore
     private Lobby lobby;
 
     private int pawnPosition1;
