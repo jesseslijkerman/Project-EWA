@@ -32,16 +32,6 @@
           <input
               type="radio"
               class="form-check-label"
-              value=1
-              v-model="maxPlayers"
-          />
-          <label class="form-check-label">1</label>
-        </div>
-
-        <div class="form-check">
-          <input
-              type="radio"
-              class="form-check-label"
               value=2
               v-model="maxPlayers"
           />
@@ -56,6 +46,16 @@
               v-model="maxPlayers"
           />
           <label class="form-check-label">3</label>
+        </div>
+
+        <div class="form-check">
+          <input
+              type="radio"
+              class="form-check-label"
+              value=4
+              v-model="maxPlayers"
+          />
+          <label class="form-check-label">4</label>
         </div>
       </div>
 
@@ -124,12 +124,14 @@ export default {
   methods: {
     async createLobby(){
       var now = new Date();
-
       let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
-
       console.log(lobby)
 
-      await this.lobbyService.asyncSave(JSON.stringify(lobby))
+      let response = await this.lobbyService.asyncSave(JSON.stringify(lobby))
+
+      if (response.ok){
+        this.$router.push("/ongoing-matches")
+      }
 
     }
   }
