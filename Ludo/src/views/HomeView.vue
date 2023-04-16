@@ -1,9 +1,9 @@
 <script setup>
-import DiceRoll from "../components/DiceRoll.vue";
+import Login from "../components/Login.vue";
 </script>
 
 <template>
   <main>
-    <DiceRoll />
+    <login></login>
   </main>
 </template>
