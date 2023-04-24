@@ -1,4 +1,4 @@
-package app.rest;
+package app.controllers;
 
 import app.APIConfig;
 import app.exceptions.NotAcceptable;
