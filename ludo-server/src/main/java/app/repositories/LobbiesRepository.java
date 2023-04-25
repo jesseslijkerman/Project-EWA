@@ -24,6 +24,12 @@ public class LobbiesRepository {
         return entityManager.find(Lobby.class, id);
     }
 
+    public List<Lobby> findByUserId(int userId){
+        TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_lobbies_by_user_id", Lobby.class);
+        namedQuery.setParameter(1, userId);
+        return namedQuery.getResultList();
+    }
+
     public Lobby save(Lobby user){
         return entityManager.merge(user);
     }
