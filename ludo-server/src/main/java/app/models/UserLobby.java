@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 
 @Entity
 @IdClass(UserLobbyPK.class)
+@NamedQuery(name = "find_all_userLobbies", query = "select u from UserLobby u")
 public class UserLobby {
     @Id
     @ManyToOne
@@ -31,6 +32,7 @@ public class UserLobby {
 
     public UserLobby() {
     }
+
 
     public User getUser() {
         return user;
