@@ -35,8 +35,10 @@ import { Dice } from "@/models/Dice";
 
 export default {
   name: "DiceRoll",
+  inject: ["userLobbyService"],
   data() {
     return {
+      WIN_CONDITION: 4,
       disabled: false,
       hideAndShowText: true,
       playerList: [
@@ -46,6 +48,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "red" },
+          piecesInHome: 0
         },
         {
           id: 1,
@@ -53,6 +56,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "blue" },
+          piecesInHome: 0
         },
         {
           id: 2,
@@ -60,6 +64,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "green" },
+          piecesInHome: 0
         },
         {
           id: 3,
@@ -67,6 +72,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "yellow" },
+          piecesInHome: 0
         },
       ],
       currentPlayer: 0,
@@ -116,6 +122,19 @@ export default {
     toggleCondition() {
       this.hideAndShowText = !this.hideAndShowText;
     },
+
+    checkWinCondition(playerIndex){
+      return this.playerList[playerIndex].piecesInHome >= this.WIN_CONDITION;
+    },
+
+    async pieceInHome(){
+      // check if current pawn is in a home node
+      // get location of pawn from backend
+      // check if location matches one of that players home node IDs
+      // if it matches -> return true
+      console.log(await this.userLobbyService.asyncFindById(1));
+    }
+
   },
   created() {
     console.log("Start positie: ")
