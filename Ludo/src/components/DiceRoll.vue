@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { Dice } from "@/models/Dice";
+import { Dice } from "@/models/Dice.js";
 
 export default {
   name: "DiceRoll",
@@ -132,8 +132,8 @@ export default {
       // get location of pawn from backend
       // check if location matches one of that players home node IDs
       // if it matches -> return true
-      console.log(await this.userLobbyService.asyncFindById(1));
-    }
+      await this.userLobbyService.asyncFindAll();
+    },
 
   },
   created() {
