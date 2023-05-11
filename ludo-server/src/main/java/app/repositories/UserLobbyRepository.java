@@ -17,6 +17,7 @@ import java.util.List;
 
         public List<UserLobby> findAll(){
             TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_userLobbies", UserLobby.class);
+//            namedQuery.setMaxResults(1);
             return namedQuery.getResultList();
         }
 
@@ -24,14 +25,14 @@ import java.util.List;
             return entityManager.find(UserLobby.class, id);
         }
 
-        public UserLobby save(UserLobby user){
-            return entityManager.merge(user);
+        public UserLobby save(UserLobby lobby){
+            return entityManager.merge(lobby);
         }
 
         public UserLobby deleteById(int id){
-            UserLobby user = findById(id);
-            entityManager.remove(user);
-            return user;
+            UserLobby lobby = findById(id);
+            entityManager.remove(lobby);
+            return lobby;
         }
     }
 
