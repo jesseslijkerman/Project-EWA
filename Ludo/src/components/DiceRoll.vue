@@ -48,7 +48,8 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "red" },
-          piecesInHome: 0
+          piecesInHome: 0,
+          pawnPosition1: 1
         },
         {
           id: 1,
@@ -89,6 +90,11 @@ export default {
       this.getRollPicture(roll.eyes)
 
 
+      let pawns = await this.userLobbyService.asyncFindAll()
+
+      this.pawnPosition1 = pawns[0].pawnPosition1 + this.playerList[this.currentPlayer].currentRoll.eyes
+      await this.updatePawnPos()
+
       if (this.playerList[this.currentPlayer].currentRoll.eyes == 6) {
         // yep
       }
@@ -123,17 +129,17 @@ export default {
       this.hideAndShowText = !this.hideAndShowText;
     },
 
-    checkWinCondition(playerIndex){
-      return this.playerList[playerIndex].piecesInHome >= this.WIN_CONDITION;
-    },
+    async updatePawnPos(){
 
-    async pieceInHome(){
-      // check if current pawn is in a home node
-      // get location of pawn from backend
-      // check if location matches one of that players home node IDs
-      // if it matches -> return true
-      await this.userLobbyService.asyncFindAll();
-    },
+      const result = {
+        pawnPosition1: this.pawnPosition1,
+        pawnPosition2: this.pawnPosition2,
+        pawnPosition3: this.pawnPosition3,
+        pawnPosition4: this.pawnPosition4,
+      }
+
+      await this.userLobbyService.asyncSave(JSON.stringify(result))
+    }
 
   },
   created() {
