@@ -30,8 +30,8 @@ public class LobbiesRepository {
         return namedQuery.getResultList();
     }
 
-    public Lobby save(Lobby user){
-        return entityManager.merge(user);
+    public Lobby save(Lobby lobby){
+        return entityManager.merge(lobby);
     }
 
     public Lobby deleteById(int id){

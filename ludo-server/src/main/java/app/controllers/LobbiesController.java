@@ -3,6 +3,7 @@ package app.controllers;
 import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.Lobby;
+import app.models.UserLobby;
 import app.repositories.LobbiesRepository;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 
 @Entity
 @IdClass(UserLobbyPK.class)
+@NamedQuery(name = "find_all_user_lobbies", query = "select ul from UserLobby ul")
 public class UserLobby {
     @Id
     @ManyToOne
