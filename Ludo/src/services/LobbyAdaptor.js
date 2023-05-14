@@ -31,6 +31,12 @@ export class LobbyAdaptor{
         return Lobby.copyConstructor(lobby)
     }
 
+    async asyncFindByUserId(id){
+        console.log("LobbyAdaptor.asyncFindByUserId()...")
+        const lobbies = await this.fetchJson(this.resourcesUrl + "/user/" + id)
+        return lobbies?.map(s => Lobby.copyConstructor(s));
+    }
+
     async asyncSave(lobby) {
         console.log("LobbyAdaptor.asyncSave()...")
         const selectedLobby = await this.fetchJson(this.resourcesUrl, {
