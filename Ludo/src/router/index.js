@@ -5,7 +5,6 @@ import Register from "@/components/Register.vue";
 import LudoBoard from "@/components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
 import CreateGame from "../components/CreateGame.vue";
-import DiceRoll from "@/components/DiceRoll.vue";
 
 
 const router = createRouter({
@@ -60,11 +59,6 @@ const router = createRouter({
       name: "createGame",
       component: CreateGame,
     },
-    {
-      path: "/roll",
-      name: "roll",
-      component: DiceRoll
-    }
   ],
 });
 

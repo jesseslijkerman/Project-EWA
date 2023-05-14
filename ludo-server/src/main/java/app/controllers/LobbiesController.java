@@ -3,7 +3,9 @@ package app.controllers;
 import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.Lobby;
+import app.models.UserLobby;
 import app.repositories.LobbiesRepository;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,11 @@ public class LobbiesController {
             throw new ResourceNotFound("id-" + id);
         }
         return lobby;
+    }
+
+    @GetMapping(path = "/user/{userId}", produces = "application/json")
+    public List<Lobby> findByUserId(@PathVariable int userId){
+        return this.lobbyRepo.findByUserId(userId);
     }
 
     @PostMapping(path = "")

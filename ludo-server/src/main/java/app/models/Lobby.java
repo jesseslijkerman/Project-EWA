@@ -10,7 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l")
+@NamedQueries({
+        @NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l"),
+        @NamedQuery(name = "find_lobbies_by_user_id", query = "SELECT l FROM Lobby l JOIN l.userLobbies ul WHERE ul.user.id = ?1"),
+})
+
 public class Lobby {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
