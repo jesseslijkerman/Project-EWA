@@ -49,7 +49,10 @@ export default {
           priorRoll: 0,
           style: { "border-color": "red" },
           piecesInHome: 0,
-          pawnPosition1: 1
+          pawnPosition1: 1,
+          pawnPosition2: 1,
+          pawnPosition3: 1,
+          pawnPosition4: 1,
         },
         {
           id: 1,
@@ -91,8 +94,17 @@ export default {
 
 
       let pawns = await this.userLobbyService.asyncFindAll()
+      let player = this.playerList[0]
 
-      this.pawnPosition1 = pawns[0].pawnPosition1 + this.playerList[this.currentPlayer].currentRoll.eyes
+      player.pawnPosition1 = pawns[0].pawnPosition1 + this.playerList[this.currentPlayer].currentRoll.eyes
+
+      const positions = [player.pawnPosition2, player.pawnPosition3, player.pawnPosition4];
+      const index = positions.findIndex(position => player.pawnPosition1 === position);
+
+      if (index !== -1) {
+        positions[index].set(null);
+      }
+
       await this.updatePawnPos()
 
       if (this.playerList[this.currentPlayer].currentRoll.eyes == 6) {
