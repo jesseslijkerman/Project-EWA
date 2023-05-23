@@ -33,6 +33,16 @@ public class UserLobby {
     public UserLobby() {
     }
 
+    public boolean associateLobby(Lobby lobby){
+        this.lobby = lobby;
+        return true;
+    }
+
+    public boolean associateUser(User user){
+        this.user = user;
+        return true;
+    }
+
     public User getUser() {
         return user;
     }
