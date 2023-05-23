@@ -1,4 +1,5 @@
 import {Lobby} from "../models/Lobby.js";
+import {UserLobby} from "../models/UserLobby";
 
 export class LobbyAdaptor{
     resourcesUrl;
@@ -47,6 +48,18 @@ export class LobbyAdaptor{
             body: lobby
         })
         return Lobby.copyConstructor(selectedLobby);
+    }
+
+    async asyncAddUserLobby(lobbyId, userId, userLobby){
+        console.log("LobbyAdaptor.asyncAddUserLobby()...")
+        const selectedUserLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/user/" + userId, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: userLobby
+        })
+        return UserLobby.copyConstructor(selectedUserLobby);
     }
 
     async asyncDeleteById(id) {
