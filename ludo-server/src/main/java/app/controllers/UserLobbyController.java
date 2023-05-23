@@ -23,12 +23,12 @@ public class UserLobbyController {
     }
 
     @PostMapping(path = "")
-    public UserLobby createLobby(@RequestBody UserLobby lobby){
+    public ResponseEntity<Object> createUserLobby(@RequestBody UserLobby lobby){
         UserLobby createdUserLobby = userLobbyRepo.save(lobby);
 
         // Return appropriate response status
-        // URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{user}").buildAndExpand(createdUserLobby.getUser()).toUri();
-        return createdUserLobby;
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{user}").buildAndExpand(createdUserLobby.getUser()).toUri();
+        return ResponseEntity.created(location).body(createdUserLobby);
     }
 
 }
