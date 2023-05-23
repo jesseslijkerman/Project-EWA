@@ -2,54 +2,65 @@
   <div id="app">
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
-        <div class="cell" v-for="(cell, j) in row" :key="j" :class="`cell-color-${(i+j)%2}`">
-          <div
-              class="pawn"
-              :class="`color-${cell}`"
-              v-if="cell"
-          ></div>
+        <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
+          <div class="pawn" :class="`color-${cell}`" v-if="isPawn(cell)"></div>
         </div>
       </div>
     </div>
-    <button @click="movePawn(1, 1)">Move Pawn</button>
+    <button @click="movePawn(1, 6)">Move Red Pawn</button>
+    <button @click="movePawn(2, 6)">Move Green Pawn</button>
+    <button @click="movePawn(3, 6)">Move Blue Pawn</button>
+    <button @click="movePawn(4, 6)">Move Yellow Pawn</button>
   </div>
 </template>
 
 <script>
-
-
 import DiceRoll from "@/components/DiceRoll.vue";
 export default {
   name: "LudoBoard",
   components: {DiceRoll},
   inject: ["userLobbyService"],
 
-  data(){
-    return{
+  data() {
+    return {
       board: [
-        [0, 0, 0, 0, 0],
-        [0, 1, 0, 2, 0],
-        [0, 0, 0, 0, 0],
-        [0, 3, 0, 4, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 'B', 1, 1, 1, 1, 'B', 0, 0],
+        [0, 0, 'B', 1, 0, 0, 1, 'B', 0, 0],
+        ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B'],
+        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
+        [2, 0, 2, 0, 0, 0, 0, 3, 0, 3],
+        [2, 0, 2, 0, 0, 0, 0, 3, 0, 3],
+        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
+        ['B', 'B', 'B', 4, 0, 0, 4, 'B', 'B', 'B'],
+        [0, 0, 'B', 4, 0, 0, 4, 'B', 0, 0],
+        [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]
       ],
-
-      pawns: null,
-      cellSize: 60
+      cellSize: 60,
     };
   },
 
-  created() {
-  },
+  methods: {
+    getClass(cell) {
+      return {
+        cell: true,
+        'base-cell': cell === 'B',
+        'path-cell': [1, 2, 3, 4].includes(cell),
+      };
+    },
 
-  methods : {
+    isPawn(cell) {
+      return ['R', 'G', 'B', 'Y'].includes(cell);
+    },
 
     movePawn(pawnColor, steps) {
+      // Define pawn color mapping
+      const pawnColors = ['R', 'G', 'B', 'Y'];
+
       // Find the current position of the pawn
       let currentPosition = null;
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
-          if (this.board[i][j] === pawnColor) {
+          if (this.board[i][j] === pawnColors[pawnColor - 1]) {
             currentPosition = { i, j };
             break;
           }
@@ -60,14 +71,21 @@ export default {
       if (!currentPosition) return;
 
       // Calculate the new position of the pawn
-      const newRow = currentPosition.i;
-      const newColumn = currentPosition.j + steps;
+      let { i, j } = currentPosition;
+      while (steps--) {
+        if (j < this.board[0].length - 1) {
+          j++;
+        } else if (i < this.board.length - 1) {
+          j = 0;
+          i++;
+        } else {
+          break; // Reached end of the board, no more moves
+        }
+      }
 
       // Move the pawn to the new position
-      this.board[currentPosition.i][currentPosition.j] = 0;
-      if (newRow >= 0 && newRow < this.board.length && newColumn >= 0 && newColumn < this.board[0].length) {
-        this.board[newRow][newColumn] = pawnColor;
-      }
+      this.board[currentPosition.i][currentPosition.j] = pawnColor; // Restore the path cell
+      this.board[i][j] = pawnColors[pawnColor - 1]; // Move pawn to the new cell
     },
   },
 };
@@ -95,12 +113,12 @@ export default {
   align-items: center;
 }
 
-.cell-color-0 {
-  background-color: #F0F0F0;
+.base-cell {
+  background-color: #c0c0c0;
 }
 
-.cell-color-1 {
-  background-color: #D0D0D0;
+.path-cell {
+  background-color: #f0f0f0;
 }
 
 .pawn {
@@ -118,27 +136,24 @@ export default {
   }
 }
 
-
-
-.color-1 {
+.color-R {
   background-color: red;
 }
 
-.color-2 {
+.color-G {
   background-color: green;
 }
 
-.color-3 {
+.color-B {
   background-color: blue;
-
 }
 
-.color-4 {
+.color-Y {
   background-color: yellow;
 }
 
 button {
-  margin: 50px;
+  margin: 10px;
   padding: 10px 20px;
   font-size: 20px;
 }
