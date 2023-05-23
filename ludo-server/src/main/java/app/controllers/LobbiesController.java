@@ -48,6 +48,11 @@ public class LobbiesController {
         return this.lobbyRepo.findByUserId(userId);
     }
 
+    @GetMapping(path = "/joinable/{userId}", produces = "application/json")
+    public List<Lobby> findAllJoinableLobbies(@PathVariable int userId){
+        return this.lobbyRepo.findAllJoinableLobbies(userId);
+    }
+
     @PostMapping(path = "")
     public ResponseEntity<Object> createLobby(@RequestBody Lobby lobby){
         Lobby createdLobby = lobbyRepo.save(lobby);

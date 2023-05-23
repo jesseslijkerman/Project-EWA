@@ -36,4 +36,5 @@ import java.util.Optional;
         public void deleteLobby(Long id) {
             lobbyRepository.deleteById(id);
         }
+
     }

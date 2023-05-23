@@ -38,6 +38,12 @@ export class LobbyAdaptor{
         return lobbies?.map(s => Lobby.copyConstructor(s));
     }
 
+    async asyncAllJoinedLobbies(id){
+        console.log("LobbyAdaptor.asyncAllJoinedLobby()...")
+        const lobbies = await this.fetchJson(this.resourcesUrl + "/joinable/" + id)
+        return lobbies?.map(s => Lobby.copyConstructor(s))
+    }
+
     async asyncSave(lobby) {
         console.log("LobbyAdaptor.asyncSave()...")
         const selectedLobby = await this.fetchJson(this.resourcesUrl, {

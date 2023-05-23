@@ -30,6 +30,14 @@ public class LobbiesRepository {
         return namedQuery.getResultList();
     }
 
+    public List<Lobby> findAllJoinableLobbies(int userId){
+        TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_all_joinable_lobbies", Lobby.class);
+        namedQuery.setParameter(1, userId);
+        return namedQuery.getResultList();
+    }
+
+
+
     public Lobby save(Lobby lobby){
         return entityManager.merge(lobby);
     }
