@@ -62,7 +62,7 @@ public class LobbiesController {
         return ResponseEntity.created(location).body(createdLobby);
     }
 
-    @PostMapping(path = "{userId}/{lobbyId}/user")
+    @PostMapping(path = "/{lobbyId}/user/{userId}")
     public UserLobby addUserLobby(@PathVariable int userId, @PathVariable int lobbyId, @RequestBody UserLobby userLobby){
         User user = userRepo.findById(userId);
         Lobby lobby = lobbyRepo.findById(lobbyId);
