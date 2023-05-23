@@ -29,16 +29,12 @@
 </template>
 
 <script>
-import CreateGame from "@/components/CreateGame.vue";
 
 export default {
   name: "OngoingMatches",
-  components: {CreateGame},
   inject: ["lobbyService"],
   async created(){
-    // this.matches = await this.lobbyService.asyncFindByUserId("1")
-    this.matches = await this.loadLobbies
-
+    this.matches = await this.lobbyService.asyncFindByUserId("1")
     console.log(this.matches)
     console.log(this.lobbyService.asyncFindById(1))
   },
@@ -70,7 +66,7 @@ export default {
     }
   },
   async onReload() {
-    this.matches = this.lobbyService.asyncFindByUserId(5)
+    this.matches = await this.loadLobbies();
   }
 };
 </script>
