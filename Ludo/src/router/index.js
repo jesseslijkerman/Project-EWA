@@ -6,6 +6,8 @@ import LudoBoard from "@/components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
 import CreateGame from "../components/CreateGame.vue";
 import DiceRoll from "@/components/DiceRoll.vue";
+import GameRules from "@/components/GameRules.vue";
+import ResetPassword from "@/components/ResetPassword.vue";
 
 
 const router = createRouter({
@@ -64,6 +66,16 @@ const router = createRouter({
       path: "/roll",
       name: "roll",
       component: DiceRoll
+    },
+    {
+      path: "/gamerules",
+      name: "gamerules",
+      component: GameRules
+    },
+    {
+      path: "/reset-password",
+      name: "resetPassword",
+      component: ResetPassword
     }
   ],
 });

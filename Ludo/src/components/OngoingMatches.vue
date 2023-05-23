@@ -1,4 +1,5 @@
 <template>
+  <NavBar></NavBar>
   <div class="container">
     <h1 class="title">Ludo Lobbies</h1>
     <div class="matches">
@@ -20,8 +21,10 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
   name: "OngoingMatches",
+  components: {NavBar},
   data() {
     return {
       matches: [
