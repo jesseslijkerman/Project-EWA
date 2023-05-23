@@ -4,7 +4,7 @@
       <h1 class="title">Ludo Lobbies</h1>
       <div class="slidercontainer">
         <label class="switch">
-          <input type="checkbox" v-model="isJoinable">
+          <input type="checkbox" v-model="isJoinable" @change="joinableLobbies">
           <span class="slider"></span>
         </label>
         <span id="switchStatus">{{switchStatus}}</span>
@@ -24,16 +24,21 @@
         <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link>
       </div>
     </div>
-    <router-link :to="'/createGame'" class="btn btn-primary">Create game</router-link>
+    <router-link :to="'/createGame'" class="btn btn-primary create-btn">Create game</router-link>
   </div>
 </template>
 
 <script>
+import CreateGame from "@/components/CreateGame.vue";
+
 export default {
   name: "OngoingMatches",
+  components: {CreateGame},
   inject: ["lobbyService"],
   async created(){
-    this.matches = await this.lobbyService.asyncFindByUserId("1")
+    // this.matches = await this.lobbyService.asyncFindByUserId("1")
+    this.matches = await this.loadLobbies
+
     console.log(this.matches)
     console.log(this.lobbyService.asyncFindById(1))
   },
@@ -47,6 +52,16 @@ export default {
     formatDateTime(dateTimeStr) {
       const dateTime = new Date(dateTimeStr);
       return dateTime.toLocaleString();
+    },
+    async loadLobbies() {
+      if (!this.isJoinable) {
+        this.matches = await this.lobbyService.asyncFindByUserId("1");
+      } else {
+        this.matches = await this.lobbyService.asyncAllJoinedLobbies("1");
+      }
+    },
+    async joinableLobbies(){
+      await this.loadLobbies();
     },
   },
   computed: {
@@ -62,7 +77,7 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1200px;
+  max-width: 860px;
   margin: 0 auto;
   padding: 2rem;
   background-color: #222;
@@ -81,7 +96,7 @@ export default {
 }
 
 .match {
-  width: 33%;
+  width: 250px;
   padding: 1.5rem;
   margin-bottom: 2rem;
   border-radius: 0.25rem;
@@ -123,6 +138,9 @@ export default {
   background-color: #0069d9;
 }
 
+.create-btn{
+  margin-top: 5px;
+}
 
 .container {
   position: relative;
