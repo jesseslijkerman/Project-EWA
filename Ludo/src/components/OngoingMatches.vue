@@ -1,6 +1,15 @@
 <template>
   <div class="container">
-    <h1 class="title">Ludo Lobbies</h1>
+    <div class="header">
+      <h1 class="title">Ludo Lobbies</h1>
+      <div class="slidercontainer">
+        <label class="switch">
+          <input type="checkbox" v-model="isJoinable">
+          <span class="slider"></span>
+        </label>
+        <span id="switchStatus">{{switchStatus}}</span>
+      </div>
+    </div>
     <div class="matches">
       <div v-for="(match, index) in matches" :key="index" class="match">
         <div class="match-info">
@@ -31,6 +40,7 @@ export default {
   data() {
     return {
       matches: [],
+      isJoinable: false,
     };
   },
   methods: {
@@ -38,6 +48,11 @@ export default {
       const dateTime = new Date(dateTimeStr);
       return dateTime.toLocaleString();
     },
+  },
+  computed: {
+    switchStatus: function () {
+      return this.isJoinable ? 'Joinable' : 'Joined';
+    }
   },
   async onReload() {
     this.matches = this.lobbyService.asyncFindByUserId(5)
@@ -107,4 +122,66 @@ export default {
 .btn:hover {
   background-color: #0069d9;
 }
+
+
+.container {
+  position: relative;
+  margin: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+}
+
+.slider {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: background-color 0.3s;
+}
+
+.slidercontainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+span#switchStatus {
+  display: inline-block;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
 </style>
