@@ -39,6 +39,11 @@ public class Lobby {
 
     }
 
+    public boolean associateUser(UserLobby userLobby){
+        userLobbies.add(userLobby);
+        return true;
+    }
+
     public Long getId() {
         return id;
     }

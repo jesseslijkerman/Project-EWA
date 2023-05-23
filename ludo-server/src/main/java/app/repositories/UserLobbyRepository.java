@@ -24,8 +24,4 @@ public class UserLobbyRepository {
     public UserLobby save(UserLobby userLobby){
         return entityManager.merge(userLobby);
     }
-
-
-
-
 }

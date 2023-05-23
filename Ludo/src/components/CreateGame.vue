@@ -108,6 +108,7 @@
 
 <script>
 import {Lobby} from "../models/Lobby";
+import {UserLobby} from "../models/UserLobby";
 
 export default {
   name: "CreateGame",
@@ -127,7 +128,10 @@ export default {
       let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
       console.log(lobby)
 
-      await this.lobbyService.asyncSave(JSON.stringify(lobby))
+      let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))
+
+      let userLobby = new UserLobby(1,1,1,1)
+      await this.lobbyService.asyncAddUserLobby(newLobby.id, 1, JSON.stringify(userLobby))
 
       this.$router.push("/ongoing-matches")
     }
