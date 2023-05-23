@@ -24,20 +24,21 @@ export default {
   data() {
     return {
       board: [
-        [0, 0, 'B', 1, 1, 1, 1, 'B', 0, 0],
-        [0, 0, 'B', 1, 0, 0, 1, 'B', 0, 0],
+        [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
+        [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],
         ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B'],
         [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
-        [2, 0, 2, 0, 0, 0, 0, 3, 0, 3],
-        [2, 0, 2, 0, 0, 0, 0, 3, 0, 3],
+        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
+        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
         [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
         ['B', 'B', 'B', 4, 0, 0, 4, 'B', 'B', 'B'],
-        [0, 0, 'B', 4, 0, 0, 4, 'B', 0, 0],
+        [0, 0, 'Y', 4, 0, 0, 4, 'B', 0, 0],
         [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]
       ],
       cellSize: 60,
     };
   },
+
 
   methods: {
     getClass(cell) {
@@ -61,7 +62,7 @@ export default {
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
           if (this.board[i][j] === pawnColors[pawnColor - 1]) {
-            currentPosition = { i, j };
+            currentPosition = {i, j};
             break;
           }
         }
@@ -71,7 +72,7 @@ export default {
       if (!currentPosition) return;
 
       // Calculate the new position of the pawn
-      let { i, j } = currentPosition;
+      let {i, j} = currentPosition;
       while (steps--) {
         if (j < this.board[0].length - 1) {
           j++;
@@ -84,11 +85,11 @@ export default {
       }
 
       // Move the pawn to the new position
-      this.board[currentPosition.i][currentPosition.j] = pawnColor; // Restore the path cell
-      this.board[i][j] = pawnColors[pawnColor - 1]; // Move pawn to the new cell
+      let temp = this.board[i][j];
+      this.board[i][j] = this.board[currentPosition.i][currentPosition.j]; // Move pawn to the new cell
+      this.board[currentPosition.i][currentPosition.j] = temp; // Restore the original cell value
     },
-  },
-};
+  },}
 </script>
 
 <style scoped>
