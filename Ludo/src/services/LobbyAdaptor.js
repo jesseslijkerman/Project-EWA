@@ -83,4 +83,12 @@ export class LobbyAdaptor{
         });
         return Lobby.copyConstructor(lobby);
     }
+
+    async asyncRemoveUserFromLobby(lobbyId, username){
+        console.log("LobbyAdaptor.asyncRemoveUserFromLobby()...")
+        const userLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/users/" + username, {
+            method: "DELETE"
+        })
+        return UserLobby.copyConstructor(userLobby);
+    }
 }

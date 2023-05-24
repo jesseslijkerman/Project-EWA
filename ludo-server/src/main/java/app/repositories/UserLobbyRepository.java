@@ -3,6 +3,7 @@ package app.repositories;
 import app.models.UserLobby;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,8 @@ public class UserLobbyRepository {
     @PersistenceContext
     EntityManager entityManager;
 
+
+
     public List<UserLobby> findAll(){
         TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_user_lobbies", UserLobby.class);
         return namedQuery.getResultList();
@@ -24,6 +27,13 @@ public class UserLobbyRepository {
         TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", UserLobby.class);
         namedQuery.setParameter(1, id);
         return namedQuery.getResultList();
+    }
+
+    public void removeUserFromLobby(String username, int lobbyId) {
+        Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
+        namedQuery.setParameter("username", username);
+        namedQuery.setParameter("lobbyId", lobbyId);
+        namedQuery.executeUpdate();
     }
 
     public UserLobby save(UserLobby userLobby){

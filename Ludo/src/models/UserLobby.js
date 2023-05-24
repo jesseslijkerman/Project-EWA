@@ -1,3 +1,4 @@
+
 export class UserLobby {
     pawnPosition1;
     pawnPosition2;

@@ -1,4 +1,7 @@
 <template>
+  <div class="leaveButton">
+    <a @click="removeFromLobby">Leave lobby</a>
+  </div>
   <h2 class="waiting-message">Waiting for host to start the match...</h2>
   <div class="page-container">
 
@@ -74,15 +77,22 @@ export default {
     return {
       lobbyData: null,
       isHost: false,
-      playerData: null
+      playerData: null,
+      lobbyNumber: null
     };
   },
   methods: {
     async getLobbyInfo() {
-      let lobbyNumber = parseInt(window.location.pathname.split('/').pop());
-      this.lobbyData = await this.lobbyService.asyncFindById(lobbyNumber);
-      this.playerData = await this.lobbyService.asyncFindUsersInLobby(lobbyNumber)
+      this.lobbyNumber = parseInt(window.location.pathname.split('/').pop());
+      this.lobbyData = await this.lobbyService.asyncFindById(this.lobbyNumber);
+      this.playerData = await this.lobbyService.asyncFindUsersInLobby(this.lobbyNumber)
       console.log(this.lobbyData);
+    },
+
+
+    // vervamg john123 met username van ingelogde persoon
+    async removeFromLobby(){
+      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, "john123")
     },
 
     // Check if currently logged in user is the host
@@ -99,11 +109,17 @@ export default {
   created() {
     this.getLobbyInfo();
     // this.checkHost();
+
   },
 };
 </script>
 
 <style scoped>
+
+.leaveButton {
+
+  margin-bottom: 10px;
+}
 
 .start-match-button {
   background-color: green;

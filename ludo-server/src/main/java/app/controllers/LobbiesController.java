@@ -97,4 +97,12 @@ public class LobbiesController {
         }
         return lobby;
     }
+
+    @DeleteMapping(path = "{id}/users/{username}")
+    public Lobby deleteUserFromLobby(@PathVariable String username, @PathVariable int id){
+        userLobbyRepo.removeUserFromLobby(username, id);
+        return null;
+    }
+
+
 }
