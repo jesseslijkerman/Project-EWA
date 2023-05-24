@@ -5,6 +5,7 @@ import Register from "@/components/Register.vue";
 import LudoBoard from "@/components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
 import CreateGame from "../components/CreateGame.vue";
+import WaitingRoom from "@/components/WaitingRoom.vue";
 
 
 const router = createRouter({
@@ -51,6 +52,11 @@ const router = createRouter({
     },
     {
       path: "/match/:id",
+      name: "waiting-room",
+      component: WaitingRoom,
+    },
+    {
+      path: "/match/:id/play",
       name: "clickedMatch",
       component: LudoBoard,
     },
