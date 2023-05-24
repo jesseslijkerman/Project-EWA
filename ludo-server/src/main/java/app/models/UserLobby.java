@@ -1,14 +1,13 @@
 package app.models;
 
 import app.compositeKeys.UserLobbyPK;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @IdClass(UserLobbyPK.class)
 @NamedQuery(name = "find_all_user_lobbies", query = "select ul from UserLobby ul")
+@NamedQuery(name = "find_users_in_lobby", query = "select ul.user.username from UserLobby ul where ul.lobby.id= ?1")
 public class UserLobby {
     @Id
     @ManyToOne

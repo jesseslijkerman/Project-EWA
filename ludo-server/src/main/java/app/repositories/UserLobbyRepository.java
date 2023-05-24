@@ -1,6 +1,5 @@
 package app.repositories;
 
-import app.models.Lobby;
 import app.models.UserLobby;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,6 +17,12 @@ public class UserLobbyRepository {
 
     public List<UserLobby> findAll(){
         TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_user_lobbies", UserLobby.class);
+        return namedQuery.getResultList();
+    }
+
+    public List<UserLobby> findAllUsersInLobby(int id){
+        TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", UserLobby.class);
+        namedQuery.setParameter(1, id);
         return namedQuery.getResultList();
     }
 

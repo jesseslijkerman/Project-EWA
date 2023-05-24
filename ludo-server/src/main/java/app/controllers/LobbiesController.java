@@ -34,6 +34,11 @@ public class LobbiesController {
         return this.lobbyRepo.findAll();
     }
 
+    @GetMapping(path = "/{id}/users", produces = "application/json")
+    public List<UserLobby> getAllUsersInLobby(@PathVariable int id){
+        return this.userLobbyRepo.findAllUsersInLobby(id);
+    }
+
     @GetMapping(path = "/{id}", produces = "application/json")
     public Lobby findById(@PathVariable int id){
         Lobby lobby = this.lobbyRepo.findById(id);

@@ -46,19 +46,19 @@
     <div class="extra-divs">
       <div class="extra-div red">
         <div class="color-box"></div>
-        <div class="username">Username 1</div>
+        <div class="username">{{ playerData[0] }}</div>
       </div>
       <div class="extra-div blue">
         <div class="color-box"></div>
-        <div class="username">Username 2</div>
+        <div class="username">{{ playerData[1] }}</div>
       </div>
       <div class="extra-div green">
         <div class="color-box"></div>
-        <div class="username">Username 3</div>
+        <div class="username">{{ playerData[2] }}</div>
       </div>
       <div class="extra-div yellow">
         <div class="color-box"></div>
-        <div class="username">Username 4</div>
+        <div class="username">{{ playerData[3] }}</div>
       </div>
     </div>
   </div>
@@ -73,25 +73,32 @@ export default {
   data() {
     return {
       lobbyData: null,
-      isHost: false
+      isHost: false,
+      playerData: null
     };
   },
   methods: {
     async getLobbyInfo() {
       let lobbyNumber = parseInt(window.location.pathname.split('/').pop());
       this.lobbyData = await this.lobbyService.asyncFindById(lobbyNumber);
+      this.playerData = await this.lobbyService.asyncFindUsersInLobby(lobbyNumber)
       console.log(this.lobbyData);
     },
-    async checkHost() {
-      this.isHost = await this.lobbyService.checkHost();
-    },
+
+    // Check if currently logged in user is the host
+    // async checkHost() {
+    //   if(this.playerData[0].equals(currentLoggedInUser)) {
+    //     this.isHost = true;
+    //   }
+    // },
+
     async startMatch() {
       await this.lobbyService.startMatch();
     }
   },
   created() {
     this.getLobbyInfo();
-    this.checkHost();
+    // this.checkHost();
   },
 };
 </script>
