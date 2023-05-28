@@ -14,9 +14,8 @@
       <div v-for="(match, index) in matches" :key="index" class="match">
         <div class="match-info">
           <h2 class="match-title">{{ match.name }}</h2>
-          <p class="match-description">{{ match.description }}</p>
           <p class="match-turn">Turn: {{ match.whoseTurn }}</p>
-          <p class="match-players">Players: {{ match.players }}</p>
+          <p class="match-players">Players: {{ match.maxPlayers }}</p>
           <p class="match-timeStarted">
             Time started: {{ formatDateTime(match.created) }}
           </p>
