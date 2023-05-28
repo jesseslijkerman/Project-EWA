@@ -17,7 +17,7 @@ import java.util.List;
         EntityManager entityManager;
 
         public List<UserLobby> findAll(){
-            TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_userLobbies", UserLobby.class);
+            TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_user_lobbies", UserLobby.class);
 //            namedQuery.setMaxResults(1);
             return namedQuery.getResultList();
         }
@@ -36,23 +36,3 @@ import java.util.List;
             return lobby;
         }
     }
-
-
-
-
-
-@Repository
-@Transactional
-public class UserLobbyRepository {
-    @PersistenceContext
-    EntityManager entityManager;
-
-    public List<UserLobby> findAll(){
-        TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_user_lobbies", UserLobby.class);
-        return namedQuery.getResultList();
-    }
-
-    public UserLobby save(UserLobby userLobby){
-        return entityManager.merge(userLobby);
-    }
-}

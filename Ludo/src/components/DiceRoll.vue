@@ -85,7 +85,7 @@ export default {
   },
 
   methods: {
-    rollDice() {
+    async rollDice() {
       this.playerList[this.currentPlayer].priorRoll = this.playerList[this.currentPlayer].currentRoll;
       let roll = Dice.createDiceRoll();
       this.playerList[this.currentPlayer].currentRoll = roll;
