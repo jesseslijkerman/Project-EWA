@@ -4,52 +4,33 @@
     <div class="matches">
       <div v-for="(match, index) in matches" :key="index" class="match">
         <div class="match-info">
-          <h2 class="match-title">{{ match.title }}</h2>
+          <h2 class="match-title">{{ match.name }}</h2>
           <p class="match-description">{{ match.description }}</p>
           <p class="match-turn">Turn: {{ match.whoseTurn }}</p>
           <p class="match-players">Players: {{ match.players }}</p>
           <p class="match-timeStarted">
-            Time started: {{ formatDateTime(match.timeStarted) }}
+            Time started: {{ formatDateTime(match.created) }}
           </p>
         </div>
-        <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link
-        >
+        <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link>
       </div>
     </div>
+    <router-link :to="'/createGame'" class="btn btn-primary">Create game</router-link>
   </div>
 </template>
 
 <script>
 export default {
   name: "OngoingMatches",
+  inject: ["lobbyService"],
+  async created(){
+    this.matches = await this.lobbyService.asyncFindByUserId("1")
+    console.log(this.matches)
+    console.log(this.lobbyService.asyncFindById(1))
+  },
   data() {
     return {
-      matches: [
-        {
-          id: 1,
-          title: "Tuna town",
-          players: "3/4",
-          description: "Jesse 🇨🇦 is ahead with 1 pawn",
-          whoseTurn: "Player 1",
-          timeStarted: "2023-03-16T14:45:00.000Z",
-        },
-        {
-          id: 2,
-          title: "Koala kafe",
-          players: "2/4",
-          description: "Tristan 🇳🇱 is ahead with 3 pawns",
-          whoseTurn: "Player 2",
-          timeStarted: "2023-03-18T13:36:00.000Z",
-        },
-        {
-          id: 3,
-          title: "Idiot lobby",
-          players: "4/4",
-          description: "Rob 🇵🇱 is ahead with 2 pawns",
-          whoseTurn: "Player 1",
-          timeStarted: "2023-03-20T15:30:00.000Z",
-        },
-      ],
+      matches: [],
     };
   },
   methods: {
@@ -58,6 +39,9 @@ export default {
       return dateTime.toLocaleString();
     },
   },
+  async onReload() {
+    this.matches = this.lobbyService.asyncFindByUserId(5)
+  }
 };
 </script>
 

@@ -1,22 +1,23 @@
 package app.models;
 
 import app.compositeKeys.UserLobbyPK;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
 @IdClass(UserLobbyPK.class)
+@NamedQuery(name = "find_all_userLobbies", query = "select u from UserLobby u JOIN u.lobby l where l.id = 1")
 public class UserLobby {
     @Id
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @Id
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "lobby_id")
+    @JsonIgnore
     private Lobby lobby;
 
     private int pawnPosition1;
@@ -29,6 +30,7 @@ public class UserLobby {
 
     public UserLobby() {
     }
+
 
     public User getUser() {
         return user;

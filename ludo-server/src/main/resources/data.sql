@@ -1,10 +1,10 @@
 -- Dummy data for Lobby table
-INSERT INTO LOBBY (id, MAX_PLAYERS, TURN_TIMER, GAME_MODE, name, password, created)
-VALUES (1, 4, 30, 1, 'Ludo Masters', '1234', '2022-12-01 10:00:00'),
-       (2, 2, 20, 2, 'Ludo Challenge', NULL, '2023-02-15 14:30:00'),
-       (3, 3, 40, 1, 'Ludo Pro', NULL, '2023-03-12 16:00:00'),
-       (4, 2, 30, 2, 'Ludo Fun', '5678', '2023-03-22 20:00:00'),
-       (5, 4, 20, 1, 'Ludo Madness', NULL, '2023-04-01 09:45:00');
+INSERT INTO Lobby (id, MAX_PLAYERS, TURN_TIMER, GAME_MODE, name, password, created, status, WHOSE_TURN)
+VALUES (1, 4, 30, 1, 'Ludo Masters', '1234', '2022-12-01 10:00:00', 'ACTIVE', 1),
+       (2, 2, 20, 2, 'Ludo Challenge', NULL, '2023-02-15 14:30:00', 'INACTIVE', 2),
+       (3, 3, 40, 1, 'Ludo Pro', NULL, '2023-03-12 16:00:00', 'ACTIVE', 2),
+       (4, 2, 30, 2, 'Ludo Fun', '5678', '2023-03-22 20:00:00', 'ACTIVE', 3),
+       (5, 4, 20, 1, 'Ludo Madness', NULL, '2023-04-01 09:45:00', 'INACTIVE', 1);
 
 -- Dummy data for User table
 INSERT INTO "user" (id, email, password, username, COUNTRY_CODE, picture)

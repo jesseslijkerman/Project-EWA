@@ -2,8 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
-import LudoBoard from "@/components/LudoBoard.vue";
+import LudoBoard from "../components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
+import CreateGame from "../components/CreateGame.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,7 +53,12 @@ const router = createRouter({
       path: "/match/:id",
       name: "clickedMatch",
       component: LudoBoard,
-    }
+    },
+    {
+      path: "/createGame",
+      name: "createGame",
+      component: CreateGame,
+    },
   ],
 });
 

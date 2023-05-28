@@ -3,7 +3,7 @@
     <div class="playerRoll" v-for="(players, index) in playerList" :key="players">
       <span
         :style="[
-          currentPlayer == players.id
+          currentPlayer === players.id
             ? { background: players.name }
             : players.style,
         ]"
@@ -17,14 +17,16 @@
 
       <br />
 
+      <br />  <br />  <br />  <br />  <br />  <br />  <br />   <br />  <br />  <br />  <br />
       <div @click="toggleItem(index)">
         <p @click="toggleCondition()">Click to hide/show last roll</p>
       </div>
 
+
       <div v-if="activeIndices.includes(index)">
         <img class="priorDice" :src="getRollPicture(players.priorRoll.eyes)" />
       </div>
-
+      <br />  <br />
       <button
         v-if="currentPlayer == players.id"
         :disabled="disabled"
@@ -34,15 +36,21 @@
       </button>
     </div>
   </div>
+
+  <div>
+
+  </div>
 </template>
 
 <script>
-import { Dice } from "@/models/Dice";
+import { Dice } from "@/models/Dice.js";
 
 export default {
   name: "DiceRoll",
+  inject: ["userLobbyService"],
   data() {
     return {
+      WIN_CONDITION: 4,
       disabled: false,
       hideAndShowText: true,
       playerList: [
@@ -52,6 +60,11 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "red" },
+          piecesInHome: 0,
+          pawnPosition1: 1,
+          pawnPosition2: 1,
+          pawnPosition3: 1,
+          pawnPosition4: 1,
         },
         {
           id: 1,
@@ -59,6 +72,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "blue" },
+          piecesInHome: 0
         },
         {
           id: 2,
@@ -66,6 +80,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "green" },
+          piecesInHome: 0
         },
         {
           id: 3,
@@ -73,6 +88,7 @@ export default {
           currentRoll: 0,
           priorRoll: 0,
           style: { "border-color": "yellow" },
+          piecesInHome: 0
         },
       ],
       currentPlayer: 0,
@@ -81,22 +97,44 @@ export default {
   },
 
   methods: {
-    rollDice() {
+
+    async rollDice() {
       this.playerList[this.currentPlayer].priorRoll =
         this.playerList[this.currentPlayer].currentRoll;
       let roll = Dice.createDiceRoll();
       this.playerList[this.currentPlayer].currentRoll = roll;
+      console.log("current roll: " + roll.eyes)
+      this.getRollPicture(roll.eyes)
 
-      if (this.playerList[this.currentPlayer].currentRoll.eyes == 6) {
+
+      let pawns = await this.userLobbyService.asyncFindAll()
+      let player = this.playerList[0]
+
+      player.pawnPosition1 = pawns[0].pawnPosition1 + this.playerList[this.currentPlayer].currentRoll.eyes
+
+      const positions = [player.pawnPosition2, player.pawnPosition3, player.pawnPosition4];
+      const index = positions.findIndex(position => player.pawnPosition1 === position);
+
+      if (index !== -1) {
+        positions[index].set(null);
+      }
+
+      await this.updatePawnPos()
+
+      if (this.playerList[this.currentPlayer].currentRoll.eyes === 6) {
         /* empty */
       } else if (this.currentPlayer === 3) {
         this.currentPlayer = 0;
-      } else {
+        console.log("Aan de beurt: " + this.playerList[this.currentPlayer].name)
+      }
+      else {
         this.currentPlayer = this.currentPlayer + 1;
+        console.log("Aan de beurt: " + this.playerList[this.currentPlayer].name)
       }
     },
 
     getRollPicture(src) {
+      console.log(src)
       if (src === undefined) {
         return;
       } else {
@@ -115,6 +153,20 @@ export default {
     toggleCondition() {
       this.hideAndShowText = !this.hideAndShowText;
     },
+
+    async updatePawnPos(){
+
+      const result = {
+        pawnPosition1: this.pawnPosition1,
+        pawnPosition2: this.pawnPosition2,
+        pawnPosition3: this.pawnPosition3,
+        pawnPosition4: this.pawnPosition4,
+      }
+
+      await this.userLobbyService.asyncSave(JSON.stringify(result))
+    }
+
   },
+
 };
 </script>

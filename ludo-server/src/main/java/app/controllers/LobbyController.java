@@ -32,7 +32,8 @@ public class LobbyController extends TextWebSocketHandler {
 
     // mapping point to retrieve the lobbies
 
-    @GetMapping("/lobbies")
+    // Moest ff je endpoint aanpassen, anders werkt mijn zooi niet. Groetjes Jesse :)
+    @GetMapping("/lobby")
     public Collection<Lobby> getLobbies() {
         return lobbies.values();
     }
