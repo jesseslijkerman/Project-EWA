@@ -15,12 +15,10 @@
 </template>
 
 <script>
-import DiceRoll from "@/components/DiceRoll.vue";
 
 export default {
   name: "LudoBoard",
-  components: {DiceRoll},
-  inject: ["userLobbyService"],
+  inject: ["userLobbyService", "lobbyService"],
 
   data() {
     return {
@@ -54,7 +52,16 @@ export default {
       return ['R', 'G', 'B', 'Y'].includes(cell);
     },
 
+    async rollDice(){
+
+
+      console.log(await this.lobbyService.asyncRollDice())
+    },
+
     movePawn(pawnColor, steps) {
+
+      this.rollDice()
+
       // Define pawn color mapping
       const pawnColors = ['R', 'G', 'B', 'Y'];
 
