@@ -57,6 +57,11 @@ const router = createRouter({
     },
     {
       path: "/match/:id",
+      name: "waiting-room",
+      component: WaitingRoom,
+    },
+    {
+      path: "/match/:id/play",
       name: "clickedMatch",
       component: LudoBoard,
     },

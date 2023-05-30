@@ -1,5 +1,5 @@
-import {Lobby} from "../models/Lobby.js";
-import {UserLobby} from "../models/UserLobby";
+import {Lobby} from "@/models/Lobby";
+import {UserLobby} from "@/models/UserLobby";
 
 export class LobbyAdaptor{
     resourcesUrl;
@@ -20,6 +20,8 @@ export class LobbyAdaptor{
         }
     }
 
+
+
     async asyncFindAll(){
         console.log("LobbyAdaptor.asyncFindAll()...")
         const lobbies = await this.fetchJson(this.resourcesUrl);
@@ -30,6 +32,12 @@ export class LobbyAdaptor{
         console.log("LobbyAdaptor.asyncFindById()...")
         const lobby = await this.fetchJson(this.resourcesUrl + "/" + id)
         return Lobby.copyConstructor(lobby)
+    }
+
+    async asyncFindUsersInLobby(lobby_id){
+        console.log("LobbyAdaptor.asyncFindUsersInLobby()...")
+        const users = await this.fetchJson(this.resourcesUrl + "/" + lobby_id + "/users")
+        return Lobby.copyConstructor(users)
     }
 
     async asyncFindByUserId(id){
@@ -74,5 +82,13 @@ export class LobbyAdaptor{
             method: "DELETE"
         });
         return Lobby.copyConstructor(lobby);
+    }
+
+    async asyncRemoveUserFromLobby(lobbyId, username){
+        console.log("LobbyAdaptor.asyncRemoveUserFromLobby()...")
+        const userLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/users/" + username, {
+            method: "DELETE"
+        })
+        return UserLobby.copyConstructor(userLobby);
     }
 }
