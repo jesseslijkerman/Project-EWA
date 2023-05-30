@@ -1,4 +1,5 @@
 import {Lobby} from "../models/Lobby.js";
+import {UserLobby} from "../models/UserLobby";
 
 export class LobbyAdaptor{
     resourcesUrl;
@@ -31,6 +32,18 @@ export class LobbyAdaptor{
         return Lobby.copyConstructor(lobby)
     }
 
+    async asyncFindByUserId(id){
+        console.log("LobbyAdaptor.asyncFindByUserId()...")
+        const lobbies = await this.fetchJson(this.resourcesUrl + "/user/" + id)
+        return lobbies?.map(s => Lobby.copyConstructor(s));
+    }
+
+    async asyncAllJoinedLobbies(id){
+        console.log("LobbyAdaptor.asyncAllJoinedLobby()...")
+        const lobbies = await this.fetchJson(this.resourcesUrl + "/joinable/" + id)
+        return lobbies?.map(s => Lobby.copyConstructor(s))
+    }
+
     async asyncSave(lobby) {
         console.log("LobbyAdaptor.asyncSave()...")
         const selectedLobby = await this.fetchJson(this.resourcesUrl, {
@@ -41,6 +54,18 @@ export class LobbyAdaptor{
             body: lobby
         })
         return Lobby.copyConstructor(selectedLobby);
+    }
+
+    async asyncAddUserLobby(lobbyId, userId, userLobby){
+        console.log("LobbyAdaptor.asyncAddUserLobby()...")
+        const selectedUserLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/user/" + userId, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: userLobby
+        })
+        return UserLobby.copyConstructor(selectedUserLobby);
     }
 
     async asyncDeleteById(id) {

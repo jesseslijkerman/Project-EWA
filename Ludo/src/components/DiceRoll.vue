@@ -36,6 +36,10 @@
       </button>
     </div>
   </div>
+
+  <div>
+
+  </div>
 </template>
 
 <script>
@@ -99,6 +103,23 @@ export default {
         this.playerList[this.currentPlayer].currentRoll;
       let roll = Dice.createDiceRoll();
       this.playerList[this.currentPlayer].currentRoll = roll;
+      console.log("current roll: " + roll.eyes)
+      this.getRollPicture(roll.eyes)
+
+
+      let pawns = await this.userLobbyService.asyncFindAll()
+      let player = this.playerList[0]
+
+      player.pawnPosition1 = pawns[0].pawnPosition1 + this.playerList[this.currentPlayer].currentRoll.eyes
+
+      const positions = [player.pawnPosition2, player.pawnPosition3, player.pawnPosition4];
+      const index = positions.findIndex(position => player.pawnPosition1 === position);
+
+      if (index !== -1) {
+        positions[index].set(null);
+      }
+
+      await this.updatePawnPos()
 
       let pawns = await this.userLobbyService.asyncFindAll()
       let player = this.playerList[0]
@@ -118,12 +139,16 @@ export default {
         /* empty */
       } else if (this.currentPlayer === 3) {
         this.currentPlayer = 0;
-      } else {
+        console.log("Aan de beurt: " + this.playerList[this.currentPlayer].name)
+      }
+      else {
         this.currentPlayer = this.currentPlayer + 1;
+        console.log("Aan de beurt: " + this.playerList[this.currentPlayer].name)
       }
     },
 
     getRollPicture(src) {
+      console.log(src)
       if (src === undefined) {
         return;
       } else {
@@ -156,6 +181,10 @@ export default {
     }
 
   },
+  created() {
+    console.log("Start positie: ")
+    console.log("Kleur starter: " + this.playerList[this.currentPlayer].name)
+  }
 
 };
 </script>

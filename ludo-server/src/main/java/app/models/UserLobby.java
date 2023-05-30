@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 @IdClass(UserLobbyPK.class)
-@NamedQuery(name = "find_all_userLobbies", query = "select u from UserLobby u JOIN u.lobby l where l.id = 1")
+@NamedQuery(name = "find_all_user_lobbies", query = "select ul from UserLobby ul")
 public class UserLobby {
     @Id
     @ManyToOne
@@ -31,6 +31,15 @@ public class UserLobby {
     public UserLobby() {
     }
 
+    public boolean associateLobby(Lobby lobby){
+        this.lobby = lobby;
+        return true;
+    }
+
+    public boolean associateUser(User user){
+        this.user = user;
+        return true;
+    }
 
     public User getUser() {
         return user;

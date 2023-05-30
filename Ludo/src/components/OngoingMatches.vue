@@ -1,58 +1,47 @@
 <template>
   <NavBar></NavBar>
   <div class="container">
-    <h1 class="title">Ludo Lobbies</h1>
+    <div class="header">
+      <h1 class="title">Ludo Lobbies</h1>
+      <div class="slidercontainer">
+        <label class="switch">
+          <input type="checkbox" v-model="isJoinable" @change="joinableLobbies">
+          <span class="slider"></span>
+        </label>
+        <span id="switchStatus">{{switchStatus}}</span>
+      </div>
+    </div>
     <div class="matches">
       <div v-for="(match, index) in matches" :key="index" class="match">
         <div class="match-info">
-          <h2 class="match-title">{{ match.title }}</h2>
-          <p class="match-description">{{ match.description }}</p>
+          <h2 class="match-title">{{ match.name }}</h2>
           <p class="match-turn">Turn: {{ match.whoseTurn }}</p>
-          <p class="match-players">Players: {{ match.players }}</p>
+          <p class="match-players">Players: {{ match.maxPlayers }}</p>
           <p class="match-timeStarted">
-            Time started: {{ formatDateTime(match.timeStarted) }}
+            Time started: {{ formatDateTime(match.created) }}
           </p>
         </div>
         <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link>
       </div>
     </div>
-    <router-link :to="'/createGame'" class="btn btn-primary">Create game</router-link>
+    <router-link :to="'/createGame'" class="btn btn-primary create-btn">Create game</router-link>
   </div>
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+
 export default {
   name: "OngoingMatches",
-  components: {NavBar},
+  inject: ["lobbyService"],
+  async created(){
+    this.matches = await this.lobbyService.asyncFindByUserId("1")
+    console.log(this.matches)
+    console.log(this.lobbyService.asyncFindById(1))
+  },
   data() {
     return {
-      matches: [
-        {
-          id: 1,
-          title: "Tuna town",
-          players: "3/4",
-          description: "Jesse 🇨🇦 is ahead with 1 pawn",
-          whoseTurn: "Player 1",
-          timeStarted: "2023-03-16T14:45:00.000Z",
-        },
-        {
-          id: 2,
-          title: "Koala kafe",
-          players: "2/4",
-          description: "Tristan 🇳🇱 is ahead with 3 pawns",
-          whoseTurn: "Player 2",
-          timeStarted: "2023-03-18T13:36:00.000Z",
-        },
-        {
-          id: 3,
-          title: "Idiot lobby",
-          players: "4/4",
-          description: "Rob 🇵🇱 is ahead with 2 pawns",
-          whoseTurn: "Player 1",
-          timeStarted: "2023-03-20T15:30:00.000Z",
-        },
-      ],
+      matches: [],
+      isJoinable: false,
     };
   },
   methods: {
@@ -60,13 +49,31 @@ export default {
       const dateTime = new Date(dateTimeStr);
       return dateTime.toLocaleString();
     },
+    async loadLobbies() {
+      if (!this.isJoinable) {
+        this.matches = await this.lobbyService.asyncFindByUserId("1");
+      } else {
+        this.matches = await this.lobbyService.asyncAllJoinedLobbies("1");
+      }
+    },
+    async joinableLobbies(){
+      await this.loadLobbies();
+    },
   },
+  computed: {
+    switchStatus: function () {
+      return this.isJoinable ? 'Joinable' : 'Joined';
+    }
+  },
+  async onReload() {
+    this.matches = await this.loadLobbies();
+  }
 };
 </script>
 
 <style scoped>
 .container {
-  max-width: 1200px;
+  max-width: 860px;
   margin: 0 auto;
   padding: 2rem;
   background-color: #222;
@@ -85,7 +92,7 @@ export default {
 }
 
 .match {
-  width: 33%;
+  width: 250px;
   padding: 1.5rem;
   margin-bottom: 2rem;
   border-radius: 0.25rem;
@@ -126,4 +133,69 @@ export default {
 .btn:hover {
   background-color: #0069d9;
 }
+
+.create-btn{
+  margin-top: 5px;
+}
+
+.container {
+  position: relative;
+  margin: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+}
+
+.slider {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: background-color 0.3s;
+}
+
+.slidercontainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+span#switchStatus {
+  display: inline-block;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
 </style>

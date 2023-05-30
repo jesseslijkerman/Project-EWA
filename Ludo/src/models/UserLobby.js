@@ -8,7 +8,6 @@ export class UserLobby {
     pawnPosition4;
 
 
-
     constructor(user, lobby, pawnPosition1, pawnPosition2, pawnPosition3, pawnPosition4) {
         this.user = user;
         this.lobby = lobby;
@@ -18,13 +17,15 @@ export class UserLobby {
         this.pawnPosition4 = pawnPosition4;
     }
 
-    static copyConstructor(userLobby){
-        if (userLobby == null){
+    static copyConstructor(userLobby) {
+        if (userLobby == null) {
             return null;
         }
 
-        return Object.assign(new UserLobby(), userLobby)
+        // Copies properties from selected order to a new order
+        return Object.assign(new UserLobby(), userLobby);
     }
+
 
     getUser() {
         return this.user;
