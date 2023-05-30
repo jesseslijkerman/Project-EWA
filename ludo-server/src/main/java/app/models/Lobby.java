@@ -29,6 +29,8 @@ public class Lobby {
     private LocalDateTime created;
     private String status;
     private int whoseTurn;
+    @Column(length = 500)
+    private String boardState;
     @OneToMany(mappedBy = "lobby")
     @JsonIgnoreProperties("lobby")
     private List<UserLobby> userLobbies = new ArrayList<>();
@@ -123,5 +125,13 @@ public class Lobby {
 
     public void setWhoseTurn(int whoseTurn) {
         this.whoseTurn = whoseTurn;
+    }
+
+    public String getBoardState() {
+        return boardState;
+    }
+
+    public void setBoardState(String boardState) {
+        this.boardState = boardState;
     }
 }
