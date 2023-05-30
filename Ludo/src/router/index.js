@@ -17,6 +17,9 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      meta: {
+        hideNavbar: true,
+      }
     },
     {
       path: "/about",

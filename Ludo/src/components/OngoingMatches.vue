@@ -1,5 +1,4 @@
 <template>
-  <NavBar></NavBar>
   <div class="container">
     <div class="header">
       <h1 class="title">Ludo Lobbies</h1>
@@ -29,10 +28,9 @@
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+
 export default {
   name: "OngoingMatches",
-  components: {NavBar},
   inject: ["lobbyService"],
   async created(){
     this.matches = await this.lobbyService.asyncFindByUserId("1")

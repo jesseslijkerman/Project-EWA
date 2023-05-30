@@ -1,5 +1,4 @@
 <template>
-  <NavBar></NavBar>
   <div class="container">
     <form class="loginForm" @submit.prevent="handleLogin">
 
@@ -23,13 +22,11 @@
 
 <script>
 import router from "../router";
-import NavBar from "@/components/NavBar.vue";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   inject: ["registerService"],
   name: "ResetPassword",
-  components: {NavBar},
   data() {
     return {
       entered_new_password: '',

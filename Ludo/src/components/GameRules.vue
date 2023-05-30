@@ -1,5 +1,4 @@
 <template>
-  <NavBar></NavBar>
   <div class="game-rules">
     <h2>Game Rules</h2>
     <ol>
@@ -19,10 +18,8 @@
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
-
 export default {
-  components: {NavBar},
+
   name: "GameRules"
 }
 </script>

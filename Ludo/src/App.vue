@@ -3,8 +3,10 @@
 import {LobbyAdaptor} from "./services/LobbyAdaptor";
 import {UsersAdaptor} from "./services/UsersAdaptor";
 import {UserLobbyAdaptor} from "./services/UserLobbyAdaptor";
+import NavBar from "@/components/NavBar.vue";
 
 export default {
+  components: {NavBar},
   provide(){
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
@@ -17,6 +19,7 @@ export default {
 </script>
 
 <template>
+  <NavBar v-if="!$route.meta.hideNavbar" />
   <RouterView />
 </template>
 

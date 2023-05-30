@@ -2,15 +2,18 @@
   <div class="topnav">
     <a :class="{ active: currentRoute === '/ongoing-matches' }" href="/ongoing-matches">Matches</a>
 
+    <a :class="{active: currentRoute === '/createGame'}" href="/createGame">Create Game</a>
+
+    <a :class="{ active: currentRoute === '/gamerules' }" href="/gamerules">Rules</a>
+
     <div class="right">
       <button class="logout-button" @click="confirmLogout">Logout</button>
     </div>
 
     <div class="right">
-      <a :class="{ active: currentRoute === '/reset-password' }" href="/reset-password">Reset password</a>
+      <a :class="{ active: currentRoute === '/reset-password' }" to="/reset-password">Reset password</a>
     </div>
 
-    <a :class="{ active: currentRoute === '/gamerules' }" href="/gamerules">Rules</a>
   </div>
 </template>
 
@@ -38,7 +41,7 @@ export default {
 
 <style scoped>
 
-.topnav button.logout-button {
+.topnav button.logout-button{
   float: left;
   background: none;
   border: none;

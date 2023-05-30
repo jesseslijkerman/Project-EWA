@@ -1,5 +1,4 @@
 <template>
-  <NavBar></NavBar>
   <div id="app">
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
@@ -17,10 +16,10 @@
 
 <script>
 import DiceRoll from "@/components/DiceRoll.vue";
-import NavBar from "@/components/NavBar.vue";
+
 export default {
   name: "LudoBoard",
-  components: {NavBar, DiceRoll},
+  components: {DiceRoll},
   inject: ["userLobbyService"],
 
   data() {
