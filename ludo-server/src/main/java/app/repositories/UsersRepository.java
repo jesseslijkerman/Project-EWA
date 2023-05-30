@@ -28,6 +28,12 @@ public class UsersRepository {
         return entityManager.merge(user);
     }
 
+    public User findByEmail(String email){
+        TypedQuery<User> query = this.entityManager.createNamedQuery("findUserByEmail", User.class).setParameter("emailParam", email);
+
+        return (User) query.getSingleResult();
+    }
+
     public User deleteById(int id){
         User user = findById(id);
         entityManager.remove(user);
