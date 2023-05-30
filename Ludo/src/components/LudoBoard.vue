@@ -7,10 +7,10 @@
         </div>
       </div>
     </div>
-    <button @click="movePawn(1, 6)">Move Red Pawn</button>
-    <button @click="movePawn(2, 6)">Move Green Pawn</button>
-    <button @click="movePawn(3, 6)">Move Blue Pawn</button>
-    <button @click="movePawn(4, 6)">Move Yellow Pawn</button>
+    <button @click="movePawn(1)">Move Red Pawn</button>
+    <button @click="movePawn(2)">Move Green Pawn</button>
+    <button @click="movePawn(3)">Move Blue Pawn</button>
+    <button @click="movePawn(4)">Move Yellow Pawn</button>
   </div>
 </template>
 
@@ -22,6 +22,7 @@ export default {
 
   data() {
     return {
+      rolled_dice: 0,
       board: [
         [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
         [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],
@@ -52,15 +53,9 @@ export default {
       return ['R', 'G', 'B', 'Y'].includes(cell);
     },
 
-    async rollDice(){
+    async movePawn(pawnColor) {
 
-
-      console.log(await this.lobbyService.asyncRollDice())
-    },
-
-    movePawn(pawnColor, steps) {
-
-      this.rollDice()
+      let steps = await this.lobbyService.asyncRollDice()
 
       // Define pawn color mapping
       const pawnColors = ['R', 'G', 'B', 'Y'];
