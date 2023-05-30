@@ -1,4 +1,5 @@
 <template>
+  <NavBar></NavBar>
   <div class="container">
     <div class="header">
       <h1 class="title">Ludo Lobbies</h1>
