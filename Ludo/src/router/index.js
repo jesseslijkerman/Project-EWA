@@ -2,10 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
-import LudoBoard from "@/components/LudoBoard.vue";
+import LudoBoard from "../components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
 import CreateGame from "../components/CreateGame.vue";
-import WaitingRoom from "@/components/WaitingRoom.vue";
+import DiceRoll from "@/components/DiceRoll.vue";
+import GameRules from "@/components/GameRules.vue";
+import ResetPassword from "@/components/ResetPassword.vue";
 
 
 const router = createRouter({
@@ -65,6 +67,21 @@ const router = createRouter({
       name: "createGame",
       component: CreateGame,
     },
+    {
+      path: "/roll",
+      name: "roll",
+      component: DiceRoll
+    },
+    {
+      path: "/gamerules",
+      name: "gamerules",
+      component: GameRules
+    },
+    {
+      path: "/reset-password",
+      name: "resetPassword",
+      component: ResetPassword
+    }
   ],
 });
 

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-@Transactional
-public class UserLobbyRepository {
-    @PersistenceContext
-    EntityManager entityManager;
+    @Repository
+    @Transactional
+    public class UserLobbyRepository {
+        @PersistenceContext
+        EntityManager entityManager;
 
 
 
@@ -39,4 +39,3 @@ public class UserLobbyRepository {
     public UserLobby save(UserLobby userLobby){
         return entityManager.merge(userLobby);
     }
-}

@@ -1,4 +1,5 @@
 <template>
+  <NavBar></NavBar>
   <div class="container">
     <div class="header">
       <h1 class="title">Ludo Lobbies</h1>
@@ -14,9 +15,8 @@
       <div v-for="(match, index) in matches" :key="index" class="match">
         <div class="match-info">
           <h2 class="match-title">{{ match.name }}</h2>
-          <p class="match-description">{{ match.description }}</p>
           <p class="match-turn">Turn: {{ match.whoseTurn }}</p>
-          <p class="match-players">Players: {{ match.players }}</p>
+          <p class="match-players">Players: {{ match.maxPlayers }}</p>
           <p class="match-timeStarted">
             Time started: {{ formatDateTime(match.created) }}
           </p>
@@ -29,9 +29,10 @@
 </template>
 
 <script>
-
+import NavBar from "@/components/NavBar.vue";
 export default {
   name: "OngoingMatches",
+  components: {NavBar},
   inject: ["lobbyService"],
   async created(){
     this.matches = await this.lobbyService.asyncFindByUserId("1")

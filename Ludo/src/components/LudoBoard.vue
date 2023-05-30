@@ -1,274 +1,163 @@
 <template>
-  <div class="mainframe">
-    <div class="ludoboard">
-      <div class="red"> <!--Red player home where the pawns are located-->
-        <div class="playerzone">
-          <div class="player" id=""><span></span></div>
-          <div class="player" id=""><span></span></div>
-          <div class="player" id=""><span></span></div>
-          <div class="player" id=""><span></span></div>
+  <NavBar></NavBar>
+  <div id="app">
+    <div class="board">
+      <div class="row" v-for="(row, i) in board" :key="i">
+        <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
+          <div class="pawn" :class="`color-${cell}`" v-if="isPawn(cell)"></div>
         </div>
       </div>
-      <!--playfield top part-->
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="green"> <!--Green player home where the pawns are located-->
-        <div class="playerzone">
-          <div class="player" id=""><span></span></div>
-          <div class="player" id=""><span></span></div>
-          <div class="player" id=""><span></span></div>
-          <div class="player" id=""><span></span></div>
-        </div>
-      </div>
-
-      <div class="playfield" id=""><span></span></div>
-      <div class="greenhome" id=""><span></span></div>
-      <div class="greenhome" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="greenhome" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="greenhome" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="greenhome" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="greenhomeend" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <!--playfield middle part      -->
-      <div class="playfield" id=""><span></span></div>
-      <div class="redhome" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-      <div class="playfield" id=""><span></span></div>
-<!--middle box with player colors-->
-      <div class="centerbox">
-<!--        <img src="../assets/Ludo-Logo.jpg" height="120" width="120"/>-->
-        <DiceRoll></DiceRoll>
-      </div>
-
-
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="redhome" id=""></div>
-      <div class="redhome" id=""></div>
-      <div class="redhome" id=""></div>
-      <div class="redhome" id=""></div>
-      <div class="redhomeend" id=""></div>
-      <div class="yellowhomeend" id=""></div>
-      <div class="yellowhome" id=""></div>
-      <div class="yellowhome" id=""></div>
-      <div class="yellowhome" id=""></div>
-      <div class="yellowhome" id=""></div>
-      <div class="playfield" id=""></div>
-
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="yellowhome" id=""></div>
-      <div class="playfield" id=""></div>
-
-      <div class="blue"> <!--Blue player home where the pawns are located-->
-        <div class="playerzone">
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-        </div>
-      </div>
-      <div class="playfield" id=""></div>
-      <div class="bluehomeend" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="yellow"> <!--Yellow player home where the pawns are located-->
-        <div class="playerzone">
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-          <div class="player" id=""></div>
-        </div>
-      </div>
-      <!--playfield bottom part      -->
-      <div class="playfield" id=""></div>
-      <div class="bluehome" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="bluehome" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="bluehome" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="bluehome" id=""></div>
-      <div class="bluehome" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
-      <div class="playfield" id=""></div>
     </div>
-
+    <button @click="movePawn(1, 6)">Move Red Pawn</button>
+    <button @click="movePawn(2, 6)">Move Green Pawn</button>
+    <button @click="movePawn(3, 6)">Move Blue Pawn</button>
+    <button @click="movePawn(4, 6)">Move Yellow Pawn</button>
   </div>
-
-
-
-
 </template>
 
 <script>
-
 import DiceRoll from "@/components/DiceRoll.vue";
-
+import NavBar from "@/components/NavBar.vue";
 export default {
   name: "LudoBoard",
-  components: {DiceRoll},
-};
+  components: {NavBar, DiceRoll},
+  inject: ["userLobbyService"],
+
+  data() {
+    return {
+      board: [
+        [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
+        [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],
+        ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B'],
+        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
+        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
+        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
+        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
+        ['B', 'B', 'B', 4, 0, 0, 4, 'B', 'B', 'B'],
+        [0, 0, 'Y', 4, 0, 0, 4, 'B', 0, 0],
+        [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]
+      ],
+      cellSize: 60,
+    };
+  },
+
+
+  methods: {
+    getClass(cell) {
+      return {
+        cell: true,
+        'base-cell': cell === 'B',
+        'path-cell': [1, 2, 3, 4].includes(cell),
+      };
+    },
+
+    isPawn(cell) {
+      return ['R', 'G', 'B', 'Y'].includes(cell);
+    },
+
+    movePawn(pawnColor, steps) {
+      // Define pawn color mapping
+      const pawnColors = ['R', 'G', 'B', 'Y'];
+
+      // Find the current position of the pawn
+      let currentPosition = null;
+      for (let i = 0; i < this.board.length; i++) {
+        for (let j = 0; j < this.board[i].length; j++) {
+          if (this.board[i][j] === pawnColors[pawnColor - 1]) {
+            currentPosition = {i, j};
+            break;
+          }
+        }
+        if (currentPosition) break;
+      }
+
+      if (!currentPosition) return;
+
+      // Calculate the new position of the pawn
+      let {i, j} = currentPosition;
+      while (steps--) {
+        if (j < this.board[0].length - 1) {
+          j++;
+        } else if (i < this.board.length - 1) {
+          j = 0;
+          i++;
+        } else {
+          break; // Reached end of the board, no more moves
+        }
+      }
+
+      // Move the pawn to the new position
+      let temp = this.board[i][j];
+      this.board[i][j] = this.board[currentPosition.i][currentPosition.j]; // Move pawn to the new cell
+      this.board[currentPosition.i][currentPosition.j] = temp; // Restore the original cell value
+    },
+  },}
 </script>
 
 <style scoped>
-body {
-  margin: 0px;
+.board {
+  display: flex;
+  flex-direction: column;
+  margin: 50px;
 }
 
-.mainframe {
-
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
+.row {
+  display: flex;
+  flex-direction: row;
 }
 
-.ludoboard {
-  background-color: white;
-  border: 0.5px solid black;
-  width: 600px;
-  height: 600px;
-  display: grid;
-
-  /*Om te centreren*/
-  position: fixed;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  /**/
-
-  grid-template-columns: repeat(15, 40px);
-  grid-template-rows: repeat(15, 40px);
-}
-
-.centerbox {
-  grid-column: 7/10;
-  grid-row: 7/10;
-  transform: rotate(180deg);
-}
-
-.red {
+.cell {
+  position: relative;
+  border: 1px solid black;
+  width: 60px;
+  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f7162d;
-  border: 0.5px solid #9e0616;
-  grid-column: 1/7;
-  grid-row: 1/7;
 }
 
-.redhome {
-  background-color: #f7162d;
-  border: 0.5px solid #9e0616;
+.base-cell {
+  background-color: #c0c0c0;
 }
 
-.redhomeend {
-  background-color: #566769;
-  border: 0.5px solid #9e0616;
+.path-cell {
+  background-color: #f0f0f0;
 }
 
-.playerzone {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.player {
+.pawn {
+  position: absolute;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background-color: white;
-  opacity: 0.9;
-  width: 50px;
-  height: 50px;
+  transition: transform 0.5s ease-in-out;
+  animation: slideAndHop 0.5s linear;
 }
 
-.green {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #00e34c;
-  border: 0.5px solid #039634;
-  grid-column: 10/16;
-  grid-row: 1/7;
+@keyframes slideAndHop {
+  50% {
+    transform: translateY(-10px) scale(1.1);
+  }
 }
 
-.greenhome {
-  background-color: #00e34c;
-  border: 0.5px solid #039634;
+.color-R {
+  background-color: red;
 }
 
-.greenhomeend {
-  background-color: #566769;
-  border: 0.5px solid #039634;
+.color-G {
+  background-color: green;
 }
 
-.playfield {
-  border: 0.5px solid #b3b3b3;
+.color-B {
+  background-color: blue;
 }
 
-.blue {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #04c3c9;
-  border: 0.5px solid #027478;
-  grid-column: 1/7;
-  grid-row: 10/16;
+.color-Y {
+  background-color: yellow;
 }
 
-.bluehome {
-  background-color: #04c3c9;
-  border: 0.5px solid #027478;
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 20px;
 }
-
-.bluehomeend {
-  background-color: #566769;
-  border: 0.5px solid #027478;
-}
-
-.yellow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f7bb05;
-  border: 0.5px solid #9c7605;
-  grid-column: 10/16;
-  grid-row: 10/16;
-}
-
-.yellowhome {
-  background-color: #f7bb05;
-  border: 0.5px solid #9c7605;
-}
-
-.yellowhomeend {
-  background-color: #566769;
-  border: 0.5px solid #9c7605;
-}
-
 </style>

@@ -2,12 +2,14 @@
 <script >
 import {LobbyAdaptor} from "./services/LobbyAdaptor";
 import {UsersAdaptor} from "./services/UsersAdaptor";
+import {UserLobbyAdaptor} from "./services/UserLobbyAdaptor";
 
 export default {
   provide(){
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
       registerService: new UsersAdaptor("http://localhost:6969/users"),
+      userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies")
     }
   }
 }
@@ -22,6 +24,7 @@ export default {
 header {
   line-height: 1.5;
   max-height: 100vh;
+  
 }
 
 .logo {
