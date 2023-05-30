@@ -125,7 +125,17 @@ export default {
   methods: {
     async createLobby(){
       var now = new Date();
-      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer,
+          "[0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0]," +
+          "        [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0]," +
+          "        ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B']," +
+          "        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3]," +
+          "        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3]," +
+          "        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3]," +
+          "        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3]," +
+          "        ['B', 'B', 'B', 4, 0, 0, 4, 'B', 'B', 'B']," +
+          "        [0, 0, 'Y', 4, 0, 0, 4, 'B', 0, 0]," +
+          "        [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]");
       console.log(lobby)
 
       let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))
