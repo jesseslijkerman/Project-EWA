@@ -8,6 +8,7 @@ import CreateGame from "../components/CreateGame.vue";
 import DiceRoll from "@/components/DiceRoll.vue";
 import GameRules from "@/components/GameRules.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
+import WaitingRoom from "@/components/WaitingRoom.vue";
 
 
 const router = createRouter({

@@ -39,3 +39,18 @@ import java.util.List;
     public UserLobby save(UserLobby userLobby){
         return entityManager.merge(userLobby);
     }
+
+    public UserLobby findById(int id){
+            return entityManager.find(UserLobby.class, id);
+    }
+
+
+    public UserLobby deleteById(int id){
+            UserLobby lobby = findById(id);
+            entityManager.remove(lobby);
+            return lobby;
+    }
+
+
+
+    }
