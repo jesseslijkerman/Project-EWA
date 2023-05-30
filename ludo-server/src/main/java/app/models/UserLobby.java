@@ -22,13 +22,7 @@ public class UserLobby {
     @JsonIgnore
     private Lobby lobby;
 
-    private int pawnPosition1;
-
-    private int pawnPosition2;
-
-    private int pawnPosition3;
-
-    private int pawnPosition4;
+    private String color;
 
     public UserLobby() {
     }
@@ -59,35 +53,11 @@ public class UserLobby {
         this.lobby = lobby;
     }
 
-    public int getPawnPosition1() {
-        return pawnPosition1;
+    public String getColor() {
+        return color;
     }
 
-    public void setPawnPosition1(int pawnPosition1) {
-        this.pawnPosition1 = pawnPosition1;
-    }
-
-    public int getPawnPosition2() {
-        return pawnPosition2;
-    }
-
-    public void setPawnPosition2(int pawnPosition2) {
-        this.pawnPosition2 = pawnPosition2;
-    }
-
-    public int getPawnPosition3() {
-        return pawnPosition3;
-    }
-
-    public void setPawnPosition3(int pawnPosition3) {
-        this.pawnPosition3 = pawnPosition3;
-    }
-
-    public int getPawnPosition4() {
-        return pawnPosition4;
-    }
-
-    public void setPawnPosition4(int pawnPosition4) {
-        this.pawnPosition4 = pawnPosition4;
+    public void setColor(String color) {
+        this.color = color;
     }
 }
