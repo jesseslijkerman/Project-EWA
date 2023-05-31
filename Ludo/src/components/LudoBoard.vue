@@ -20,7 +20,7 @@ import DiceRoll from "@/components/DiceRoll.vue";
 export default {
   name: "LudoBoard",
   components: {DiceRoll},
-  inject: ["userLobbyService"],
+  inject: ["userLobbyService", "lobbyService"],
 
   data() {
     return {
@@ -40,6 +40,17 @@ export default {
     };
   },
 
+  async created(){
+    console.log(await this.lobbyService.asyncFindById(1))
+    let game = await this.lobbyService.asyncFindById(1)
+    console.log(game.boardState)
+    console.log(this.board)
+
+    this.board = [game.boardState.replace(/["]+/g, '')]
+
+    console.log(this.board)
+    console.log(JSON.parse("[" + game.boardState + "]"))
+  },
 
   methods: {
     getClass(cell) {
