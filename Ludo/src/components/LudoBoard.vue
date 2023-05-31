@@ -44,7 +44,7 @@ export default {
 
     console.log(this.board)
 
-    await this.convertStringToArray()
+    await this.dbBoardUpdate()
 
     console.log(this.board)
 
@@ -59,7 +59,7 @@ export default {
       };
     },
 
-    async convertStringToArray() {
+    async dbBoardUpdate() {
 
       let lobbyNumber = parseInt(window.location.pathname.split('/').slice(-2, -1)[0]);
       console.log(lobbyNumber)
