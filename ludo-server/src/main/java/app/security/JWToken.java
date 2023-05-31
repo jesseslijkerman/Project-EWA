@@ -21,13 +21,13 @@ public class JWToken {
     private final String passphrase = "Mens erger je niet, je kunt er eigenlijk niet omheen draaien, het is een klotespel";
     private final int expiration = 300;
 
-    public String createToken(long userId, String firstName, String lastName, String password, String email) {
+    public String createToken(long userId, String userName, String countryCode, String password, String email) {
         Key signKey = generateKey(passphrase);
 
         return Jwts.builder()
                 .claim("userId", userId)
-                .claim("firstName", firstName)
-                .claim("lastName", lastName)
+                .claim("userName", userName)
+                .claim("countryCode", countryCode)
                 .claim("password", password)
                 .claim("email", email)
                 .setIssuer(issuer)
@@ -44,8 +44,8 @@ public class JWToken {
 
     private JWTokenInfo fillJWTInfo(Claims claims) {
         jwtInfo.setId(Long.parseLong(claims.get("userId").toString()));
-        jwtInfo.setFirstName(claims.get("firstName").toString());
-        jwtInfo.setLastName(claims.get("lastName").toString());
+        jwtInfo.setFirstName(claims.get("userName").toString());
+        jwtInfo.setLastName(claims.get("countryCode").toString());
         jwtInfo.setPassword(claims.get("password").toString());
         jwtInfo.setEmail(claims.get("email").toString());
         jwtInfo.setIssuedAtDate(new Date());

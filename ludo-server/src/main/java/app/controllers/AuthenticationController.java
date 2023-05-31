@@ -37,7 +37,7 @@ public class AuthenticationController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             AuthResponse authResponse = createAuthResponse(user);
-            return ResponseEntity.accepted().header("Authorization", authResponse.getToken()).body(authResponse);
+            return ResponseEntity.accepted().header("Authorization", authResponse.token()).body(authResponse);
         }
     }
 
@@ -48,29 +48,11 @@ public class AuthenticationController {
     }
 
     private AuthResponse createAuthResponse(User user) {
-        String token = jwt.createToken(user.getId(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getEmail());
-        return new AuthResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), token);
+        String token = jwt.createToken(user.getId(), user.getUsername(), user.getCountryCode(), user.getPassword(), user.getEmail());
+        return new AuthResponse(user.getId(), user.getUsername(), user.getCountryCode(), user.getEmail(), user.getPassword(), token);
     }
 
-    private static class AuthResponse {
-        private final long id;
-        private final String firstName;
-        private final String lastName;
-        private final String email;
-        private final String password;
-        private final String token;
-
-        public AuthResponse(long id, String firstName, String lastName, String email, String password, String token) {
-            this.id = id;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.password = password;
-            this.token = token;
-        }
-
-        public String getToken() {
-            return this.token;
-        }
+    private record AuthResponse(long id, String userName, String countryCode, String email, String password,
+                                String token) {
     }
 }

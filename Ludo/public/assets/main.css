@@ -1,0 +1,112 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    /*display: grid;*/
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+
+  .dice{
+    width: 80px;
+    height: 80px;
+    border: 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .priorDice{
+    width: 25px;
+    height: 25px;
+    border: 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+  p{
+    text-align: center;
+  }
+
+
+  button{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+  }
+
+  .player{
+    float: left;
+    margin: 60px;
+  }
+
+  .playerRoll{
+    position: absolute;
+    transform: scaleY(-1) scaleX(-1);
+    height: 120px;
+    width: 120px;
+  }
+
+  .rollButton{
+    z-index: 1;
+  }
+
+
+  .allPlayerRolls{
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .dot {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    border-style: solid;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 300px;
+
+  }
+
+  main{
+    position: fixed;
+    top: 50%;
+    left: 49%;
+    transform: translate(-50%, -50%);
+  }
+
+
+
+}
