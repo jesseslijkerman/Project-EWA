@@ -41,7 +41,6 @@ export default {
   },
 
   async created(){
-    console.log(await this.lobbyService.asyncFindById(1))
 
     console.log(this.board)
 
@@ -62,7 +61,9 @@ export default {
 
     async convertStringToArray() {
 
-      const inputObject = await this.lobbyService.asyncFindById(1)
+      let lobbyNumber = parseInt(window.location.pathname.split('/').slice(-2, -1)[0]);
+      console.log(lobbyNumber)
+      const inputObject = await this.lobbyService.asyncFindById(lobbyNumber)
       const inputString = JSON.stringify(inputObject.boardState)
       const rows = inputString.split("],[");
       this.board = rows.map((row) => {
