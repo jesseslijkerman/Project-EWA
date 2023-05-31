@@ -9,7 +9,9 @@
         <div class="card-body">
           <h2 class="h2 text-center mb-4">Login to your account</h2>
           <form action="./" method="get" autocomplete="off" novalidate="">
-            <div class="mb-3"><label class="form-label">Email address</label> <input type="email" class="form-control"
+            <div class="mb-3"><label class="form-label">Email address</label> <input type="email"
+                                                                                     v-model="email"
+                                                                                     class="form-control"
                                                                                      placeholder="your@email.com"
                                                                                      autocomplete="off"
                                                                                      style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAkCAYAAADo6zjiAAAAAXNSR0IArs4c6QAAAbNJREFUWAntV8FqwkAQnaymUkpChB7tKSfxWCie/Yb+gbdeCqGf0YsQ+hU95QNyDoWCF/HkqdeiIaEUqyZ1ArvodrOHxanQOiCzO28y781skKwFW3scPV1/febP69XqarNeNTB2KGs07U3Ttt/Ozp3bh/u7V7muheQf6ftLUWyYDB5yz1ijuPAub2QRDDunJsdGkAO55KYYjl0OUu1VXOzQZ64Tr+IiPXedGI79bQHdbheCIAD0dUY6gV6vB67rAvo6IxVgWVbFy71KBKkAFaEc2xPQarXA931ot9tyHphiPwpJgSbfe54Hw+EQHMfZ/msVEEURjMfjCjbFeG2dFxPo9/sVOSYzxmAwGIjnTDFRQLMQAjQ5pJAQkCQJ5HlekeERxHEsiE0xUUCzEO9AmqYQhiF0Oh2Yz+ewWCzEY6aYKKBZCAGYs1wuYTabKdNNMWWxnaA4gp3Yry5JBZRlWTXDvaozUgGTyQSyLAP0dbb3DtQlmcan0yngT2ekE9ARc+z4AvC7nauh9iouhpcGamJeX8XF8MaClwaeROWRA7nk+tUnyzGvZrKg0/40gdME/t8EvgG0/NOS6v9NHQAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
@@ -20,8 +22,11 @@
                     <a href="./forgot-password.html">I forgot password</a>
                   </span>
             </label>
-              <div class="input-group input-group-flat"><input type="password" class="form-control"
-                                                               placeholder="Your password" autocomplete="off"
+              <div class="input-group input-group-flat"><input type="password"
+                                                               v-model="password"
+                                                               class="form-control"
+                                                               placeholder="Your password"
+                                                               autocomplete="off"
                                                                style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAkCAYAAADo6zjiAAAAAXNSR0IArs4c6QAAAbNJREFUWAntV8FqwkAQnaymUkpChB7tKSfxWCie/Yb+gbdeCqGf0YsQ+hU95QNyDoWCF/HkqdeiIaEUqyZ1ArvodrOHxanQOiCzO28y781skKwFW3scPV1/febP69XqarNeNTB2KGs07U3Ttt/Ozp3bh/u7V7muheQf6ftLUWyYDB5yz1ijuPAub2QRDDunJsdGkAO55KYYjl0OUu1VXOzQZ64Tr+IiPXedGI79bQHdbheCIAD0dUY6gV6vB67rAvo6IxVgWVbFy71KBKkAFaEc2xPQarXA931ot9tyHphiPwpJgSbfe54Hw+EQHMfZ/msVEEURjMfjCjbFeG2dFxPo9/sVOSYzxmAwGIjnTDFRQLMQAjQ5pJAQkCQJ5HlekeERxHEsiE0xUUCzEO9AmqYQhiF0Oh2Yz+ewWCzEY6aYKKBZCAGYs1wuYTabKdNNMWWxnaA4gp3Yry5JBZRlWTXDvaozUgGTyQSyLAP0dbb3DtQlmcan0yngT2ekE9ARc+z4AvC7nauh9iouhpcGamJeX8XF8MaClwaeROWRA7nk+tUnyzGvZrKg0/40gdME/t8EvgG0/NOS6v9NHQAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
                 <span class="input-group-text">
                     <a href="#" class="link-secondary" data-bs-toggle="tooltip" aria-label="Show password">
@@ -53,32 +58,32 @@
 <script>
 export default {
   name: 'LoginPageTemp',
-  inject: ['userService', 'authenticationService'],
+  inject: ['userService', 'sessionService'],
 
 
   data() {
 
-    let email = '';
-    let password = '';
-    let currentToken = this.authenticationService.getTokenFromBrowserStorage();
-    let currentUserName = localStorage.getItem('userName');
+    // let email = '';
+    // let password = '';
+    // let currentToken = this.sessionService.getTokenFromBrowserStorage();
+    // let currentUserName = localStorage.getItem('userName');
     let shouldWarnUser = false;
     let warnUser = "These login credentials add up to nothing...";
 
 
     return {
-      currentToken: currentToken,
-      email: email,
-      password: password,
-      currentUserName: currentUserName,
-      warnUser: warnUser,
-      shouldWarnUser: shouldWarnUser
+      currentToken: null,
+      email: null,
+      password: null,
+      currentUserName: null,
+      warnUser: shouldWarnUser,
+      shouldWarnUser: warnUser
     };
   },
   methods: {
     async signIn() {
-      await this.authenticationService.asyncSignIn(this.email, this.password);
-      location.reload()
+      await this.sessionService.asyncSignIn(this.email, this.password);
+      // location.reload()
     }
 
   },

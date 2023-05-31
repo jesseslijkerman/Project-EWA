@@ -5,15 +5,28 @@ import {UsersAdaptor} from "./services/UsersAdaptor";
 import {UserLobbyAdaptor} from "./services/UserLobbyAdaptor";
 import NavBar from "@/components/NavBar.vue";
 import {AuthenticationService} from "./services/AuthenticationService";
+import {shallowReactive} from "vue";
+import {SessionSbService} from "./services/SessionSbService";
+import {FetchInterceptor} from "./services/FetchInterceptor";
+import CONFIG from '../app-config.js'
 
 export default {
   components: {NavBar},
   provide(){
+    //create a singleton reactive service tracking the authorisation data of the session
+    this.theSessionSbService = shallowReactive(
+        new SessionSbService(CONFIG.BACKEND_URL + "/usersAuth", CONFIG.JWT_STORAGE_ITEM))
+    this.theFetchInterceptor =
+        new FetchInterceptor(this.theSessionSbService, this.$router);
+
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
       registerService: new UsersAdaptor("http://localhost:6969/users"),
       authenticationService: new AuthenticationService("http://localhost:6969/usersAuth/login"),
-      userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies")
+      userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies"),
+
+      // reactive, stateful services
+      sessionService: this.theSessionSbService
 
     }
   }
