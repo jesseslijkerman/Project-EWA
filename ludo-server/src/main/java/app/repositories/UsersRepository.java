@@ -21,7 +21,7 @@ public class UsersRepository {
         return namedQuery.getResultList();
     }
 
-    public User findById(int id){
+    public User findById(Long id){
         return entityManager.find(User.class, id);
     }
 
@@ -35,7 +35,7 @@ public class UsersRepository {
         return (User) query.getSingleResult();
     }
 
-    public User deleteById(int id){
+    public User deleteById(Long id){
         User user = findById(id);
         entityManager.remove(user);
         return user;

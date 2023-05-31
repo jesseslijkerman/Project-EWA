@@ -20,17 +20,17 @@ public class LobbiesRepository {
         return namedQuery.getResultList();
     }
 
-    public Lobby findById(int id){
+    public Lobby findById(Long id){
         return entityManager.find(Lobby.class, id);
     }
 
-    public List<Lobby> findByUserId(int userId){
+    public List<Lobby> findByUserId(Long userId){
         TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_lobbies_by_user_id", Lobby.class);
         namedQuery.setParameter(1, userId);
         return namedQuery.getResultList();
     }
 
-    public List<Lobby> findAllJoinableLobbies(int userId){
+    public List<Lobby> findAllJoinableLobbies(Long userId){
         TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_all_joinable_lobbies", Lobby.class);
         namedQuery.setParameter(1, userId);
         return namedQuery.getResultList();
@@ -42,7 +42,7 @@ public class LobbiesRepository {
         return entityManager.merge(lobby);
     }
 
-    public Lobby deleteById(int id){
+    public Lobby deleteById(Long id){
         Lobby user = findById(id);
         entityManager.remove(user);
         return user;

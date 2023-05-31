@@ -28,7 +28,8 @@
     "jsdom": "^20.0.3",
     "prettier": "^2.7.1",
     "vite": "^4.0.0",
-    "vitest": "^0.25.6"
+    "vitest": "^0.25.6",
+    "vue-jwt-decode": "^0.1.0"
   },
   "rules": {
     "vue/multi-word-component-names": "off",

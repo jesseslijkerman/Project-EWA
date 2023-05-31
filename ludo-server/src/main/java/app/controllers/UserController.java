@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public User findById(@PathVariable int id){
+    public User findById(@PathVariable Long id){
         User user = this.usersRepo.findById(id);
         if (user==null){
             throw new ResourceNotFound("id-" + id);
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PutMapping(path = "/{id}")
-    public User editUser(@PathVariable int id, @RequestBody User user){
+    public User editUser(@PathVariable Long id, @RequestBody User user){
         if (user.getId() != id){
             throw new PreConditionFailed("id-" + id + " doesn't match id of body");
         }
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public User deleteUser(@PathVariable int id){
+    public User deleteUser(@PathVariable Long id){
         User user = usersRepo.deleteById(id);
         if (user==null){
             throw new ResourceNotFound("id-" + id);

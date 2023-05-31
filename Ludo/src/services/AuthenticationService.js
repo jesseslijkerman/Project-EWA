@@ -6,7 +6,7 @@ export class AuthenticationService {
     tokenExpiration;
 
     constructor() {
-        this.apiUrl = process.env.VUE_APP_API_URL + "/userAuth";
+        this.apiUrl = "http://localhost6969/userAuth";
     }
 
     storeToken(token) {

@@ -34,12 +34,12 @@ public class LobbiesController {
     }
 
     @GetMapping(path = "/{id}/users", produces = "application/json")
-    public List<UserLobby> getAllUsersInLobby(@PathVariable int id){
+    public List<UserLobby> getAllUsersInLobby(@PathVariable Long id){
         return this.userLobbyRepo.findAllUsersInLobby(id);
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public Lobby findById(@PathVariable int id){
+    public Lobby findById(@PathVariable Long id){
         Lobby lobby = this.lobbyRepo.findById(id);
         if (lobby==null){
             throw new ResourceNotFound("id-" + id);
@@ -48,12 +48,12 @@ public class LobbiesController {
     }
 
     @GetMapping(path = "/user/{userId}", produces = "application/json")
-    public List<Lobby> findByUserId(@PathVariable int userId){
+    public List<Lobby> findByUserId(@PathVariable Long userId){
         return this.lobbyRepo.findByUserId(userId);
     }
 
     @GetMapping(path = "/joinable/{userId}", produces = "application/json")
-    public List<Lobby> findAllJoinableLobbies(@PathVariable int userId){
+    public List<Lobby> findAllJoinableLobbies(@PathVariable Long userId){
         return this.lobbyRepo.findAllJoinableLobbies(userId);
     }
 
@@ -67,7 +67,7 @@ public class LobbiesController {
     }
 
     @PostMapping(path = "/{lobbyId}/user/{userId}")
-    public UserLobby addUserLobby(@PathVariable int userId, @PathVariable int lobbyId, @RequestBody UserLobby userLobby){
+    public UserLobby addUserLobby(@PathVariable Long userId, @PathVariable Long lobbyId, @RequestBody UserLobby userLobby){
         User user = userRepo.findById(userId);
         Lobby lobby = lobbyRepo.findById(lobbyId);
 
@@ -79,7 +79,7 @@ public class LobbiesController {
     }
 
     @PutMapping(path = "/{id}")
-    public Lobby editLobby(@PathVariable int id, @RequestBody Lobby lobby){
+    public Lobby editLobby(@PathVariable Long id, @RequestBody Lobby lobby){
         if (lobby.getId() != id){
             throw new PreConditionFailed("id-" + id + " doesn't match id of body");
         }
@@ -89,7 +89,7 @@ public class LobbiesController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public Lobby deleteLobby(@PathVariable int id){
+    public Lobby deleteLobby(@PathVariable Long id){
         Lobby lobby = lobbyRepo.deleteById(id);
         if (lobby==null){
             throw new ResourceNotFound("id-" + id);
@@ -98,7 +98,7 @@ public class LobbiesController {
     }
 
     @DeleteMapping(path = "{id}/users/{username}")
-    public Lobby deleteUserFromLobby(@PathVariable String username, @PathVariable int id){
+    public Lobby deleteUserFromLobby(@PathVariable String username, @PathVariable Long id){
         userLobbyRepo.removeUserFromLobby(username, id);
         return null;
     }
