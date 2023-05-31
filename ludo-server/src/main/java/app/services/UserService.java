@@ -2,13 +2,17 @@ package app.services;
 
 import app.models.User;
 import app.repositories.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
+    @Autowired
     private UsersRepository userRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UsersRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
