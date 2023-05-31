@@ -25,9 +25,9 @@ export default {
   data() {
     return {
       board: [
-        [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
+        [1, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
         [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],
-        ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B'],
+        ['B', 'B', 'G', 1, 0, 0, 1, 'B', 'B', 'B'],
         [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
         [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
         [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
@@ -42,14 +42,13 @@ export default {
 
   async created(){
     console.log(await this.lobbyService.asyncFindById(1))
-    let game = await this.lobbyService.asyncFindById(1)
-    console.log(game.boardState)
-    console.log(this.board)
-
-    this.board = [game.boardState.replace(/["]+/g, '')]
 
     console.log(this.board)
-    console.log(JSON.parse("[" + game.boardState + "]"))
+
+    await this.convertStringToArray()
+
+    console.log(this.board)
+
   },
 
   methods: {
@@ -59,6 +58,27 @@ export default {
         'base-cell': cell === 'B',
         'path-cell': [1, 2, 3, 4].includes(cell),
       };
+    },
+
+    async convertStringToArray() {
+
+      const inputObject = await this.lobbyService.asyncFindById(1)
+      const inputString = JSON.stringify(inputObject.boardState)
+      const rows = inputString.split("],[");
+      this.board = rows.map((row) => {
+        const rowValues = row
+            .replace(/"/g, "")
+            .replace("[", "")
+            .replace("]", "")
+            .split(",");
+        return rowValues.map((value) => {
+          if (!isNaN(value)) {
+            return parseInt(value);
+          } else {
+            return value.replace(/'/g, "").trim();
+          }
+        });
+      });
     },
 
     isPawn(cell) {
