@@ -8,7 +8,6 @@ import app.models.UserLobby;
 import app.repositories.LobbiesRepository;
 import app.repositories.UserLobbyRepository;
 import app.repositories.UsersRepository;
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

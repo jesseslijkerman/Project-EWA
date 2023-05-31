@@ -8,13 +8,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:unit": "vitest --environment jsdom --root src/",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "start": "npx http-server -p ${PORT} ./dist"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "bootstrap": "^5.2.3",
     "http-server": "^14.1.1",
     "vue": "^3.2.47",
+    "vue-jwt-decode": "^0.1.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
