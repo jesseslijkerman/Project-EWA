@@ -38,7 +38,7 @@
               <span class="form-check-label">Remember me on this device</span>
             </label></div>
             <div class="form-footer">
-              <button type="submit" class="btn btn-primary w-100">Sign in</button>
+              <button class="btn btn-primary w-100" @click="signIn();">Sign in</button>
             </div>
           </form>
         </div>
@@ -53,7 +53,37 @@
 <script>
 export default {
   name: 'LoginPageTemp',
+  inject: ['userService', 'authenticationService'],
+
+
+  data() {
+
+    let email = '';
+    let password = '';
+    let currentToken = this.authenticationService.getTokenFromBrowserStorage();
+    let currentUserName = localStorage.getItem('userName');
+    let shouldWarnUser = false;
+    let warnUser = "These login credentials add up to nothing...";
+
+
+    return {
+      currentToken: currentToken,
+      email: email,
+      password: password,
+      currentUserName: currentUserName,
+      warnUser: warnUser,
+      shouldWarnUser: shouldWarnUser
+    };
+  },
+  methods: {
+    async signIn() {
+      await this.authenticationService.asyncSignIn(this.email, this.password);
+      location.reload()
+    }
+
+  },
 }
+
 </script>
 
 <style scoped>
@@ -72,7 +102,7 @@ export default {
 .page-center {
   display: flex;
   justify-content: center;
-  
+
 
 }
 

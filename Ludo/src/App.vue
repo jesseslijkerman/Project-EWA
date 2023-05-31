@@ -4,6 +4,7 @@ import {LobbyAdaptor} from "./services/LobbyAdaptor";
 import {UsersAdaptor} from "./services/UsersAdaptor";
 import {UserLobbyAdaptor} from "./services/UserLobbyAdaptor";
 import NavBar from "@/components/NavBar.vue";
+import {AuthenticationService} from "./services/AuthenticationService";
 
 export default {
   components: {NavBar},
@@ -11,7 +12,9 @@ export default {
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
       registerService: new UsersAdaptor("http://localhost:6969/users"),
+      authenticationService: new AuthenticationService("http://localhost:6969/login"),
       userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies")
+
     }
   }
 }

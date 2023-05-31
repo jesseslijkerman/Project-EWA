@@ -36,6 +36,10 @@ export class AuthenticationService {
         localStorage.clear();
     }
 
+    getTokenFromBrowserStorage() {
+        return localStorage.getItem('token');
+    }
+
     refreshUserDetails() {
         let storedToken = localStorage.getItem('token');
 
