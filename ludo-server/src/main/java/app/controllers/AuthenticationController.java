@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.APIConfig;
 import app.models.User;
 import app.repositories.UsersRepository;
 import app.security.JWToken;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping(path = "/usersAuth")
 public class AuthenticationController {
+
+    @Autowired
+    APIConfig apiConfig;
 
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

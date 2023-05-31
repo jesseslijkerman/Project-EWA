@@ -19,7 +19,7 @@ public class JWToken {
     private String issuer;
 
     private final String passphrase = "Mens erger je niet, je kunt er eigenlijk niet omheen draaien, het is een klotespel";
-    private final int expiration = 300;
+    private final int expiration = 7200;
 
     public String createToken(long userId, String userName, String countryCode, String password, String email) {
         Key signKey = generateKey(passphrase);
