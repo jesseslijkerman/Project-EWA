@@ -12,7 +12,7 @@ export default {
     return{
       lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
       registerService: new UsersAdaptor("http://localhost:6969/users"),
-      authenticationService: new AuthenticationService("http://localhost:6969/login"),
+      authenticationService: new AuthenticationService("http://localhost:6969/usersAuth/login"),
       userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies")
 
     }
