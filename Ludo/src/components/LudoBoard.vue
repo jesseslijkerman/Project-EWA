@@ -3,22 +3,22 @@
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
         <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
-          <div class="pawn" :class="`color-${cell}`" v-if="isPawn(cell)"></div>
+          <div class="pawn" :class="getPawnClasses(i, j)" v-if="isPawn(i, j)"></div>
         </div>
       </div>
     </div>
-    <button @click="movePawn(1, 6)">Move Red Pawn</button>
-    <button @click="movePawn(2, 6)">Move Green Pawn</button>
-    <button @click="movePawn(3, 6)">Move Blue Pawn</button>
-    <button @click="movePawn(4, 6)">Move Yellow Pawn</button>
+    <button @click="movePawn('R', rollDice())">Roll Dice and Move Red Pawn</button>
+    <button @click="movePawn('G', rollDice())">Roll Dice and Move Green Pawn</button>
+    <button @click="movePawn('B', rollDice())">Roll Dice and Move Blue Pawn</button>
+    <button @click="movePawn('Y', rollDice())">Roll Dice and Move Yellow Pawn</button>
   </div>
 </template>
 
 <script>
-import DiceRoll from "@/components/DiceRoll.vue";
+
 export default {
   name: "LudoBoard",
-  components: {DiceRoll},
+  components: {},
   inject: ["userLobbyService"],
 
   data() {
@@ -35,106 +35,153 @@ export default {
         [0, 0, 'Y', 4, 0, 0, 4, 'B', 0, 0],
         [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]
       ],
+      pawns: {
+        'R': {position: 6, home: false},
+        'G': {position: 0, home: false},
+        'B': {position: 0, home: false},
+        'Y': {position: 0, home: false}
+      },
+      path: [],
+      startingPoints: [
+        {i: 0, j: 2}, // Red
+        {i: 2, j: 9}, // Green
+        {i: 9, j: 7}, // Blue
+        {i: 7, j: 0}  // Yellow
+      ],
+      homePaths: {
+        'R': {i: 0, j: 3, direction: 'right', length: 5},
+        'G': {i: 3, j: 9, direction: 'down', length: 5},
+        'B': {i: 9, j: 6, direction: 'left', length: 5},
+        'Y': {i: 6, j: 0, direction: 'up', length: 5}
+      },
       cellSize: 60,
     };
   },
 
+  created() {
+    this.createPath();
+  },
 
   methods: {
+    createPath() {
+      const directions = ['right', 'down', 'left', 'up'];
+      const start = {i: 0, j: 3};
+      const n = this.board.length;
+      const m = this.board[0].length;
+
+      let i = start.i;
+      let j = start.j;
+      let dir = 0;
+
+      while (!(i === start.i && j === start.j && this.path.length > 0)) {
+        this.path.push({i, j});
+        this.board[i][j] = 1;
+
+        if (directions[dir] === 'right' && j < m - 1 && this.board[i][j+1] !== 'B') j++;
+        else if (directions[dir] === 'down' && i < n - 1 && this.board[i+1][j] !== 'B') i++;
+        else if (directions[dir] === 'left' && j > 0 && this.board[i][j-1] !== 'B') j--;
+        else if (directions[dir] === 'up' && i > 0 && this.board[i-1][j] !== 'B') i--;
+        else dir = (dir + 1) % 4;
+      }
+
+      ['R', 'G', 'B', 'Y'].forEach((color, index) => {
+        let {i, j, direction, length} = this.homePaths[color];
+        for (let k = 0; k < length; k++) {
+          this.path.push({i, j});
+          this.board[i][j] = 1;
+          if (direction === 'right' && j < m - 1) j++;
+          else if (direction === 'down' && i < n - 1) i++;
+          else if (direction === 'left' && j > 0) j--;
+          else if (direction === 'up' && i > 0) i--;
+        }
+      });
+    },
+
     getClass(cell) {
       return {
         cell: true,
         'base-cell': cell === 'B',
-        'path-cell': [1, 2, 3, 4].includes(cell),
+        'path-cell': cell === 1,
       };
     },
 
-    isPawn(cell) {
-      return ['R', 'G', 'B', 'Y'].includes(cell);
+    getPawnClasses(i, j) {
+      const pawnColor = Object.keys(this.pawns).find(color => {
+        const pawn = this.pawns[color];
+        const position = this.path[pawn.position];
+        return position && position.i === i && position.j === j;
+      });
+      return pawnColor ? `color-${pawnColor}` : '';
+    },
+
+    rollDice() {
+      return Math.floor(Math.random() * 6) + 1;
+    },
+
+    isPawn(i, j) {
+      return Object.values(this.pawns).some(pawn => {
+        const position = this.path[pawn.position];
+        return position && position.i === i && position.j === j;
+      });
     },
 
     movePawn(pawnColor, steps) {
-      // Define pawn color mapping
-      const pawnColors = ['R', 'G', 'B', 'Y'];
-
-      // Find the current position of the pawn
-      let currentPosition = null;
-      for (let i = 0; i < this.board.length; i++) {
-        for (let j = 0; j < this.board[i].length; j++) {
-          if (this.board[i][j] === pawnColors[pawnColor - 1]) {
-            currentPosition = {i, j};
-            break;
-          }
-        }
-        if (currentPosition) break;
+      const pawn = this.pawns[pawnColor];
+      if (!pawn.home) {
+        const start = this.startingPoints[Object.keys(this.pawns).indexOf(pawnColor)];
+        const index = this.path.findIndex(p => p.i === start.i && p.j === start.j);
+        pawn.position = index + steps - 1;
+        pawn.home = true;
+      } else {
+        pawn.position += steps;
       }
 
-      if (!currentPosition) return;
-
-      // Calculate the new position of the pawn
-      let {i, j} = currentPosition;
-      while (steps--) {
-        if (j < this.board[0].length - 1) {
-          j++;
-        } else if (i < this.board.length - 1) {
-          j = 0;
-          i++;
-        } else {
-          break; // Reached end of the board, no more moves
-        }
+      if (pawn.position >= this.path.length) {
+        pawn.position = this.path.length - 1;
       }
-
-      // Move the pawn to the new position
-      let temp = this.board[i][j];
-      this.board[i][j] = this.board[currentPosition.i][currentPosition.j]; // Move pawn to the new cell
-      this.board[currentPosition.i][currentPosition.j] = temp; // Restore the original cell value
     },
-  },}
+  },
+};
 </script>
 
 <style scoped>
 .board {
   display: flex;
   flex-direction: column;
-  margin: 50px;
+  margin: auto;
+  width: 600px;
+  height: 600px;
 }
 
 .row {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
 }
 
 .cell {
-  position: relative;
-  border: 1px solid black;
   width: 60px;
   height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 1px solid black;
+  position: relative;
 }
 
 .base-cell {
-  background-color: #c0c0c0;
+  background-color: lightblue;
 }
 
 .path-cell {
-  background-color: #f0f0f0;
+  background-color: white;
 }
 
 .pawn {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  transition: transform 0.5s ease-in-out;
-  animation: slideAndHop 0.5s linear;
-}
-
-@keyframes slideAndHop {
-  50% {
-    transform: translateY(-10px) scale(1.1);
-  }
+  background-color: grey;
 }
 
 .color-R {
@@ -151,11 +198,5 @@ export default {
 
 .color-Y {
   background-color: yellow;
-}
-
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 20px;
 }
 </style>
