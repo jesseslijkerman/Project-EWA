@@ -28,6 +28,11 @@ export class LobbyAdaptor{
         return lobbies?.map(s => Lobby.copyConstructor(s));
     }
 
+    async asyncRollDice(){
+        const diceroll = await this.fetchJson(this.resourcesUrl + "/roll-dice")
+        return diceroll
+    }
+
     async asyncFindById(id){
         console.log("LobbyAdaptor.asyncFindById()...")
         const lobby = await this.fetchJson(this.resourcesUrl + "/" + id)

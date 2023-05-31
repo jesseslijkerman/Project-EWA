@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Random;
 
 @Repository
 @Transactional
@@ -22,6 +23,12 @@ public class LobbiesRepository {
 
     public Lobby findById(int id){
         return entityManager.find(Lobby.class, id);
+    }
+
+    public int rollDice(){
+        Random random = new Random();
+        int randomNumber = random.nextInt(6) + 1;
+        return randomNumber;
     }
 
     public List<Lobby> findByUserId(int userId){
