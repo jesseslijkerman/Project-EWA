@@ -2,8 +2,8 @@ package app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +11,7 @@ import java.util.List;
 // Order is a reserved keyword, so I'm forcing hibernate to quote an identifier
 @Table(name = "`User`")
 @NamedQuery(name = "find_all_users", query = "select u from User u")
+@NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam"))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

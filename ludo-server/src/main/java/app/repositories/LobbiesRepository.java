@@ -1,12 +1,12 @@
 package app.repositories;
 
 import app.models.Lobby;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Random;
 
@@ -21,23 +21,17 @@ public class LobbiesRepository {
         return namedQuery.getResultList();
     }
 
-    public Lobby findById(int id){
+    public Lobby findById(Long id){
         return entityManager.find(Lobby.class, id);
     }
 
-    public int rollDice(){
-        Random random = new Random();
-        int randomNumber = random.nextInt(6) + 1;
-        return randomNumber;
-    }
-
-    public List<Lobby> findByUserId(int userId){
+    public List<Lobby> findByUserId(Long userId){
         TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_lobbies_by_user_id", Lobby.class);
         namedQuery.setParameter(1, userId);
         return namedQuery.getResultList();
     }
 
-    public List<Lobby> findAllJoinableLobbies(int userId){
+    public List<Lobby> findAllJoinableLobbies(Long userId){
         TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_all_joinable_lobbies", Lobby.class);
         namedQuery.setParameter(1, userId);
         return namedQuery.getResultList();
@@ -49,7 +43,7 @@ public class LobbiesRepository {
         return entityManager.merge(lobby);
     }
 
-    public Lobby deleteById(int id){
+    public Lobby deleteById(Long id){
         Lobby user = findById(id);
         entityManager.remove(user);
         return user;

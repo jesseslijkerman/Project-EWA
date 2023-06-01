@@ -8,14 +8,16 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:unit": "vitest --environment jsdom --root src/",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "start": "npx http-server -p ${PORT} ./dist"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "bootstrap": "^5.2.3",
+    "fetch-intercept": "^2.4.0",
     "http-server": "^14.1.1",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-jwt-decode": "^0.1.0",
+    "vue-router": "^4.1.6",
+    "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^2.0.1",
@@ -28,7 +30,8 @@
     "jsdom": "^20.0.3",
     "prettier": "^2.7.1",
     "vite": "^4.0.0",
-    "vitest": "^0.25.6"
+    "vitest": "^0.25.6",
+    "vue-jwt-decode": "^0.1.0"
   },
   "rules": {
     "vue/multi-word-component-names": "off",

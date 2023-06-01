@@ -26,7 +26,7 @@ public class UserLobbyController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public UserLobby findById(@PathVariable int id){
+    public UserLobby findById(@PathVariable Long id){
         UserLobby userLobby = this.userLobbyRepo.findById(id);
         if (userLobby==null){
             throw new ResourceNotFound("id-" + id);
@@ -44,7 +44,7 @@ public class UserLobbyController {
     }
 
     @PutMapping(path = "/{id}")
-    public UserLobby editLobby(@PathVariable int id, @RequestBody UserLobby userLobby){
+    public UserLobby editLobby(@PathVariable Long id, @RequestBody UserLobby userLobby){
         if (userLobby.getLobby().getId() != id){
             throw new PreConditionFailed("id-" + id + " doesn't match id of body");
         }
@@ -54,7 +54,7 @@ public class UserLobbyController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public UserLobby deleteLobby(@PathVariable int id){
+    public UserLobby deleteLobby(@PathVariable Long id){
         UserLobby userLobby = userLobbyRepo.deleteById(id);
         if (userLobby==null){
             throw new ResourceNotFound("id-" + id);
