@@ -34,114 +34,151 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': { position: 26, home: false },
-        'G': { position: 4, home: false },
-        'X': { position: 0, home: false },
-        'Y': { position: 0, home: false }
+        'R': {position: 0, home: false},
+        'G': {position: 20, home: false},
+        'X': {position: 10, home: false},
+        'Y': {position: 30, home: false}
       },
       path: [],
       startingPoints: [
-        { i: 5, j: 1 }, // Red
-        { i: 2, j: 9 }, // Green
-        { i: 9, j: 7 }, // Blue
-        { i: 7, j: 0 }  // Yellow
+        {i: 4, j: 1}, // Red
+        {i: 1, j: 9}, // Blue
+        {i: 6, j: 9}, // Yellow
+        {i: 9, j: 4}, // Green
       ]
     };
   },
-  created() {
+  mounted() {
     this.generatePath();
   },
   methods: {
-    getClass(cell) {
-      return {
-        cell: true,
-        'base-cellR': cell === 'R',
-        'base-cellG': cell === 'G',
-        'base-cellY': cell === 'Y',
-        'base-cellB': cell === 'B',
-        'path-cell': cell === 1,
-        'block-cell': cell === 'X'
-      };
-    },
-    getPawnClasses(i, j) {
-      const pawn = Object.keys(this.pawns).find(color => this.pawns[color].position === this.path.findIndex(cell => cell.i === i && cell.j === j));
-      if (pawn) {
-        return `pawn-${pawn.toLowerCase()}`;
-      }
-      return '';
-    },
-    isPawn(i, j) {
-      return Object.values(this.pawns).some(pawn => this.path[pawn.position].i === i && this.path[pawn.position].j === j);
-    },
     generatePath() {
-      const path = [];
+      // The path starts from the Red starting point and continues clockwise
+      // Define the sequence of directions
+      const directions = ['down', 'right', 'up', 'left'];
+      let directionIndex = 0;
 
-      // Path from red starting point to green starting point
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 5, j: 2 + i });
-      }
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 4 - i, j: 7 });
-      }
+      // Define the starting point
+      let i = 0, j = 0;
 
-      // Path from green starting point to blue starting point
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 3 + i, j: 8 });
-      }
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 9, j: 7 - i });
-      }
+      // Look for the first '1' on the board to start the path
+      outerLoop:
+          for (let x = 0; x < this.board.length; x++) {
+            for (let y = 0; y < this.board[x].length; y++) {
+              if (this.board[x][y] === 1) {
+                i = x;
+                j = y;
+                break outerLoop;
+              }
+            }
+          }
 
-      // Path from blue starting point to yellow starting point
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 10, j: 6 - i });
-      }
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 11 + i, j: 1 });
-      }
+      // Generate the path
+      while (this.path.length < 40) {
+        // Check if the current cell is '1'
+        if (this.board[i][j] === 1) {
+          this.path.push({i, j});
+          console.log(`Added cell to path: (${i}, ${j})`);
+        }
 
-      // Path from yellow starting point back to red starting point
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 16 - i, j: 2 });
-      }
-      for (let i = 0; i < 6; i++) {
-        path.push({ i: 5, j: 3 + i });
-      }
+        // Move to the next cell based on the current direction
+        switch (directions[directionIndex]) {
+          case 'down':
+            i++;
+            break;
+          case 'right':
+            j++;
+            break;
+          case 'up':
+            i--;
+            break;
+          case 'left':
+            j--;
+            break;
+        }
 
-      this.path = path;
+        // If we reach the edge of the board, turn to the next direction (clockwise)
+        if (i < 0 || i >= this.board.length || j < 0 || j >= this.board[i].length) {
+          directionIndex = (directionIndex + 1) % directions.length;
+          // Adjust (i, j) to be inside the board again
+          i = Math.max(0, Math.min(i, this.board.length - 1));
+          j = Math.max(0, Math.min(j, this.board[i].length - 1));
+        }
+      }
     },
-    isInHomePath(color) {
-      const pawn = this.pawns[color];
-      return this.path.slice(0, pawn.position).some(cell => this.startingPoints.some(startingPoint => startingPoint.i === cell.i && startingPoint.j === cell.j));
-    },
+
+
     rollDice() {
-      return Math.floor(Math.random() * 6) + 1;
+      this.rolled_dice = Math.floor(Math.random() * 6) + 1;
+      console.log('Rolled Dice:', this.rolled_dice);
+      return this.rolled_dice;
     },
     movePawn(color, steps) {
       const pawn = this.pawns[color];
       const currentPosition = pawn.position;
-      const newPathIndex = (currentPosition + steps) % this.path.length;
-      const newCell = this.path[newPathIndex];
 
-      // Check if the new cell is a block cell ('X')
-      if (this.board[newCell.i][newCell.j] === 'X') {
-        return; // Do not move the pawn if the cell is blocked
+      for (let step = 0; step < steps; step++) {
+        const newPathIndex = currentPosition + step + 1;
+
+        if (newPathIndex >= this.path.length) {
+          // The pawn has completed a lap
+          pawn.position = 0;
+          console.log(`${color} pawn completed a lap, reset position to 0`);
+          break;
+        }
+
+        const newCell = this.path[newPathIndex];
+
+        // Check if there is already a pawn of the same color in the new cell
+        const pawnInNewCell = this.getPawn(newCell.i, newCell.j);
+        if (pawnInNewCell && pawnInNewCell.color === color) {
+          // The pawn cannot move further
+          console.log(`${color} pawn cannot move further due to another pawn at position (${newCell.i}, ${newCell.j})`);
+          break;
+        }
+
+        // The pawn can move to the new cell
+        pawn.position = newPathIndex;
+        console.log(`${color} pawn moved to new position: ${newPathIndex}`);
       }
+    },
+    isPawn(i, j) {
+      return Object.values(this.pawns).some(pawn => {
+        const cell = this.path[pawn.position];
+        return cell && cell.i === i && cell.j === j;
+      });
+    },
 
-      // Check if there is already a pawn in the new cell
-      if (this.isPawn(newCell.i, newCell.j)) {
-        return; // Do not move the pawn if the cell is occupied by another pawn
+    getPawnClasses(i, j) {
+      const pawn = this.getPawn(i, j);
+      return pawn ? `pawn-${pawn.color.toLowerCase()}` : '';
+    },
+
+    getPawn(i, j) {
+      const pawnEntry = Object.entries(this.pawns).find(([color, pawn]) => {
+        const cell = this.path[pawn.position];
+        return cell && cell.i === i && cell.j === j;
+      });
+      return pawnEntry ? {color: pawnEntry[0], ...pawnEntry[1]} : null;
+    },
+
+    getClass(cell) {
+      if (typeof cell === 'string') {
+        switch (cell) {
+          case 'R': return 'base-cellR';
+          case 'G': return 'base-cellG';
+          case 'B': return 'block-cell';
+          case 'X': return 'base-cellB';
+          case 'Y': return 'base-cellY';
+          default: return '';
+        }
+      } else if (cell === 1) {
+        return 'path-cell';
+      } else {
+        return '';
       }
-
-      // Move the pawn
-      pawn.position = newPathIndex;
-
-      // Update the board to reflect the new pawn position
-      const previousPathIndex = (currentPosition === 0 ? this.path.length : currentPosition) - 1;
-      const previousCell = this.path[previousPathIndex];
-      this.board[previousCell.i][previousCell.j] = 1;
-      this.board[newCell.i][newCell.j] = color;
-    }}
+    }
+  }
 };
 </script>
 
