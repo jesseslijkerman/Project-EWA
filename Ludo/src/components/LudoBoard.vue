@@ -9,141 +9,142 @@
     </div>
     <button @click="movePawn('R', rollDice())">Roll Dice and Move Red Pawn</button>
     <button @click="movePawn('G', rollDice())">Roll Dice and Move Green Pawn</button>
-    <button @click="movePawn('B', rollDice())">Roll Dice and Move Blue Pawn</button>
+    <button @click="movePawn('X', rollDice())">Roll Dice and Move Blue Pawn</button>
     <button @click="movePawn('Y', rollDice())">Roll Dice and Move Yellow Pawn</button>
   </div>
 </template>
 
 <script>
-
 export default {
   name: "LudoBoard",
-  inject: ["userLobbyService", "lobbyService"],
-
   data() {
     return {
       rolled_dice: 0,
       board: [
-        [0,0,'R',0,1,1,1,0,'B',0,0],
-        [0,0,"R",0,1,0,1,0,'B',0,0],
-        ['R','R','R',0,1,0,1,0,'B','B','B'],
-        [0,0,0,0,1,0,1,0,0,0,0],
-        [2,2,2,2,2,0,3,3,3,3,3],
-        [2,0,0,0,0,0,0,0,0,0,3],
-        [2,2,2,2,2,0,3,3,3,3,3],
-        [0,0,0,0,4,0,4,0,0,0,0],
-        ['Y','Y','Y',0,4,0,4,0,'G','G','G'],
-        [0,0,'Y',0,4,0,4,0,'G',0,0],
-        [0,0,'Y',0,4,4,4,0,'G',0,0],
+        ['R', 'R', 'X', 'X', 1, 1, 1, 'X', 'X', 'B', 'B'],
+        ['R', 'R', 'X', 'X', 1, 0, 1, 'X', 'X', 'B', 'B'],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        ['X', 'X', 'X', 'X', 1, 0, 0, 'X', 'X', 'X', 'X'],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        ['G', 'G', 'X', 'X', 1, 0, 1, 'X', 'X', 'Y', 'Y'],
+        ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': {position: 6, home: false},
-        'G': {position: 0, home: false},
-        'B': {position: 0, home: false},
-        'Y': {position: 0, home: false}
+        'R': { position: 26, home: false },
+        'G': { position: 4, home: false },
+        'X': { position: 0, home: false },
+        'Y': { position: 0, home: false }
       },
       path: [],
       startingPoints: [
-        {i: 0, j: 2}, // Red
-        {i: 2, j: 9}, // Green
-        {i: 9, j: 7}, // Blue
-        {i: 7, j: 0}  // Yellow
-      ],
-      homePaths: {
-        'R': {i: 0, j: 3, direction: 'right', length: 4},
-        'G': {i: 3, j: 9, direction: 'down', length: 4},
-        'B': {i: 9, j: 6, direction: 'left', length: 4},
-        'Y': {i: 6, j: 0, direction: 'up', length: 4}
-      },
-      cellSize: 60,
+        { i: 5, j: 1 }, // Red
+        { i: 2, j: 9 }, // Green
+        { i: 9, j: 7 }, // Blue
+        { i: 7, j: 0 }  // Yellow
+      ]
     };
   },
-
   created() {
-    this.createPath();
+    this.generatePath();
   },
-
   methods: {
-    createPath() {
-      const directions = ['right', 'down', 'left', 'up'];
-      const start = {i: 0, j: 3};
-      const n = this.board.length;
-      const m = this.board[0].length;
-
-      let i = start.i;
-      let j = start.j;
-      let dir = 0;
-
-      while (!(i === start.i && j === start.j && this.path.length > 0)) {
-        this.path.push({i, j});
-        this.board[i][j] = 1;
-
-        if (directions[dir] === 'right' && j < m - 1 && this.board[i][j+1] !== 'B') j++;
-        else if (directions[dir] === 'down' && i < n - 1 && this.board[i+1][j] !== 'B') i++;
-        else if (directions[dir] === 'left' && j > 0 && this.board[i][j-1] !== 'B') j--;
-        else if (directions[dir] === 'up' && i > 0 && this.board[i-1][j] !== 'B') i--;
-        else dir = (dir + 1) % 4;
-      }
-
-      ['R', 'G', 'B', 'Y'].forEach((color, index) => {
-        let {i, j, direction, length} = this.homePaths[color];
-        for (let k = 0; k < length; k++) {
-          this.path.push({i, j});
-          this.board[i][j] = 1;
-          if (direction === 'right' && j < m - 1) j++;
-          else if (direction === 'down' && i < n - 1) i++;
-          else if (direction === 'left' && j > 0) j--;
-          else if (direction === 'up' && i > 0) i--;
-        }
-      });
-    },
-
     getClass(cell) {
       return {
         cell: true,
-        'base-cell': cell === 'B',
+        'base-cellR': cell === 'R',
+        'base-cellG': cell === 'G',
+        'base-cellY': cell === 'Y',
+        'base-cellB': cell === 'B',
         'path-cell': cell === 1,
+        'block-cell': cell === 'X'
       };
     },
-
     getPawnClasses(i, j) {
-      const pawnColor = Object.keys(this.pawns).find(color => {
-        const pawn = this.pawns[color];
-        const position = this.path[pawn.position];
-        return position && position.i === i && position.j === j;
-      });
-      return pawnColor ? `color-${pawnColor}` : '';
+      const pawn = Object.keys(this.pawns).find(color => this.pawns[color].position === this.path.findIndex(cell => cell.i === i && cell.j === j));
+      if (pawn) {
+        return `pawn-${pawn.toLowerCase()}`;
+      }
+      return '';
     },
+    isPawn(i, j) {
+      return Object.values(this.pawns).some(pawn => this.path[pawn.position].i === i && this.path[pawn.position].j === j);
+    },
+    generatePath() {
+      const path = [];
 
+      // Path from red starting point to green starting point
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 5, j: 2 + i });
+      }
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 4 - i, j: 7 });
+      }
+
+      // Path from green starting point to blue starting point
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 3 + i, j: 8 });
+      }
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 9, j: 7 - i });
+      }
+
+      // Path from blue starting point to yellow starting point
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 10, j: 6 - i });
+      }
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 11 + i, j: 1 });
+      }
+
+      // Path from yellow starting point back to red starting point
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 16 - i, j: 2 });
+      }
+      for (let i = 0; i < 6; i++) {
+        path.push({ i: 5, j: 3 + i });
+      }
+
+      this.path = path;
+    },
+    isInHomePath(color) {
+      const pawn = this.pawns[color];
+      return this.path.slice(0, pawn.position).some(cell => this.startingPoints.some(startingPoint => startingPoint.i === cell.i && startingPoint.j === cell.j));
+    },
     rollDice() {
       return Math.floor(Math.random() * 6) + 1;
     },
+    movePawn(color, steps) {
+      const pawn = this.pawns[color];
+      const currentPosition = pawn.position;
+      const newPathIndex = (currentPosition + steps) % this.path.length;
+      const newCell = this.path[newPathIndex];
 
-    isPawn(i, j) {
-      return Object.values(this.pawns).some(pawn => {
-        const position = this.path[pawn.position];
-        return position && position.i === i && position.j === j;
-      });
-    },
-
-    movePawn(pawnColor, steps) {
-      const pawn = this.pawns[pawnColor];
-      if (!pawn.home) {
-        const start = this.startingPoints[Object.keys(this.pawns).indexOf(pawnColor)];
-        const index = this.path.findIndex(p => p.i === start.i && p.j === start.j);
-        pawn.position = index + steps - 1;
-        pawn.home = true;
-      } else {
-        pawn.position += steps;
+      // Check if the new cell is a block cell ('X')
+      if (this.board[newCell.i][newCell.j] === 'X') {
+        return; // Do not move the pawn if the cell is blocked
       }
 
-      if (pawn.position >= this.path.length) {
-        pawn.position = this.path.length - 1;
+      // Check if there is already a pawn in the new cell
+      if (this.isPawn(newCell.i, newCell.j)) {
+        return; // Do not move the pawn if the cell is occupied by another pawn
       }
-    },
-  },
+
+      // Move the pawn
+      pawn.position = newPathIndex;
+
+      // Update the board to reflect the new pawn position
+      const previousPathIndex = (currentPosition === 0 ? this.path.length : currentPosition) - 1;
+      const previousCell = this.path[previousPathIndex];
+      this.board[previousCell.i][previousCell.j] = 1;
+      this.board[newCell.i][newCell.j] = color;
+    }}
 };
 </script>
+
 
 <style scoped>
 .board {
@@ -166,12 +167,28 @@ export default {
   position: relative;
 }
 
-.base-cell {
-  background-color: lightblue;
+.block-cell {
+  background-color: gray;
+}
+
+.base-cellR {
+  background-color: red;
+}
+
+.base-cellG {
+  background-color: green;
+}
+
+.base-cellY {
+  background-color: yellow;
+}
+
+.base-cellB {
+  background-color: blue;
 }
 
 .path-cell {
-  background-color: white;
+  background-color: cadetblue;
 }
 
 .pawn {
@@ -185,19 +202,23 @@ export default {
   background-color: grey;
 }
 
-.color-R {
+.cyan-cell {
+  background-color: cyan;
+}
+
+.pawn-r {
   background-color: red;
 }
 
-.color-G {
+.pawn-g {
   background-color: green;
 }
 
-.color-B {
+.pawn-b {
   background-color: blue;
 }
 
-.color-Y {
+.pawn-y {
   background-color: yellow;
 }
 </style>
