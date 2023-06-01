@@ -1,5 +1,4 @@
 export class Lobby{
-    id;
     created;
     gameMode;
     maxPlayers;

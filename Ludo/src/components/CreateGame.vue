@@ -112,7 +112,11 @@ import {UserLobby} from "../models/UserLobby";
 
 export default {
   name: "CreateGame",
-  inject: ["lobbyService"],
+  inject: ["lobbyService", "sessionService"],
+  created() {
+    this.currentAccount = this.sessionService.currentAccount;
+    console.log(this.currentAccount.id)
+  },
   data() {
     return {
       gameMode: null,
@@ -120,18 +124,21 @@ export default {
       name: null,
       password: null,
       turnTimer: null,
+      currentAccount: null
     };
   },
   methods: {
     async createLobby(){
-      var now = new Date();
-      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
-      console.log(lobby)
+      let now = new Date();
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer, "INACTIVE", 1);
+      console.log(JSON.stringify(lobby))
 
       let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))
 
-      let userLobby = new UserLobby(1,1,1,1)
-      await this.lobbyService.asyncAddUserLobby(newLobby.id, 1, JSON.stringify(userLobby))
+      let userLobby = new UserLobby("RED",1)
+
+      console.log("Account Id = " + this.sessionService.currentAccount.id + "Lobby id = " + newLobby.id)
+      await this.lobbyService.asyncAddUserLobby(newLobby.id, this.sessionService.currentAccount.id, JSON.stringify(userLobby))
 
       this.$router.push("/ongoing-matches")
     }

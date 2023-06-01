@@ -19,21 +19,21 @@ export class FetchInterceptor{
     }
 
     request(url, options) {
-        let token = FetchInterceptor.theInstance.session.currentToken
+        let token = FetchInterceptor.theInstance.session.currentToken;
 
         if (token == null) {
             // no change
             return [url, options];
-        } else if (options == null) {
-            // the authorisation header is the only custom option
-            return [url, { headers: {Authorization: token}}]
         } else {
-            // add authorization header to other options
-            let newOptions = {...options};
-            newOptions.headers = {
-                Authorization: token
-            }
-            return  [url, newOptions]
+            // If options are null, initialize as an empty object
+            options = options || {};
+            // If options.headers is null, initialize as an empty object
+            options.headers = options.headers || {};
+
+            // Add the authorization header to existing headers
+            options.headers['Authorization'] = token;
+
+            return [url, options];
         }
     }
 

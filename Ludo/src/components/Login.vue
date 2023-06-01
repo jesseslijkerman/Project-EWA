@@ -8,7 +8,7 @@
       <div class="card card-md">
         <div class="card-body">
           <h2 class="h2 text-center mb-4">Login to your account</h2>
-          <form @submit.prevent method="get" autocomplete="off" novalidate="">
+          <form @submit.prevent autocomplete="off" novalidate="">
             <div class="mb-3"><label class="form-label">Email address</label> <input type="email"
                                                                                      v-model="email"
                                                                                      class="form-control"
@@ -45,6 +45,7 @@
             <div class="form-footer">
               <button class="btn btn-primary w-100" @click="signIn();">Sign in</button>
             </div>
+            <p class="errormessage">{{errorMessage}}</p>
           </form>
         </div>
       </div>
@@ -67,8 +68,6 @@ export default {
     // let password = '';
     // let currentToken = this.sessionService.getTokenFromBrowserStorage();
     // let currentUserName = localStorage.getItem('userName');
-    let shouldWarnUser = false;
-    let warnUser = "These login credentials add up to nothing...";
 
 
     return {
@@ -76,14 +75,19 @@ export default {
       email: null,
       password: null,
       currentUserName: null,
-      warnUser: shouldWarnUser,
-      shouldWarnUser: warnUser
+      errorMessage: null
     };
   },
   methods: {
     async signIn() {
-      await this.sessionService.asyncSignIn(this.email, this.password);
-      this.$router.push("/ongoing-matches");
+      this.errorMessage = null
+      let account = await this.sessionService.asyncSignIn(this.email, this.password);
+      console.log("account " + account)
+      if (account == null){
+        this.errorMessage = "Could not authenticate with provided credentials"
+      } else {
+        this.$router.push("/ongoing-matches")
+      }
     }
 
   },
