@@ -6,15 +6,19 @@ export class Lobby{
     name;
     password;
     turnTimer;
+    status;
+    whoseTurn;
 
 
-    constructor(created, gameMode, maxPlayers, name, password, turnTimer) {
+    constructor(created, gameMode, maxPlayers, name, password, turnTimer, status, whoseTurn) {
         this.created = created;
         this.gameMode = gameMode;
         this.maxPlayers = maxPlayers;
         this.name = name;
         this.password = password;
         this.turnTimer = turnTimer;
+        this.status = status;
+        this.whoseTurn = whoseTurn;
     }
 
     static copyConstructor(lobby){

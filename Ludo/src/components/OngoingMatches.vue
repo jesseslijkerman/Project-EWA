@@ -31,17 +31,19 @@
 
 export default {
   name: "OngoingMatches",
-  inject: ["lobbyService"],
-  async created(){
-    this.matches = await this.lobbyService.asyncFindByUserId("1")
-    console.log(this.matches)
-    console.log(this.lobbyService.asyncFindById(1))
-  },
+  inject: ["lobbyService", "sessionService"],
   data() {
     return {
       matches: [],
       isJoinable: false,
+      currentAccount: null
     };
+  },
+  async created(){
+    this.currentAccount = this.sessionService.currentAccount
+    this.matches = await this.lobbyService.asyncFindByUserId(this.currentAccount.id)
+    console.log(this.matches)
+    console.log(this.lobbyService.asyncFindById(this.currentAccount.id))
   },
   methods: {
     formatDateTime(dateTimeStr) {
@@ -50,9 +52,9 @@ export default {
     },
     async loadLobbies() {
       if (!this.isJoinable) {
-        this.matches = await this.lobbyService.asyncFindByUserId("1");
+        this.matches = await this.lobbyService.asyncFindByUserId(this.currentAccount.id);
       } else {
-        this.matches = await this.lobbyService.asyncAllJoinedLobbies("1");
+        this.matches = await this.lobbyService.asyncAllJoinedLobbies(this.currentAccount.id);
       }
     },
     async joinableLobbies(){
