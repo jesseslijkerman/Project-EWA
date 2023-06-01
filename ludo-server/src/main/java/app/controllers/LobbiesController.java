@@ -39,7 +39,7 @@ public class LobbiesController {
     }
 
     @GetMapping(path = "/{id}/users", produces = "application/json")
-    public List<UserLobby> getAllUsersInLobby(@PathVariable Long id){
+    public List<String> getAllUsersInLobby(@PathVariable Long id){
         return this.userLobbyRepo.findAllUsersInLobby(id);
     }
 

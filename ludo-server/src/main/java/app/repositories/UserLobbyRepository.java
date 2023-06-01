@@ -24,8 +24,8 @@ import java.util.List;
         return namedQuery.getResultList();
     }
 
-    public List<UserLobby> findAllUsersInLobby(Long id){
-        TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", UserLobby.class);
+    public List<String> findAllUsersInLobby(Long id){
+        TypedQuery<String> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", String.class);
         namedQuery.setParameter(1, id);
         return namedQuery.getResultList();
     }
