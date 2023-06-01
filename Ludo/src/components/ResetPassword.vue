@@ -35,9 +35,7 @@ export default {
   methods: {
     async handlePassChange() {
 
-      const result = {
-        password: this.entered_new_password
-      };
+
 
       const newPass = this.entered_new_password
       var val = localStorage.getItem("user_info")
@@ -45,7 +43,7 @@ export default {
 
       router.push('/ongoing-matches')
 
-      await this.registerService.asyncSave()
+      await this.registerService.changePass()
 
     },
   }

@@ -25,4 +25,10 @@ public class UserService {
         user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
+
+    public User encodePassword(User user){
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        return userRepository.save(user);
+    }
 }

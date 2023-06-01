@@ -12,6 +12,7 @@ import java.util.List;
 @Table(name = "`User`")
 @NamedQuery(name = "find_all_users", query = "select u from User u")
 @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam"))
+@NamedQuery(name = "change_password", query = ("update User user set user.password = password where user.id = :idParam"))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

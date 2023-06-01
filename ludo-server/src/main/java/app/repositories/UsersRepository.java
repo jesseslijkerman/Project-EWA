@@ -35,6 +35,12 @@ public class UsersRepository {
         return (User) query.getSingleResult();
     }
 
+    public User changePassword(User user){
+        TypedQuery<User> query = this.entityManager.createNamedQuery("change_password", User.class).setParameter("idParam", user.getId());
+        query.executeUpdate();
+        return user;
+    }
+
     public User deleteById(Long id){
         User user = findById(id);
         entityManager.remove(user);

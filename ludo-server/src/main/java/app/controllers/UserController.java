@@ -48,12 +48,34 @@ public class UserController {
 
     @PutMapping(path = "/{id}")
     public User editUser(@PathVariable Long id, @RequestBody User user){
-        if (user.getId() != id){
+//        if (user.getId() != id){
+//            throw new PreConditionFailed("id-" + id + " doesn't match id of body");
+//        }
+//
+//        usersRepo.save(user);
+//        return user;
+        User existingUser = usersRepo.findById(id);
+        if (existingUser == null) {
+            throw new ResourceNotFound("id-" + id);
+        }
+
+        if (!existingUser.getId().equals(user.getId())) {
             throw new PreConditionFailed("id-" + id + " doesn't match id of body");
         }
 
-        usersRepo.save(user);
-        return user;
+        // Update the properties of the existingUser with the values from the user object
+        existingUser.setUsername(user.getUsername());
+        existingUser.setPassword(user.getPassword());
+        // ... update other properties as needed
+
+        usersRepo.save(existingUser);
+        return existingUser;
+
+    }
+
+    @PutMapping(path = "/changePassword/{id}")
+    public User changePassword (@RequestBody User user){
+        return usersRepo.changePassword(userService.encodePassword(user));
     }
 
     @DeleteMapping(path = "/{id}")
