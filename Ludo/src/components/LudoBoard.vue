@@ -24,16 +24,17 @@ export default {
     return {
       rolled_dice: 0,
       board: [
-        [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
-        [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],
-        ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B'],
-        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
-        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
-        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
-        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
-        ['B', 'B', 'B', 4, 0, 0, 4, 'B', 'B', 'B'],
-        [0, 0, 'Y', 4, 0, 0, 4, 'B', 0, 0],
-        [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]
+        [0,0,'R',0,1,1,1,0,'B',0,0],
+        [0,0,"R",0,1,0,1,0,'B',0,0],
+        ['R','R','R',0,1,0,1,0,'B','B','B'],
+        [0,0,0,0,1,0,1,0,0,0,0],
+        [2,2,2,2,2,0,3,3,3,3,3],
+        [2,0,0,0,0,0,0,0,0,0,3],
+        [2,2,2,2,2,0,3,3,3,3,3],
+        [0,0,0,0,4,0,4,0,0,0,0],
+        ['Y','Y','Y',0,4,0,4,0,'G','G','G'],
+        [0,0,'Y',0,4,0,4,0,'G',0,0],
+        [0,0,'Y',0,4,4,4,0,'G',0,0],
       ],
       pawns: {
         'R': {position: 6, home: false},
@@ -49,10 +50,10 @@ export default {
         {i: 7, j: 0}  // Yellow
       ],
       homePaths: {
-        'R': {i: 0, j: 3, direction: 'right', length: 5},
-        'G': {i: 3, j: 9, direction: 'down', length: 5},
-        'B': {i: 9, j: 6, direction: 'left', length: 5},
-        'Y': {i: 6, j: 0, direction: 'up', length: 5}
+        'R': {i: 0, j: 3, direction: 'right', length: 4},
+        'G': {i: 3, j: 9, direction: 'down', length: 4},
+        'B': {i: 9, j: 6, direction: 'left', length: 4},
+        'Y': {i: 6, j: 0, direction: 'up', length: 4}
       },
       cellSize: 60,
     };
@@ -149,8 +150,8 @@ export default {
   display: flex;
   flex-direction: column;
   margin: auto;
-  width: 600px;
-  height: 600px;
+  width: 700px;
+  height: 700px;
 }
 
 .row {
