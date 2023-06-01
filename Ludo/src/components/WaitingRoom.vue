@@ -114,16 +114,24 @@ export default {
 
     async startMatch() {
       await this.lobbyService.asyncStartMatch(this.lobbyNumber);
-    }
+    },
+
   },
   created() {
     this.getLobbyInfo();
     this.checkHost();
-    setInterval(() => {
-      location.reload()
-    }, 5000);
+},
 
-  },
+  mounted() {
+    const refreshInterval = setInterval(() => {
+      if (this.lobbyData.status === 'ACTIVE') {
+        clearInterval(refreshInterval);
+      } else {
+        location.reload();
+      }
+    }, 5000);
+  }
+
 };
 </script>
 
