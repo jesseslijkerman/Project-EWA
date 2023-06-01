@@ -65,50 +65,74 @@
       </div>
     </div>
   </div>
-
-  <button v-if="isHost" class="start-match-button" @click="startMatch">Start Match</button>
+<div v-if="isHost">
+  <button class="start-match-button" @click="startMatch" v-if="!matchStarted" >Start match</button>
+  <button class="start-match-button" @click="enterGame" v-else>{{ gameStartedText }}</button>
+</div>
 </template>
 
 <script>
 export default {
   name: "WaitingRoom",
-  inject: ["lobbyService"],
+  inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {
       lobbyData: null,
       isHost: false,
       playerData: null,
-      lobbyNumber: null
+      lobbyNumber: null,
+      matchStarted: false,
+      gameStartedText: "Match has been started, click here to enter the game!"
     };
   },
   methods: {
+
     async getLobbyInfo() {
       this.lobbyNumber = parseInt(window.location.pathname.split('/').pop());
       this.lobbyData = await this.lobbyService.asyncFindById(this.lobbyNumber);
       this.playerData = await this.lobbyService.asyncFindUsersInLobby(this.lobbyNumber)
       console.log(this.lobbyData);
+      console.log(this.playerData);
+    },
+
+    enterGame() {
+      const currentUrl = window.location.href;
+      const newUrl = currentUrl + "/play";
+      window.location.href = newUrl;
     },
 
 
-    // vervamg john123 met username van ingelogde persoon
     async removeFromLobby(){
-      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, "john123")
+      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, this.sessionService.user);
     },
 
     // Check if currently logged in user is the host
-    // async checkHost() {
-    //   if(this.playerData[0].equals(currentLoggedInUser)) {
-    //     this.isHost = true;
-    //   }
-    // },
+    async checkHost() {
+      console.log(this.lobbyData);
+      if(this.sessionService.color === "RED") {
+        this.isHost = true;
+      }
+    },
 
-    async startMatch() {
-      await this.lobbyService.startMatch();
+    checkMatchStatus() {
+      const matchStatus = localStorage.getItem("matchStarted");
+      if (matchStatus) {
+        this.matchStarted = true;
+      }
+    },
+
+    startMatch() {
+      this.matchStarted = true;
+      localStorage.setItem("matchStarted", true);
     }
   },
   created() {
+    this.checkMatchStatus();
     this.getLobbyInfo();
-    // this.checkHost();
+    this.checkHost();
+    setInterval(() => {
+      location.reload()
+    }, 5000);
 
   },
 };
