@@ -2,7 +2,7 @@
   <div class="leaveButton">
     <a @click="removeFromLobby">Leave lobby</a>
   </div>
-  <h2 class="waiting-message">Waiting for host to start the match...</h2>
+  <h2 v-if="this.lobbyData.status === 'INACTIVE'" class="waiting-message">Waiting for host to start the match...</h2>
   <div class="page-container">
 
     <br>
