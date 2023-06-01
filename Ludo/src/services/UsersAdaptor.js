@@ -32,7 +32,7 @@ export class UsersAdaptor {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(users),
+      body: users,
     });
     return User.copyConstructor(user);
   }

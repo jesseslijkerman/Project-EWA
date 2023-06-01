@@ -1,13 +1,14 @@
 package app.repositories;
 
 import app.models.UserLobby;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
     @Repository
@@ -23,13 +24,13 @@ import java.util.List;
         return namedQuery.getResultList();
     }
 
-    public List<UserLobby> findAllUsersInLobby(int id){
+    public List<UserLobby> findAllUsersInLobby(Long id){
         TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", UserLobby.class);
         namedQuery.setParameter(1, id);
         return namedQuery.getResultList();
     }
 
-    public void removeUserFromLobby(String username, int lobbyId) {
+    public void removeUserFromLobby(String username, Long lobbyId) {
         Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
         namedQuery.setParameter("username", username);
         namedQuery.setParameter("lobbyId", lobbyId);
@@ -40,12 +41,12 @@ import java.util.List;
         return entityManager.merge(userLobby);
     }
 
-    public UserLobby findById(int id){
+    public UserLobby findById(Long id){
             return entityManager.find(UserLobby.class, id);
     }
 
 
-    public UserLobby deleteById(int id){
+    public UserLobby deleteById(Long id){
             UserLobby lobby = findById(id);
             entityManager.remove(lobby);
             return lobby;

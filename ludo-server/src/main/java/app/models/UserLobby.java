@@ -2,7 +2,7 @@ package app.models;
 
 import app.compositeKeys.UserLobbyPK;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @IdClass(UserLobbyPK.class)
