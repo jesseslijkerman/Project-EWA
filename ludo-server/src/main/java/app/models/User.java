@@ -1,18 +1,16 @@
 package app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-// Order is a reserved keyword, so I'm forcing hibernate to quote an identifier
+// User is a reserved keyword, so I'm forcing hibernate to quote an identifier
 @Table(name = "`User`")
 @NamedQuery(name = "find_all_users", query = "select u from User u")
 @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam"))
-@NamedQuery(name = "change_password", query = ("update User user set user.password = password where user.id = :idParam"))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -31,14 +31,7 @@ public class UsersRepository {
 
     public User findByEmail(String email){
         TypedQuery<User> query = this.entityManager.createNamedQuery("findUserByEmail", User.class).setParameter("emailParam", email);
-
         return (User) query.getSingleResult();
-    }
-
-    public User changePassword(User user){
-        TypedQuery<User> query = this.entityManager.createNamedQuery("change_password", User.class).setParameter("idParam", user.getId());
-        query.executeUpdate();
-        return user;
     }
 
     public User deleteById(Long id){

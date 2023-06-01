@@ -11,13 +11,13 @@ import javax.persistence.*;
 @NamedQuery(name = "remove_user_from_lobby", query = "DELETE FROM UserLobby ul WHERE ul.user.id IN (SELECT u.id FROM User u WHERE u.username = :username) AND ul.lobby.id = :lobbyId")
 public class UserLobby {
     @Id
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
     @Id
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "lobby_id")
     @JsonIgnore
     private Lobby lobby;
