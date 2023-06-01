@@ -62,6 +62,16 @@ public class LobbiesController {
         return this.lobbyRepo.findAllJoinableLobbies(userId);
     }
 
+    @PutMapping(path = "/{id}/start")
+    public ResponseEntity<String> startLobby(@PathVariable Long id){
+        Lobby lobby = lobbyRepo.findById(id);
+        lobby.setStatus("ACTIVE");
+        lobbyRepo.save(lobby);
+
+        return ResponseEntity.ok("Lobby status updated successfully.");
+    }
+
+
     @PostMapping(path = "")
     public ResponseEntity<Object> createLobby(@RequestBody Lobby lobby){
         Lobby createdLobby = lobbyRepo.save(lobby);

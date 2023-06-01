@@ -119,13 +119,15 @@ export default {
       maxPlayers: null,
       name: null,
       password: null,
+      status: 'INACTIVE',
       turnTimer: null,
+      whoseTurn: 1
     };
   },
   methods: {
     async createLobby(){
       var now = new Date();
-      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.status, this.turnTimer, this.whoseTurn);
       console.log(lobby)
 
       let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))
