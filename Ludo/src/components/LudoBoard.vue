@@ -18,11 +18,11 @@
 
 export default {
   name: "LudoBoard",
-  components: {},
-  inject: ["userLobbyService"],
+  inject: ["userLobbyService", "lobbyService"],
 
   data() {
     return {
+      rolled_dice: 0,
       board: [
         [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
         [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],

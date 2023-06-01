@@ -11,7 +11,7 @@
     </div>
 
     <div class="right">
-      <a :class="{ active: currentRoute === '/reset-password' }" to="/reset-password">Reset password</a>
+      <a :class="{ active: currentRoute === '/reset-password' }" href="/reset-password">Reset password</a>
     </div>
 
   </div>
