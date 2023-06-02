@@ -23,6 +23,7 @@ public class UserLobby {
     private Lobby lobby;
 
     private String color;
+    private int playerNumber;
 
     public UserLobby() {
     }
@@ -59,5 +60,13 @@ public class UserLobby {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
+
+    public void setPlayerNumber(int playerNumber) {
+        this.playerNumber = playerNumber;
     }
 }

@@ -26,7 +26,7 @@ export default {
       userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies"),
 
       // reactive, stateful services
-      sessionService: this.theSessionSbService
+      sessionService: this.theSessionSbService,
 
     }
   }

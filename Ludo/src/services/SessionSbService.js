@@ -63,8 +63,8 @@ export class SessionSbService {
         let jsonAccount = window.sessionStorage.getItem(this.BROWSER_STORAGE_ITEM_NAME+"_ACC");
 
         if (this.currentToken == null) {
-            this.currentToken = localStorage.getItem(this.BROWSER_STORAGE_ITEM_NAME)
-            this.currentAccount = localStorage.getItem(this.BROWSER_STORAGE_ITEM_NAME+"_ACC")
+            this.currentToken = localStorage.getItem(this.BROWSER_STORAGE_ITEM_NAME);
+            this.currentAccount = localStorage.getItem(this.BROWSER_STORAGE_ITEM_NAME+"_ACC");
         }
         if (jsonAccount != null) {
             this.currentAccount = JSON.parse(jsonAccount);

@@ -1,21 +1,13 @@
 
 export class UserLobby {
 
-    user;
-    lobby;
-    pawnPosition1;
-    pawnPosition2;
-    pawnPosition3;
-    pawnPosition4;
+    color;
+    playerNumber;
 
 
-    constructor(user, lobby, pawnPosition1, pawnPosition2, pawnPosition3, pawnPosition4) {
-        this.user = user;
-        this.lobby = lobby;
-        this.pawnPosition1 = pawnPosition1;
-        this.pawnPosition2 = pawnPosition2;
-        this.pawnPosition3 = pawnPosition3;
-        this.pawnPosition4 = pawnPosition4;
+    constructor(color, playerNumber) {
+        this.color = color;
+        this.playerNumber = playerNumber;
     }
 
     static copyConstructor(userLobby) {

@@ -20,12 +20,14 @@
 <script>
 export default {
   name: "NavBar",
+  inject: ['sessionService'],
   methods: {
     confirmLogout() {
       if (confirm("Are you sure you want to sign out?")) {
         // logout functionaliteit
         console.log("User confirmed sign out.");
-        this.$router.push("/login")
+        this.sessionService.signOut();
+        this.$router.push("/login");
       } else {
         console.log("User cancelled sign out.");
       }

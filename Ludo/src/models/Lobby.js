@@ -1,5 +1,4 @@
 export class Lobby{
-    id;
     created;
     gameMode;
     maxPlayers;
@@ -7,10 +6,11 @@ export class Lobby{
     password;
     status;
     turnTimer;
+    status;
     whoseTurn;
 
 
-    constructor(created, gameMode, maxPlayers, name, password, status, turnTimer, whoseTurn) {
+    constructor(created, gameMode, maxPlayers, name, password, turnTimer, status, whoseTurn) {
         this.created = created;
         this.gameMode = gameMode;
         this.maxPlayers = maxPlayers;
@@ -18,6 +18,7 @@ export class Lobby{
         this.password = password;
         this.status = status;
         this.turnTimer = turnTimer;
+        this.status = status;
         this.whoseTurn = whoseTurn;
     }
 
