@@ -53,14 +53,10 @@ export default {
   },
   methods: {
     generatePath() {
-      // The path starts from the Red starting point and continues clockwise
-      // Define the sequence of directions
-      const directions = ['down', 'right', 'up', 'left'];
-      let directionIndex = 0;
+      const directions = ['right', 'down', 'right', 'down', 'left', 'down', 'left', 'up', 'left', 'up', 'right', 'up'];
+      const steps = [2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4];
 
-      // Define the starting point
       let i = 0, j = 0;
-
       // Look for the first '1' on the board to start the path
       outerLoop:
           for (let x = 0; x < this.board.length; x++) {
@@ -73,36 +69,27 @@ export default {
             }
           }
 
-      // Generate the path
-      while (this.path.length < 40) {
-        // Check if the current cell is '1'
-        if (this.board[i][j] === 1) {
-          this.path.push({i, j});
-          console.log(`Added cell to path: (${i}, ${j})`);
-        }
-
-        // Move to the next cell based on the current direction
-        switch (directions[directionIndex]) {
-          case 'down':
-            i++;
-            break;
-          case 'right':
-            j++;
-            break;
-          case 'up':
-            i--;
-            break;
-          case 'left':
-            j--;
-            break;
-        }
-
-        // If we reach the edge of the board, turn to the next direction (clockwise)
-        if (i < 0 || i >= this.board.length || j < 0 || j >= this.board[i].length) {
-          directionIndex = (directionIndex + 1) % directions.length;
-          // Adjust (i, j) to be inside the board again
-          i = Math.max(0, Math.min(i, this.board.length - 1));
-          j = Math.max(0, Math.min(j, this.board[i].length - 1));
+      // Follow the hard coded path
+      for (let dirIndex = 0; dirIndex < directions.length; dirIndex++) {
+        for (let step = 0; step < steps[dirIndex]; step++) {
+          switch (directions[dirIndex]) {
+            case 'down':
+              i++;
+              break;
+            case 'right':
+              j++;
+              break;
+            case 'up':
+              i--;
+              break;
+            case 'left':
+              j--;
+              break;
+          }
+          if (this.board[i][j] === 1) {
+            this.path.push({i, j});
+            console.log(`Added cell to path: (${i}, ${j})`);
+          }
         }
       }
     },
