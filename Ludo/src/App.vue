@@ -40,11 +40,11 @@ export default {
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-  
-}
+/*header {*/
+/*  line-height: 1.5;*/
+/*  min-height: 100vh;*/
+/*  */
+/*}*/
 
 .logo {
   display: block;

@@ -53,6 +53,7 @@ export default {
   margin-bottom: 15px;
   font-size: 17px;
   cursor: pointer;
+  z-index: 9999;
 }
 
 div.right{
