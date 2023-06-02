@@ -15,7 +15,6 @@
         <button type="button" class="btn btn-primary btn-block mb-4" v-on:click="handlePassChange">Change password</button>
       </div>
 
-
     </form>
   </div>
 </template>
@@ -24,7 +23,6 @@
 import router from "../router";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
   inject: ["registerService"],
   name: "ResetPassword",
   data() {
@@ -35,15 +33,12 @@ export default {
   methods: {
     async handlePassChange() {
 
-
-
-      const newPass = this.entered_new_password
       var val = localStorage.getItem("user_info")
-      var object = JSON.parse(val)
+      var object = JSON.parse(val, this.entered_new_password)
 
       router.push('/ongoing-matches')
 
-      await this.registerService.changePass()
+      await this.registerService.changePass(object)
 
     },
   }

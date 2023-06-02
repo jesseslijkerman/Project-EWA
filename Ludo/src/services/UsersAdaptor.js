@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import {Lobby} from "@/models/Lobby";
 
 export class UsersAdaptor {
   resourcesUrl;
@@ -37,14 +38,15 @@ export class UsersAdaptor {
     return User.copyConstructor(user);
   }
 
-  async changePass(newPassword){
-    const pass = await this.fetchJson(this.resourcesUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPassword),
-
-  });
-
-}}
+  async changePass(user){
+      console.log("LobbyAdaptor.asyncDeleteById()...");
+      const password = this.fetchJson(this.resourcesUrl + "/changePassword/" + user.id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: user
+      });
+      return User.copyConstructor(password);
+    }
+}
