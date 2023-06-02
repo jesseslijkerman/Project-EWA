@@ -33,8 +33,13 @@ public class LobbiesController {
         return this.lobbyRepo.findAll();
     }
 
+    @GetMapping(path = "/roll-dice", produces = "application/json")
+    public int rollDice(){
+        return this.lobbyRepo.rollDice();
+    }
+
     @GetMapping(path = "/{id}/users", produces = "application/json")
-    public List<UserLobby> getAllUsersInLobby(@PathVariable Long id){
+    public List<String> getAllUsersInLobby(@PathVariable Long id){
         return this.userLobbyRepo.findAllUsersInLobby(id);
     }
 
@@ -56,6 +61,16 @@ public class LobbiesController {
     public List<Lobby> findAllJoinableLobbies(@PathVariable Long userId){
         return this.lobbyRepo.findAllJoinableLobbies(userId);
     }
+
+    @PutMapping(path = "/{id}/start")
+    public ResponseEntity<String> startLobby(@PathVariable Long id){
+        Lobby lobby = lobbyRepo.findById(id);
+        lobby.setStatus("ACTIVE");
+        lobbyRepo.save(lobby);
+
+        return ResponseEntity.ok("Lobby status updated successfully.");
+    }
+
 
     @PostMapping(path = "")
     public ResponseEntity<Object> createLobby(@RequestBody Lobby lobby){

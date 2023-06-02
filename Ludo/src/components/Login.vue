@@ -49,7 +49,7 @@
           </form>
         </div>
       </div>
-      <div class="text-center text-muted mt-3"> Don't have account yet? <a href="./sign-up.html" tabindex="-1">Sign
+      <div class="text-center text-muted mt-3"> Don't have account yet? <a href="./register" tabindex="-1">Sign
         up</a></div>
     </div>
   </div>

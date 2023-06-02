@@ -20,12 +20,15 @@ export class LobbyAdaptor{
         }
     }
 
-
-
     async asyncFindAll(){
         console.log("LobbyAdaptor.asyncFindAll()...")
         const lobbies = await this.fetchJson(this.resourcesUrl);
         return lobbies?.map(s => Lobby.copyConstructor(s));
+    }
+
+    async asyncRollDice(){
+        const diceroll = await this.fetchJson(this.resourcesUrl + "/roll-dice")
+        return diceroll
     }
 
     async asyncFindById(id){
@@ -82,6 +85,13 @@ export class LobbyAdaptor{
             method: "DELETE"
         });
         return Lobby.copyConstructor(lobby);
+    }
+
+    async asyncStartMatch(lobbyId){
+        const lobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/start", {
+            method: "PUT"
+        });
+        return Lobby.copyConstructor(lobby)
     }
 
     async asyncRemoveUserFromLobby(lobbyId, username){

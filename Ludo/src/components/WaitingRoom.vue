@@ -2,7 +2,7 @@
   <div class="leaveButton">
     <a @click="removeFromLobby">Leave lobby</a>
   </div>
-  <h2 class="waiting-message">Waiting for host to start the match...</h2>
+  <h2 v-if="this.lobbyData.status === 'INACTIVE'" class="waiting-message">Waiting for host to start the match...</h2>
   <div class="page-container">
 
     <br>
@@ -65,52 +65,73 @@
       </div>
     </div>
   </div>
-
-  <button v-if="isHost" class="start-match-button" @click="startMatch">Start Match</button>
+<div v-if="isHost">
+  <button class="start-match-button" @click="startMatch" v-if="this.lobbyData.status === 'INACTIVE'" >Start match</button>
+</div>
+  <button class="start-match-button" @click="enterGame" v-if="this.lobbyData.status === 'ACTIVE'">{{ gameStartedText }}</button>
 </template>
 
 <script>
 export default {
   name: "WaitingRoom",
-  inject: ["lobbyService"],
+  inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {
       lobbyData: null,
       isHost: false,
       playerData: null,
-      lobbyNumber: null
+      lobbyNumber: null,
+      gameStartedText: "Match has been started, click here to enter the game!"
     };
   },
   methods: {
+
     async getLobbyInfo() {
       this.lobbyNumber = parseInt(window.location.pathname.split('/').pop());
       this.lobbyData = await this.lobbyService.asyncFindById(this.lobbyNumber);
       this.playerData = await this.lobbyService.asyncFindUsersInLobby(this.lobbyNumber)
       console.log(this.lobbyData);
+      console.log(this.playerData);
     },
 
+    enterGame() {
+      const currentUrl = window.location.href;
+      const newUrl = currentUrl + "/play";
+      window.location.href = newUrl;
+    },
 
-    // vervamg john123 met username van ingelogde persoon
     async removeFromLobby(){
-      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, "john123")
+      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, this.sessionService.user);
     },
 
     // Check if currently logged in user is the host
-    // async checkHost() {
-    //   if(this.playerData[0].equals(currentLoggedInUser)) {
-    //     this.isHost = true;
-    //   }
-    // },
+    async checkHost() {
+      console.log(this.lobbyData);
+      if(this.sessionService.color === "RED") {
+        this.isHost = true;
+      }
+    },
 
     async startMatch() {
-      await this.lobbyService.startMatch();
-    }
+      await this.lobbyService.asyncStartMatch(this.lobbyNumber);
+    },
+
   },
   created() {
     this.getLobbyInfo();
-    // this.checkHost();
+    this.checkHost();
+},
 
-  },
+  mounted() {
+    const refreshInterval = setInterval(() => {
+      if (this.lobbyData.status === 'ACTIVE') {
+        clearInterval(refreshInterval);
+      } else {
+        location.reload();
+      }
+    }, 5000);
+  }
+
 };
 </script>
 

@@ -4,6 +4,7 @@ export class Lobby{
     maxPlayers;
     name;
     password;
+    status;
     turnTimer;
     status;
     whoseTurn;
@@ -15,6 +16,7 @@ export class Lobby{
         this.maxPlayers = maxPlayers;
         this.name = name;
         this.password = password;
+        this.status = status;
         this.turnTimer = turnTimer;
         this.status = status;
         this.whoseTurn = whoseTurn;

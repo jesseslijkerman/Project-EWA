@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Random;
 
 @Repository
 @Transactional
@@ -23,6 +24,14 @@ public class LobbiesRepository {
     public Lobby findById(Long id){
         return entityManager.find(Lobby.class, id);
     }
+
+
+    public int rollDice(){
+        Random random = new Random();
+        int randomNumber = random.nextInt(6) + 1;
+        return randomNumber;
+    }
+
 
     public List<Lobby> findByUserId(Long userId){
         TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_lobbies_by_user_id", Lobby.class);

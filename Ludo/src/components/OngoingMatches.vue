@@ -141,7 +141,6 @@ export default {
 
 .container {
   position: relative;
-  margin: 20px;
 }
 
 .header {
