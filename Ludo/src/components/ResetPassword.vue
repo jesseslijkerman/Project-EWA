@@ -34,7 +34,9 @@ export default {
     async handlePassChange() {
 
       var val = localStorage.getItem("user_info")
+      console.log(val)
       var object = JSON.parse(val, this.entered_new_password)
+      console.log(object)
 
       router.push('/ongoing-matches')
 
