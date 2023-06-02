@@ -161,7 +161,7 @@ export default {
       this.whichTurn = await this.userLobbyService.asyncWhoseTurn(this.lobbyNumber)
       this.whichUserTurn = await this.registerService.asyncFindById(this.whichTurn)
       // this.currentColor = await this.userLobbyService.asyncFindById(this.lobbyNumber)
-      console.log(this.currentColor)
+      console.log(this.loggedInUser)
       console.log(this.whichTurn)
       if(this.whichTurn == this.sessionService.currentAccount.id){
         this.canIPlay = true;

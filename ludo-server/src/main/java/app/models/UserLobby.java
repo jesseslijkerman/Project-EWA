@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @IdClass(UserLobbyPK.class)
 @NamedQuery(name = "find_all_user_lobbies", query = "select ul from UserLobby ul")
+@NamedQuery(name = "get_player_number", query = "SELECT ul.playerNumber FROM UserLobby ul JOIN ul.lobby lobby WHERE lobby.id = :lobbyId AND ul.user.id = :userId")
 @NamedQuery(name="find_user_lobby", query = "select ul from UserLobby ul WHERE ul.lobby.id = ?1")
 @NamedQuery(name = "find_users_in_lobby", query = "select ul.user.username from UserLobby ul where ul.lobby.id= ?1 ORDER BY ul.playerNumber ASC")
 @NamedQuery(name = "remove_user_from_lobby", query = "DELETE FROM UserLobby ul WHERE ul.user.id IN (SELECT u.id FROM User u WHERE u.username = :username) AND ul.lobby.id = :lobbyId")

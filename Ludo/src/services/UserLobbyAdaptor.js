@@ -36,6 +36,11 @@ export class UserLobbyAdaptor{
         return UserLobby.copyConstructor(userLobby)
     }
 
+    async asyncGetPlayerNumber(lobbyId, userId){
+        const playerNumber = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/" + userId + "/player_number")
+        return playerNumber
+    }
+
     async asyncSave(userLobby) {
         console.log("LobbyAdaptor.asyncSave()...")
         const selectedUserLobby = await this.fetchJson(this.resourcesUrl, {

@@ -30,6 +30,13 @@ import java.util.List;
         return namedQuery.getResultList();
     }
 
+    public int getPlayerNumber(Long lobbyId, Long userId){
+        TypedQuery<Integer> namedQuery = entityManager.createNamedQuery("get_player_number", Integer.class);
+        namedQuery.setParameter("lobbyId", lobbyId);
+        namedQuery.setParameter("userId", userId);
+        return namedQuery.getSingleResult();
+    }
+
     public void removeUserFromLobby(String username, Long lobbyId) {
         Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
         namedQuery.setParameter("username", username);

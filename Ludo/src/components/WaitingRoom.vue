@@ -106,9 +106,13 @@ export default {
 
     // Check if currently logged in user is the host
     async checkHost() {
-      console.log(this.lobbyData);
-      if(this.sessionService.color === "RED") {
+      console.log(await this.userLobbyService.asyncGetPlayerNumber(this.lobbyNumber, this.sessionService.currentAccount.id))
+      if(await this.userLobbyService.asyncGetPlayerNumber(this.lobbyNumber, this.sessionService.currentAccount.id) === 1) {
         this.isHost = true;
+        console.log("you are the host")
+      } else {
+        this.isHost = false;
+        console.log("you are not the host")
       }
     },
 
@@ -117,19 +121,24 @@ export default {
     },
 
   },
-  created() {
+  async created() {
     this.getLobbyInfo();
     this.checkHost();
+    let ding = await this.userLobbyService.asyncFindById(this.lobbyNumber);
+    console.log("MATCH INFO!!!!!!!!" + ding[2].playerNumber);
 },
 
   mounted() {
-    const refreshInterval = setInterval(() => {
-      if (this.lobbyData.status === 'ACTIVE') {
-        clearInterval(refreshInterval);
-      } else {
-        location.reload();
-      }
-    }, 5000);
+      const currentTime = new Date();
+      const seconds = currentTime.getSeconds();
+      const milliseconds = currentTime.getMilliseconds();
+      const timeUntilNextRefresh = (30 - seconds % 30) * 1000 - milliseconds;
+
+      setTimeout(() => {
+        location.reload(); // Refresh the page
+      }, timeUntilNextRefresh);
+
+      return timeUntilNextRefresh;
   }
 
 };

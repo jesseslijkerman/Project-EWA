@@ -20,7 +20,8 @@
             Time started: {{ formatDateTime(match.created) }}
           </p>
         </div>
-        <router-link :to="'/match/' + match.id" class="btn btn-primary" @click="joinMatch(match.id)">Play</router-link>
+        <router-link v-if="isJoinable" :to="'/match/' + match.id" class="btn btn-primary" @click="joinMatch(match.id)">Join</router-link>
+        <router-link v-if="!isJoinable" :to="'/match/' + match.id" class="btn btn-primary" >Continue</router-link>
       </div>
     </div>
     <router-link :to="'/createGame'" class="btn btn-primary create-btn">Create game</router-link>
