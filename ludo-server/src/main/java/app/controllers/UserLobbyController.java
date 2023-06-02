@@ -24,12 +24,8 @@ public class UserLobbyController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public UserLobby findById(@PathVariable Long id){
-        UserLobby userLobby = this.userLobbyRepo.findById(id);
-        if (userLobby==null){
-            throw new ResourceNotFound("id-" + id);
-        }
-        return userLobby;
+    public List<UserLobby> findById(@PathVariable Long id){
+        return this.userLobbyRepo.findById(id);
     }
 
     @GetMapping(path = "/{id}/turn", produces = "application/json")

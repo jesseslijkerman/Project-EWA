@@ -47,13 +47,16 @@ import java.util.List;
         return entityManager.merge(userLobby);
     }
 
-    public UserLobby findById(Long id){
-            return entityManager.find(UserLobby.class, id);
+    public List<UserLobby> findById(Long id){
+
+        TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_user_lobby", UserLobby.class);
+        namedQuery.setParameter(1, id);
+        return namedQuery.getResultList();
     }
 
 
     public UserLobby deleteById(Long id){
-            UserLobby lobby = findById(id);
+            UserLobby lobby = (UserLobby) findById(id);
             entityManager.remove(lobby);
             return lobby;
     }
