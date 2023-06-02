@@ -26,6 +26,14 @@ export class LobbyAdaptor{
         return lobbies?.map(s => Lobby.copyConstructor(s));
     }
 
+    async asyncIncreaseTurn(lobbyId){
+        console.log("LobbyAdaptor.asyncIncreaseTurn()...")
+        const lobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/updateTurn", {
+            method: "PUT"
+        })
+        return Lobby.copyConstructor(lobby)
+    }
+
     async asyncRollDice(){
         const diceroll = await this.fetchJson(this.resourcesUrl + "/roll-dice")
         return diceroll

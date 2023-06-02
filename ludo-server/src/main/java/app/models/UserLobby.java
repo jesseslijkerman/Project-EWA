@@ -9,6 +9,7 @@ import javax.persistence.*;
 @NamedQuery(name = "find_all_user_lobbies", query = "select ul from UserLobby ul")
 @NamedQuery(name = "find_users_in_lobby", query = "select ul.user.username from UserLobby ul where ul.lobby.id= ?1")
 @NamedQuery(name = "remove_user_from_lobby", query = "DELETE FROM UserLobby ul WHERE ul.user.id IN (SELECT u.id FROM User u WHERE u.username = :username) AND ul.lobby.id = :lobbyId")
+@NamedQuery(name = "get_userId_turn", query = "SELECT ul.user.id FROM Lobby l JOIN UserLobby ul ON l.id = ul.lobby.id WHERE l.id = :lobbyId AND ul.playerNumber = l.whoseTurn")
 public class UserLobby {
     @Id
     @ManyToOne

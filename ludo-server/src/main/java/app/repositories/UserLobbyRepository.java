@@ -37,6 +37,12 @@ import java.util.List;
         namedQuery.executeUpdate();
     }
 
+    public Long getTurn(Long id){
+            TypedQuery<Long> namedQuery = entityManager.createNamedQuery("get_userId_turn", Long.class);
+            namedQuery.setParameter("lobbyId", id);
+            return namedQuery.getSingleResult();
+    }
+
     public UserLobby save(UserLobby userLobby){
         return entityManager.merge(userLobby);
     }

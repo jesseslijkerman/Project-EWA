@@ -19,6 +19,11 @@ export class UsersAdaptor {
     }
   }
 
+  async asyncFindById(id) {
+    const user = await this.fetchJson(this.resourcesUrl + "/" + id);
+    return User.copyConstructor(user);
+  }
+
   async asyncFindAllUsers() {
     console.log("OrdersAdaptor.asyncFindAll()...");
     const users = await this.fetchJson(this.resourcesUrl);

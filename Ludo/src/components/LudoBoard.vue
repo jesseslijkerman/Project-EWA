@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <p> ingelogd als: <b>{{ this.loggedInUser }}</b></p>
+    <p> Speler aan de beurt: <b> {{ this.whichUserTurn.username }} </b> </p>
+    <p> </p>
+
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
         <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
@@ -7,10 +11,7 @@
         </div>
       </div>
     </div>
-    <button @click="movePawn('R', rollDice())">Roll Dice and Move Red Pawn</button>
-    <button @click="movePawn('G', rollDice())">Roll Dice and Move Green Pawn</button>
-    <button @click="movePawn('B', rollDice())">Roll Dice and Move Blue Pawn</button>
-    <button @click="movePawn('Y', rollDice())">Roll Dice and Move Yellow Pawn</button>
+    <button v-if="canIPlay" @click="movePawn('R')" :disabled="buttonClicked">Roll Dice and Move Your Pawn!</button>
   </div>
 </template>
 
@@ -18,7 +19,7 @@
 
 export default {
   name: "LudoBoard",
-  inject: ["userLobbyService", "lobbyService"],
+  inject: ["userLobbyService", "lobbyService", "sessionService", "registerService"],
 
   data() {
     return {
@@ -55,11 +56,18 @@ export default {
         'Y': {i: 6, j: 0, direction: 'up', length: 5}
       },
       cellSize: 60,
+      canIPlay: false,
+      loggedInUser: this.sessionService.currentAccount.userName,
+      whichTurn: null,
+      whichUserTurn: 1,
+      buttonClicked: false,
+      lobbyNumber: new URL(window.location).pathname.split('/')[2]
     };
   },
 
   created() {
     this.createPath();
+    this.checkIfYourTurn();
   },
 
   methods: {
@@ -125,7 +133,11 @@ export default {
       });
     },
 
-    movePawn(pawnColor, steps) {
+    async movePawn(pawnColor) {
+      this.buttonClicked = true;
+
+      const steps = await this.lobbyService.asyncRollDice();
+      console.log(steps)
       const pawn = this.pawns[pawnColor];
       if (!pawn.home) {
         const start = this.startingPoints[Object.keys(this.pawns).indexOf(pawnColor)];
@@ -139,8 +151,32 @@ export default {
       if (pawn.position >= this.path.length) {
         pawn.position = this.path.length - 1;
       }
+
+      await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber)
+
     },
+
+
+    async checkIfYourTurn(){
+      this.whichTurn = await this.userLobbyService.asyncWhoseTurn(this.lobbyNumber)
+      this.whichUserTurn = await this.registerService.asyncFindById(this.whichTurn)
+      // this.currentColor = await this.userLobbyService.asyncFindById(this.lobbyNumber)
+      console.log(this.currentColor)
+      console.log(this.whichTurn)
+      if(this.whichTurn == this.sessionService.currentAccount.id){
+        this.canIPlay = true;
+      } else {
+      this.canIPlay = false}
+    }
   },
+
+  mounted() {
+    setInterval(() => {
+      window.location.reload();
+    }, 5000);
+
+  }
+
 };
 </script>
 
