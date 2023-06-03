@@ -132,7 +132,7 @@ export default {
       const currentTime = new Date();
       const seconds = currentTime.getSeconds();
       const milliseconds = currentTime.getMilliseconds();
-      const timeUntilNextRefresh = (30 - seconds % 30) * 1000 - milliseconds;
+      const timeUntilNextRefresh = (10 - seconds % 10) * 1000 - milliseconds;
 
       setTimeout(() => {
         location.reload(); // Refresh the page
