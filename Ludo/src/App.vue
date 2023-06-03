@@ -12,6 +12,22 @@ import CONFIG from '../app-config.js'
 
 export default {
   components: {NavBar},
+  data(){
+    return {
+     isSticky: false
+    };
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    handleScroll(){
+      this.isSticky = window.scrollY > 0;
+    }
+  },
   provide(){
     //create a singleton reactive service tracking the authorisation data of the session
     this.theSessionSbService = shallowReactive(
@@ -35,16 +51,18 @@ export default {
 </script>
 
 <template>
-  <NavBar v-if="!$route.meta.hideNavbar" />
+  <NavBar v-if="!$route.meta.hideNavbar" :class="{'sticky-header': isSticky}"/>
   <RouterView />
 </template>
 
 <style scoped>
-/*header {*/
-/*  line-height: 1.5;*/
-/*  min-height: 100vh;*/
-/*  */
-/*}*/
+
+.sticky-header {
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+}
 
 .logo {
   display: block;
