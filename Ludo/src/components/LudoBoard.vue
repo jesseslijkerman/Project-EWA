@@ -11,7 +11,11 @@
         </div>
       </div>
     </div>
-    <p> {{ this.rolled_dice }}</p>
+    <img v-if="rolled_dice !== 0"
+         class="dice"
+         @click="rollDice"
+         :src="getRollPicture(rolled_dice)"
+    />
     <button @click="rollDice()" :disabled="buttonClickedDice" v-if="canIPlay">Roll Dice</button>
     <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>
@@ -127,12 +131,22 @@ export default {
       this.buttonClickedDice = true;
       this.rolled_dice = await this.lobbyService.asyncRollDice();
       this.extraTurn = this.rolled_dice === 6 ? true : false;
+      this.getRollPicture(this.rolled_dice)
 
       if(this.rolled_dice === 6 && this.pawns[this.currentPlayer].home === true){
         this.movePawnOut();
       }
       else if(this.extraTurn === false){
         await this.nextPlayer();
+      }
+    },
+
+    getRollPicture(src) {
+      console.log(src)
+      if (src === undefined) {
+        return;
+      } else {
+        return "/src/assets/dice" + src + ".png";
       }
     },
 
