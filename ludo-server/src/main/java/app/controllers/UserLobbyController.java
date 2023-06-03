@@ -2,9 +2,7 @@ package app.controllers;
 
 import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
-import app.models.Lobby;
 import app.models.UserLobby;
-import app.repositories.LobbiesRepository;
 import app.repositories.UserLobbyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +24,18 @@ public class UserLobbyController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public UserLobby findById(@PathVariable Long id){
-        UserLobby userLobby = this.userLobbyRepo.findById(id);
-        if (userLobby==null){
-            throw new ResourceNotFound("id-" + id);
-        }
-        return userLobby;
+    public List<UserLobby> findById(@PathVariable Long id){
+        return this.userLobbyRepo.findById(id);
+    }
+
+    @GetMapping(path = "/{id}/turn", produces = "application/json")
+    public Long getTurn(@PathVariable Long id){
+        return this.userLobbyRepo.getTurn(id);
+    }
+
+    @GetMapping(path = "/{id}/{userId}/player_number", produces = "application/json")
+    public Integer getPlayerNumber(@PathVariable Long id, @PathVariable Long userId){
+        return this.userLobbyRepo.getPlayerNumber(id, userId);
     }
 
     @PostMapping(path = "")

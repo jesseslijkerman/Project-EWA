@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <p> ingelogd als: <b>{{ this.loggedInUser }}</b></p>
+    <p> Speler aan de beurt: <b> {{ this.whichUserTurn.username }} </b> </p>
+    <p> </p>
+
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
         <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
@@ -18,6 +22,8 @@
 <script>
 export default {
   name: "LudoBoard",
+  inject: ["userLobbyService", "lobbyService", "sessionService", "registerService"],
+
   data() {
     return {
       rolled_dice: 0,
@@ -44,15 +50,30 @@ export default {
       },
       path: [],
       startingPoints: [
-        {i: 4, j: 1}, // Red
-        {i: 1, j: 9}, // Blue
-        {i: 6, j: 9}, // Yellow
-        {i: 9, j: 4}, // Green
-      ]
+        {i: 0, j: 2}, // Red
+        {i: 2, j: 9}, // Green
+        {i: 9, j: 7}, // Blue
+        {i: 7, j: 0}  // Yellow
+      ],
+      homePaths: {
+        'R': {i: 0, j: 3, direction: 'right', length: 5},
+        'G': {i: 3, j: 9, direction: 'down', length: 5},
+        'B': {i: 9, j: 6, direction: 'left', length: 5},
+        'Y': {i: 6, j: 0, direction: 'up', length: 5}
+      },
+      cellSize: 60,
+      canIPlay: false,
+      loggedInUser: this.sessionService.currentAccount.userName,
+      whichTurn: null,
+      whichUserTurn: 1,
+      buttonClicked: false,
+      lobbyNumber: new URL(window.location).pathname.split('/')[2]
     };
   },
-  mounted() {
-    this.generatePath();
+
+  created() {
+    this.createPath();
+    this.checkIfYourTurn();
   },
   methods: {
     generatePath() {

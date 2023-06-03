@@ -19,6 +19,11 @@ export class UserLobbyAdaptor{
         }
     }
 
+    async asyncWhoseTurn(lobbyId){
+        const whoseTurn = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/turn")
+        return whoseTurn
+    }
+
     async asyncFindAll(){
         console.log("UserLobbyAdaptor.asyncFindAll()...")
         const userLobbies = await this.fetchJson(this.resourcesUrl);
@@ -29,6 +34,11 @@ export class UserLobbyAdaptor{
         console.log("LobbyAdaptor.asyncFindById()...")
         const userLobby = await this.fetchJson(this.resourcesUrl + "/" + id)
         return UserLobby.copyConstructor(userLobby)
+    }
+
+    async asyncGetPlayerNumber(lobbyId, userId){
+        const playerNumber = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/" + userId + "/player_number")
+        return playerNumber
     }
 
     async asyncSave(userLobby) {

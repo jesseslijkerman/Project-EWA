@@ -112,6 +112,12 @@ public class LobbiesController {
         return lobby;
     }
 
+    @PutMapping(path = "/{id}/updateTurn")
+    public Lobby updateTurn(@PathVariable Long id){
+        lobbyRepo.updateTurn(id);
+        return null;
+    }
+
     @DeleteMapping(path = "{id}/users/{username}")
     public Lobby deleteUserFromLobby(@PathVariable String username, @PathVariable Long id){
         userLobbyRepo.removeUserFromLobby(username, id);

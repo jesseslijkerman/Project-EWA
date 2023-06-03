@@ -30,6 +30,13 @@ import java.util.List;
         return namedQuery.getResultList();
     }
 
+    public int getPlayerNumber(Long lobbyId, Long userId){
+        TypedQuery<Integer> namedQuery = entityManager.createNamedQuery("get_player_number", Integer.class);
+        namedQuery.setParameter("lobbyId", lobbyId);
+        namedQuery.setParameter("userId", userId);
+        return namedQuery.getSingleResult();
+    }
+
     public void removeUserFromLobby(String username, Long lobbyId) {
         Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
         namedQuery.setParameter("username", username);
@@ -37,17 +44,26 @@ import java.util.List;
         namedQuery.executeUpdate();
     }
 
+    public Long getTurn(Long id){
+            TypedQuery<Long> namedQuery = entityManager.createNamedQuery("get_userId_turn", Long.class);
+            namedQuery.setParameter("lobbyId", id);
+            return namedQuery.getSingleResult();
+    }
+
     public UserLobby save(UserLobby userLobby){
         return entityManager.merge(userLobby);
     }
 
-    public UserLobby findById(Long id){
-            return entityManager.find(UserLobby.class, id);
+    public List<UserLobby> findById(Long id){
+
+        TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_user_lobby", UserLobby.class);
+        namedQuery.setParameter(1, id);
+        return namedQuery.getResultList();
     }
 
 
     public UserLobby deleteById(Long id){
-            UserLobby lobby = findById(id);
+            UserLobby lobby = (UserLobby) findById(id);
             entityManager.remove(lobby);
             return lobby;
     }

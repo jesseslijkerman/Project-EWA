@@ -119,19 +119,19 @@ export default {
   },
   data() {
     return {
-      gameMode: null,
-      maxPlayers: null,
-      name: null,
-      password: null,
+      gameMode: this.gameMode,
+      maxPlayers: this.maxPlayers,
+      name: this.name,
+      password: this.password,
       status: 'INACTIVE',
-      turnTimer: null,
+      turnTimer: this.turnTimer,
       whoseTurn: 1
     };
   },
   methods: {
     async createLobby(){
       var now = new Date();
-      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.status, this.turnTimer, this.whoseTurn);
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer,  this.status, this.whoseTurn);
       console.log(lobby)
 
       let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))

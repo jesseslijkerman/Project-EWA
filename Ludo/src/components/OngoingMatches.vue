@@ -20,7 +20,8 @@
             Time started: {{ formatDateTime(match.created) }}
           </p>
         </div>
-        <router-link :to="'/match/' + match.id" class="btn btn-primary">Play</router-link>
+        <router-link v-if="isJoinable" :to="'/match/' + match.id" class="btn btn-primary" @click="joinMatch(match.id)">Join</router-link>
+        <router-link v-if="!isJoinable" :to="'/match/' + match.id" class="btn btn-primary" >Continue</router-link>
       </div>
     </div>
     <router-link :to="'/createGame'" class="btn btn-primary create-btn">Create game</router-link>
@@ -29,9 +30,10 @@
 
 <script>
 
+import {UserLobby} from "@/models/UserLobby";
 export default {
   name: "OngoingMatches",
-  inject: ["lobbyService", "sessionService"],
+  inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {
       matches: [],
@@ -60,8 +62,51 @@ export default {
     async joinableLobbies(){
       await this.loadLobbies();
     },
-  },
+
+    async joinMatch(matchId) {
+
+      const response = await this.userLobbyService.asyncFindById(matchId);
+      const responseArray = Object.values(response);
+
+      let filledSpots = 0;
+      let highestPlayerNumber = -1; // Variable to track the highest playerNumber encountered
+
+      for (let i = 0; i < responseArray.length; i++) {
+        const item = responseArray[i];
+        console.log(item);
+
+        if (typeof item.playerNumber === 'number') {
+          filledSpots++;
+          const playerNumber = item.playerNumber;
+
+          if (playerNumber > highestPlayerNumber) {
+            highestPlayerNumber = playerNumber;
+          }
+
+          if (filledSpots <= 3) {
+            let availablePlayerNumber = highestPlayerNumber + 1;
+
+            let userLobby;
+            if (availablePlayerNumber === 2) {
+              userLobby = new UserLobby("BLUE", 2);
+            } else if (availablePlayerNumber === 3) {
+              userLobby = new UserLobby("GREEN", 3);
+            } else if (availablePlayerNumber === 4) {
+              userLobby = new UserLobby("YELLOW", 4);
+            }
+
+            await this.lobbyService.asyncAddUserLobby(matchId, this.sessionService.currentAccount.id, JSON.stringify(userLobby));
+
+            highestPlayerNumber = availablePlayerNumber;
+          } else {
+            console.log("Lobby is full");
+          }
+        }
+      }
+
+    }},
   computed: {
+
     switchStatus: function () {
       return this.isJoinable ? 'Joinable' : 'Joined';
     }

@@ -14,6 +14,7 @@ import java.util.List;
         @NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l"),
         @NamedQuery(name = "find_lobbies_by_user_id", query = "SELECT l FROM Lobby l JOIN l.userLobbies ul WHERE ul.user.id = ?1"),
         @NamedQuery(name = "update_lobby_status", query = "UPDATE Lobby l SET l.status = 'ACTIVE' WHERE l.id = ?1"),
+        @NamedQuery(name = "update_lobby_turn", query = "UPDATE Lobby l SET l.whoseTurn = (l.whoseTurn + 1) * (CASE WHEN l.whoseTurn < l.maxPlayers THEN 1 ELSE 0 END) + 1 * (CASE WHEN l.whoseTurn >= l.maxPlayers THEN 1 ELSE 0 END) WHERE l.id = :lobbyId"),
         @NamedQuery(name = "find_all_joinable_lobbies", query = "SELECT l FROM Lobby l WHERE l.id NOT IN (SELECT ul.lobby.id FROM UserLobby ul WHERE ul.user.id = ?1) AND l.status = 'INACTIVE'")
 })
 
