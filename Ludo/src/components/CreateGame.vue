@@ -125,13 +125,14 @@ export default {
       password: this.password,
       status: 'INACTIVE',
       turnTimer: this.turnTimer,
-      whoseTurn: 1
+      whoseTurn: 1,
+      boardState: "['R','R','X','X',1,1,1,'X','X','B','B'],['R','R','X','X',1,0,1,'X','X','B','B'],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],[1,1,1,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],['G','G','X','X',1,0,1,'X','X','Y','Y'],['G','G','X','X',1,1,1,'X','X','Y','Y']"
     };
   },
   methods: {
     async createLobby(){
       var now = new Date();
-      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer,  this.status, this.whoseTurn);
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer,  this.status, this.whoseTurn, this.boardState);
       console.log(lobby)
 
       let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))

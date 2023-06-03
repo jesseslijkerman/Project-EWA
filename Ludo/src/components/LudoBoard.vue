@@ -73,9 +73,11 @@ export default {
     };
   },
 
-  created() {
+  async created() {
     this.generatePath();
-    this.checkIfYourTurn();
+    await this.convertDBtoBoard();
+    await this.checkIfYourTurn();
+
   },
   methods: {
     generatePath() {
@@ -134,6 +136,48 @@ export default {
       }
     },
 
+    async convertDBtoBoard() {
+      const inputObject = await this.lobbyService.asyncFindById(this.lobbyNumber);
+      const inputString = inputObject.boardState;
+      console.log(inputObject);
+      const rows = inputString.slice(1, -1).split("],[");
+      this.board = rows.map((row) => {
+        const rowValues = row
+            .replace(/'/g, "")
+            .split(",");
+        return rowValues.map((value) => {
+          if (!isNaN(value)) {
+            return parseInt(value);
+          } else {
+            return value.trim();
+          }
+        });
+      });
+    },
+
+
+    async convertBoardToDB() {
+      const rows = this.board.map((row) => {
+        const rowValues = row.map((value) => {
+          if (typeof value === 'number') {
+            return value.toString();
+          } else {
+            return "'" + value.toString() + "'";
+          }
+        });
+        return "[" + rowValues.join(",") + "]";
+      });
+      const inputString = rows.join(",");
+      console.log(inputString);
+
+      const encodedInputString = encodeURIComponent(inputString); // URL-encode the inputString
+
+      const inputObject = { boardState: encodedInputString }; // Assign the URL-encoded inputString to the boardState property
+      console.log(typeof inputObject.boardState);
+      await this.lobbyService.asyncUpdateById(this.lobbyNumber, inputObject.boardState);
+    },
+
+
     movePawnOut() {
       if(this.pawns[this.currentPlayer].home === true && this.rolled_dice === 6){
         this.pawns[this.currentPlayer].home = false;
@@ -142,6 +186,7 @@ export default {
     },
 
     async movePawn() {
+      this.board[0][0] = 1
       this.buttonClicked = true;
       if (!this.pawns[this.currentPlayer]) return;
       let pawn = this.pawns[this.currentPlayer];
@@ -176,10 +221,12 @@ export default {
 
       if(this.extraTurn === false){
         await this.nextPlayer();
+        await this.convertBoardToDB();
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber)
       }
       else{
         this.extraTurn = false;
+        await this.convertBoardToDB();
       }
     },
 

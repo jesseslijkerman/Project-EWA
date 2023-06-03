@@ -23,7 +23,8 @@ public class LobbiesRepository {
     }
 
     public Lobby findById(Long id){
-        return entityManager.find(Lobby.class, id);
+        TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_lobby_by_id", Lobby.class);
+        return namedQuery.setParameter("id", id).getSingleResult();
     }
 
 
@@ -36,6 +37,13 @@ public class LobbiesRepository {
     public void updateTurn(Long id){
         Query namedQuery = entityManager.createNamedQuery("update_lobby_turn");
         namedQuery.setParameter("lobbyId", id);
+        namedQuery.executeUpdate();
+    }
+
+    public void updateBoard(Long id, String board){
+        Query namedQuery = entityManager.createNamedQuery("update_game_board");
+        namedQuery.setParameter(2, id);
+        namedQuery.setParameter(1, board);
         namedQuery.executeUpdate();
     }
 

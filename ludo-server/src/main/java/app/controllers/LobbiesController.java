@@ -45,11 +45,7 @@ public class LobbiesController {
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public Lobby findById(@PathVariable Long id){
-        Lobby lobby = this.lobbyRepo.findById(id);
-        if (lobby==null){
-            throw new ResourceNotFound("id-" + id);
-        }
-        return lobby;
+        return this.lobbyRepo.findById(id);
     }
 
     @GetMapping(path = "/user/{userId}", produces = "application/json")
@@ -110,6 +106,12 @@ public class LobbiesController {
             throw new ResourceNotFound("id-" + id);
         }
         return lobby;
+    }
+
+    @PutMapping(path = "/{id}/updateBoard/{boardUpdate}")
+    public Lobby updateBoard(@PathVariable Long id, @PathVariable String boardUpdate){
+        lobbyRepo.updateBoard(id, boardUpdate);
+        return null;
     }
 
     @PutMapping(path = "/{id}/updateTurn")

@@ -20,6 +20,18 @@ export class LobbyAdaptor{
         }
     }
 
+    async asyncUpdateById(lobbyId, gameBoard){
+        console.log("LobbyAdaptor.asyncUpdateById()...")
+        const lobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/updateBoard/" + gameBoard, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: gameBoard
+        })
+        return Lobby.copyConstructor(lobby)
+    }
+
     async asyncFindAll(){
         console.log("LobbyAdaptor.asyncFindAll()...")
         const lobbies = await this.fetchJson(this.resourcesUrl);
