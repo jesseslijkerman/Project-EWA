@@ -38,6 +38,11 @@ public class UserLobbyController {
         return this.userLobbyRepo.getPlayerNumber(id, userId);
     }
 
+    @GetMapping(path = "/{id}/current_turn", produces = "application/json")
+    public Integer getCurrentTurn(@PathVariable Long id){
+        return this.userLobbyRepo.getCurrentTurn(id);
+    }
+
     @PostMapping(path = "")
     public ResponseEntity<Object> createLobby(@RequestBody UserLobby userLobby){
         UserLobby createdLobby = userLobbyRepo.save(userLobby);

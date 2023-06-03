@@ -19,6 +19,11 @@ export class UserLobbyAdaptor{
         }
     }
 
+    async asyncGetLobbyTurn(lobbyId){
+        const lobbyTurn = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/current_turn")
+        return lobbyTurn
+    }
+
     async asyncWhoseTurn(lobbyId){
         const whoseTurn = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/turn")
         return whoseTurn

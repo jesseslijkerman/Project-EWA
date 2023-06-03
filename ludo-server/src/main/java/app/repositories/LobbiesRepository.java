@@ -47,12 +47,6 @@ public class LobbiesRepository {
     }
 
 
-    public int rollDice(){
-        Random random = new Random();
-        int randomNumber = random.nextInt(6) + 1;
-        return randomNumber;
-    }
-
 
     public List<Lobby> findAllJoinableLobbies(Long userId){
         TypedQuery<Lobby> namedQuery = entityManager.createNamedQuery("find_all_joinable_lobbies", Lobby.class);

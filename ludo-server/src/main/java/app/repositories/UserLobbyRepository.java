@@ -50,6 +50,12 @@ import java.util.List;
             return namedQuery.getSingleResult();
     }
 
+    public Integer getCurrentTurn(Long id){
+        TypedQuery<Integer> namedQuery = entityManager.createNamedQuery("get_current_turn", Integer.class);
+        namedQuery.setParameter("lobbyId", id);
+        return namedQuery.getSingleResult();
+    }
+
     public UserLobby save(UserLobby userLobby){
         return entityManager.merge(userLobby);
     }

@@ -11,11 +11,12 @@
         </div>
       </div>
     </div>
-    <button @click="rollDice()">Roll Dice</button>
-    <button @click="movePawn" v-if="currentPlayer === 'R' && rolled_dice !== 0">Move Red Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'G' && rolled_dice !== 0">Move Green Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'X' && rolled_dice !== 0">Move Blue Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'Y' && rolled_dice !== 0">Move Yellow Pawn</button>
+    <p> {{ rolled_dice }}</p>
+    <button @click="rollDice()" v-if="canIPlay">Roll Dice</button>
+    <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'X' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'Y' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Yellow Pawn</button>
   </div>
 </template>
 
@@ -72,7 +73,7 @@ export default {
   },
 
   created() {
-    this.createPath();
+    this.generatePath();
     this.checkIfYourTurn();
   },
   methods: {
@@ -139,6 +140,7 @@ export default {
     },
 
     async movePawn() {
+      this.buttonClicked = true;
       if (!this.pawns[this.currentPlayer]) return;
       let pawn = this.pawns[this.currentPlayer];
       let steps = this.rolled_dice;
@@ -171,7 +173,8 @@ export default {
       }
 
       if(this.extraTurn === false){
-        this.nextPlayer();
+        await this.nextPlayer();
+        await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber)
       }
       else{
         this.extraTurn = false;
@@ -188,11 +191,13 @@ export default {
       return this.pawns[this.currentPlayer].position >= this.path.length;
     },
 
-    nextPlayer() {
+    async nextPlayer() {
       let players = ['R', 'G', 'X', 'Y'];
-      let currentIndex = players.indexOf(this.currentPlayer);
-      let nextIndex = currentIndex + 1 === players.length ? 0 : currentIndex + 1;
-      this.currentPlayer = players[nextIndex];
+      let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+
+      // Map the player number to the corresponding letter
+      let playerLetter = players[nextIndex - 1];
+      this.currentPlayer = playerLetter;
     },
 
     isPawn(i, j) {
@@ -229,7 +234,31 @@ export default {
       } else {
         return '';
       }
-    }
+    },
+
+    async checkIfYourTurn(){
+      this.whichTurn = await this.userLobbyService.asyncWhoseTurn(this.lobbyNumber)
+      this.whichUserTurn = await this.registerService.asyncFindById(this.whichTurn)
+      console.log(this.loggedInUser)
+      console.log(this.whichTurn)
+      if(this.whichTurn == this.sessionService.currentAccount.id){
+        this.canIPlay = true;
+      } else {
+        this.canIPlay = false}
+      }
+      },
+
+  mounted() {
+    const currentTime = new Date();
+    const seconds = currentTime.getSeconds();
+    const milliseconds = currentTime.getMilliseconds();
+    const timeUntilNextRefresh = (10 - seconds % 10) * 1000 - milliseconds;
+
+    setTimeout(() => {
+      location.reload(); // Refresh the page
+    }, timeUntilNextRefresh);
+
+    return timeUntilNextRefresh;
   }
 };
 </script>
