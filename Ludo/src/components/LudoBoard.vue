@@ -3,7 +3,7 @@
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
         <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
-          <div class="pawn" :class="getPawnClasses(i, j)" v-if="isPawn(i, j)"></div>
+          <div v-for="pawn in getPawn(i, j)" class="pawn" :class="getPawnClasses(pawn)" v-if="isPawn(i, j).length > 0"></div>
         </div>
       </div>
     </div>
@@ -117,23 +117,36 @@ export default {
       }
     },
 
-    movePawn() {
+    async movePawn() {
+      if (!this.pawns[this.currentPlayer]) return;
       let pawn = this.pawns[this.currentPlayer];
-      let newPosition = pawn.position + this.rolled_dice;
-      let pawnInNewCell = this.getPawn(this.path[newPosition].i, this.path[newPosition].j);
+      let steps = this.rolled_dice;
+      while(steps > 0) {
+        let newPosition = pawn.position + 1;
+        // Update the pawn's position
+        pawn.position = newPosition;
 
-      if (pawnInNewCell && pawnInNewCell.color !== this.currentPlayer) {
-        // Send the opponent's pawn back to home
-        this.pawns[pawnInNewCell.color].position = -1;
-        this.pawns[pawnInNewCell.color].home = true;
-      }
+        steps--;
 
-      // Update the pawn's position
-      pawn.position = newPosition;
+        // Pause for Vue to update the DOM, then check for other pawns in the cell
+        await this.$nextTick();
+        await this.sleep(500);
 
-      // Check if the player won
-      if(this.hasWon()) {
-        alert(`${this.currentPlayer} has won the game`);
+        if(steps === 0) {
+          let pawnInNewCell = this.getPawn(this.path[newPosition].i, this.path[newPosition].j);
+          pawnInNewCell.forEach(pawnInCell => {
+            if (pawnInCell.color !== this.currentPlayer) {
+              // Send the opponent's pawn back to home
+              this.pawns[pawnInCell.color].position = -1;
+              this.pawns[pawnInCell.color].home = true;
+            }
+          });
+        }
+
+        // Check if the player won
+        if(this.hasWon()) {
+          alert(`${this.currentPlayer} has won the game`);
+        }
       }
 
       if(this.extraTurn === false){
@@ -142,6 +155,12 @@ export default {
       else{
         this.extraTurn = false;
       }
+    },
+
+
+// Add this method to the Vue component
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     },
 
     hasWon() {
@@ -156,23 +175,22 @@ export default {
     },
 
     isPawn(i, j) {
-      return Object.values(this.pawns).some(pawn => {
+      return Object.values(this.pawns).filter(pawn => {
         const cell = this.path[pawn.position];
         return cell && cell.i === i && cell.j === j;
       });
     },
 
-    getPawnClasses(i, j) {
-      const pawn = this.getPawn(i, j);
-      return pawn ? `pawn-${pawn.color.toLowerCase()}` : '';
+    getPawnClasses(pawn) {
+      return pawn ? `pawn-${pawn.color.toLowerCase()}${pawn.moving ? ' moving' : ''}` : '';
     },
 
     getPawn(i, j) {
-      const pawnEntry = Object.entries(this.pawns).find(([color, pawn]) => {
+      const pawns = Object.entries(this.pawns).filter(([color, pawn]) => {
         const cell = this.path[pawn.position];
         return cell && cell.i === i && cell.j === j;
       });
-      return pawnEntry ? {color: pawnEntry[0], ...pawnEntry[1]} : null;
+      return pawns.map(([color, pawn]) => ({ color: color, ...pawn }));
     },
 
     getClass(cell) {
@@ -240,6 +258,9 @@ export default {
 .path-cell {
   background-color: cadetblue;
 }
+.pawn.moving {
+  animation: hop 0.5s linear;
+}
 
 .pawn {
   position: absolute;
@@ -250,6 +271,13 @@ export default {
   height: 40px;
   border-radius: 50%;
   background-color: grey;
+  animation: hop 0.5s linear infinite; /* Added animation property */
+}
+
+@keyframes hop {
+  0% { top: 50%; }
+  50% { top: 40%; }
+  100% { top: 50%; }
 }
 
 .cyan-cell {
@@ -259,6 +287,8 @@ export default {
 .pawn-r {
   background-color: red;
 }
+
+
 
 .pawn-g {
   background-color: green;
