@@ -20,10 +20,9 @@
 </template>
 
 <script>
-import router from "../router";
 
 export default {
-  inject: ["registerService"],
+  inject: ["registerService", "sessionService"],
   name: "ResetPassword",
   data() {
     return {
@@ -33,15 +32,18 @@ export default {
   methods: {
     async handlePassChange() {
 
-      var val = localStorage.getItem("user_info")
-      console.log(val)
-      var object = JSON.parse(val, this.entered_new_password)
-      console.log(object)
+      const accountData = {
+        id: this.sessionService.currentAccount.id,
+        email: this.sessionService.currentAccount.email,
+        password: this.entered_new_password,
+        username: this.sessionService.currentAccount.username,
+        countryCode: this.sessionService.currentAccount.countryCode,
+        picture: this.sessionService.currentAccount.picture,
+      }
 
-      router.push('/ongoing-matches')
-
-      await this.registerService.changePass(object)
-
+      console.log(this.sessionService.currentAccount)
+      console.log(accountData)
+      await this.registerService.changePass(accountData)
     },
   }
 }

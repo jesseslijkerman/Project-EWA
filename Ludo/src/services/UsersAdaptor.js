@@ -1,5 +1,4 @@
 import { User } from "../models/User.js";
-import {Lobby} from "@/models/Lobby";
 
 export class UsersAdaptor {
   resourcesUrl;
@@ -39,14 +38,15 @@ export class UsersAdaptor {
   }
 
   async changePass(user){
-      console.log("LobbyAdaptor.asyncDeleteById()...");
+      console.log("LobbyAdaptor.changePass()...");
       const password = this.fetchJson(this.resourcesUrl + "/changePassword/" + user.id, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: user
+        body: JSON.stringify(user)
       });
+      console.log(JSON.stringify(user))
       return User.copyConstructor(password);
     }
 }
