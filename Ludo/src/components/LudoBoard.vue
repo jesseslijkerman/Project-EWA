@@ -7,10 +7,11 @@
         </div>
       </div>
     </div>
-    <button @click="movePawn('R', rollDice())">Roll Dice and Move Red Pawn</button>
-    <button @click="movePawn('G', rollDice())">Roll Dice and Move Green Pawn</button>
-    <button @click="movePawn('X', rollDice())">Roll Dice and Move Blue Pawn</button>
-    <button @click="movePawn('Y', rollDice())">Roll Dice and Move Yellow Pawn</button>
+    <button @click="rollDice()">Roll Dice</button>
+    <button @click="movePawn" v-if="currentPlayer === 'R' && rolled_dice !== 0">Move Red Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'G' && rolled_dice !== 0">Move Green Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'X' && rolled_dice !== 0">Move Blue Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'Y' && rolled_dice !== 0">Move Yellow Pawn</button>
   </div>
 </template>
 
@@ -20,6 +21,8 @@ export default {
   data() {
     return {
       rolled_dice: 0,
+      extraTurn: false,
+      currentPlayer: 'R',
       board: [
         ['R', 'R', 'X', 'X', 1, 1, 1, 'X', 'X', 'B', 'B'],
         ['R', 'R', 'X', 'X', 1, 0, 1, 'X', 'X', 'B', 'B'],
@@ -34,10 +37,10 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': {position: 0, home: false},
-        'G': {position: 20, home: false},
-        'X': {position: 10, home: false},
-        'Y': {position: 30, home: false}
+        'R': {startPos: 0, position: -1, home: true},
+        'G': {startPos: 20, position: -1, home: true},
+        'X': {startPos: 10, position: -1, home: true},
+        'Y': {startPos: 30, position: -1, home: true}
       },
       path: [],
       startingPoints: [
@@ -97,38 +100,61 @@ export default {
 
     rollDice() {
       this.rolled_dice = Math.floor(Math.random() * 6) + 1;
-      console.log('Rolled Dice:', this.rolled_dice);
-      return this.rolled_dice;
-    },
-    movePawn(color, steps) {
-      const pawn = this.pawns[color];
-      const currentPosition = pawn.position;
+      this.extraTurn = this.rolled_dice === 6 ? true : false;
 
-      for (let step = 0; step < steps; step++) {
-        const newPathIndex = currentPosition + step + 1;
-
-        if (newPathIndex >= this.path.length) {
-          // The pawn has completed a lap
-          pawn.position = 0;
-          console.log(`${color} pawn completed a lap, reset position to 0`);
-          break;
-        }
-
-        const newCell = this.path[newPathIndex];
-
-        // Check if there is already a pawn of the same color in the new cell
-        const pawnInNewCell = this.getPawn(newCell.i, newCell.j);
-        if (pawnInNewCell && pawnInNewCell.color === color) {
-          // The pawn cannot move further
-          console.log(`${color} pawn cannot move further due to another pawn at position (${newCell.i}, ${newCell.j})`);
-          break;
-        }
-
-        // The pawn can move to the new cell
-        pawn.position = newPathIndex;
-        console.log(`${color} pawn moved to new position: ${newPathIndex}`);
+      if(this.rolled_dice === 6 && this.pawns[this.currentPlayer].home === true){
+        this.movePawnOut();
+      }
+      else if(this.extraTurn === false){
+        this.nextPlayer();
       }
     },
+
+    movePawnOut() {
+      if(this.pawns[this.currentPlayer].home === true && this.rolled_dice === 6){
+        this.pawns[this.currentPlayer].home = false;
+        this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos;
+      }
+    },
+
+    movePawn() {
+      let pawn = this.pawns[this.currentPlayer];
+      let newPosition = pawn.position + this.rolled_dice;
+      let pawnInNewCell = this.getPawn(this.path[newPosition].i, this.path[newPosition].j);
+
+      if (pawnInNewCell && pawnInNewCell.color !== this.currentPlayer) {
+        // Send the opponent's pawn back to home
+        this.pawns[pawnInNewCell.color].position = -1;
+        this.pawns[pawnInNewCell.color].home = true;
+      }
+
+      // Update the pawn's position
+      pawn.position = newPosition;
+
+      // Check if the player won
+      if(this.hasWon()) {
+        alert(`${this.currentPlayer} has won the game`);
+      }
+
+      if(this.extraTurn === false){
+        this.nextPlayer();
+      }
+      else{
+        this.extraTurn = false;
+      }
+    },
+
+    hasWon() {
+      return this.pawns[this.currentPlayer].position >= this.path.length;
+    },
+
+    nextPlayer() {
+      let players = ['R', 'G', 'X', 'Y'];
+      let currentIndex = players.indexOf(this.currentPlayer);
+      let nextIndex = currentIndex + 1 === players.length ? 0 : currentIndex + 1;
+      this.currentPlayer = players[nextIndex];
+    },
+
     isPawn(i, j) {
       return Object.values(this.pawns).some(pawn => {
         const cell = this.path[pawn.position];
