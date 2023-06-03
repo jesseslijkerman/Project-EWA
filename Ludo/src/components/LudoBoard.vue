@@ -7,16 +7,19 @@
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
         <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
-          <div class="pawn" :class="getPawnClasses(i, j)" v-if="isPawn(i, j)"></div>
+          <div v-for="pawn in getPawn(i, j)" class="pawn" :class="getPawnClasses(pawn)" v-if="isPawn(i, j).length > 0"></div>
         </div>
       </div>
     </div>
-    <button v-if="canIPlay" @click="movePawn('R')" :disabled="buttonClicked">Roll Dice and Move Your Pawn!</button>
+    <button @click="rollDice()">Roll Dice</button>
+    <button @click="movePawn" v-if="currentPlayer === 'R' && rolled_dice !== 0">Move Red Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'G' && rolled_dice !== 0">Move Green Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'X' && rolled_dice !== 0">Move Blue Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'Y' && rolled_dice !== 0">Move Yellow Pawn</button>
   </div>
 </template>
 
 <script>
-
 export default {
   name: "LudoBoard",
   inject: ["userLobbyService", "lobbyService", "sessionService", "registerService"],
@@ -24,23 +27,26 @@ export default {
   data() {
     return {
       rolled_dice: 0,
+      extraTurn: false,
+      currentPlayer: 'R',
       board: [
-        [0, 0, 'R', 1, 1, 1, 1, 'B', 0, 0],
-        [0, 0, 'G', 1, 0, 0, 1, 'B', 0, 0],
-        ['B', 'B', 'B', 1, 0, 0, 1, 'B', 'B', 'B'],
-        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
-        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
-        [2, 0, 'B', 0, 0, 0, 0, 3, 0, 3],
-        [2, 2, 2, 2, 0, 0, 3, 3, 3, 3],
-        ['B', 'B', 'B', 4, 0, 0, 4, 'B', 'B', 'B'],
-        [0, 0, 'Y', 4, 0, 0, 4, 'B', 0, 0],
-        [0, 0, 'B', 4, 4, 4, 4, 'B', 0, 0]
+        ['R', 'R', 'X', 'X', 1, 1, 1, 'X', 'X', 'B', 'B'],
+        ['R', 'R', 'X', 'X', 1, 0, 1, 'X', 'X', 'B', 'B'],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
+        ['G', 'G', 'X', 'X', 1, 0, 1, 'X', 'X', 'Y', 'Y'],
+        ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': {position: 6, home: false},
-        'G': {position: 0, home: false},
-        'B': {position: 0, home: false},
-        'Y': {position: 0, home: false}
+        'R': {startPos: 0, position: -1, home: true},
+        'G': {startPos: 20, position: -1, home: true},
+        'X': {startPos: 10, position: -1, home: true},
+        'Y': {startPos: 30, position: -1, home: true}
       },
       path: [],
       startingPoints: [
@@ -69,124 +75,173 @@ export default {
     this.createPath();
     this.checkIfYourTurn();
   },
-
   methods: {
-    createPath() {
-      const directions = ['right', 'down', 'left', 'up'];
-      const start = {i: 0, j: 3};
-      const n = this.board.length;
-      const m = this.board[0].length;
+    generatePath() {
+      const directions = ['right', 'down', 'right', 'down', 'left', 'down', 'left', 'up', 'left', 'up', 'right', 'up'];
+      const steps = [2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4];
 
-      let i = start.i;
-      let j = start.j;
-      let dir = 0;
+      let i = 0, j = 0;
+      // Look for the first '1' on the board to start the path
+      outerLoop:
+          for (let x = 0; x < this.board.length; x++) {
+            for (let y = 0; y < this.board[x].length; y++) {
+              if (this.board[x][y] === 1) {
+                i = x;
+                j = y;
+                break outerLoop;
+              }
+            }
+          }
 
-      while (!(i === start.i && j === start.j && this.path.length > 0)) {
-        this.path.push({i, j});
-        this.board[i][j] = 1;
-
-        if (directions[dir] === 'right' && j < m - 1 && this.board[i][j+1] !== 'B') j++;
-        else if (directions[dir] === 'down' && i < n - 1 && this.board[i+1][j] !== 'B') i++;
-        else if (directions[dir] === 'left' && j > 0 && this.board[i][j-1] !== 'B') j--;
-        else if (directions[dir] === 'up' && i > 0 && this.board[i-1][j] !== 'B') i--;
-        else dir = (dir + 1) % 4;
-      }
-
-      ['R', 'G', 'B', 'Y'].forEach((color, index) => {
-        let {i, j, direction, length} = this.homePaths[color];
-        for (let k = 0; k < length; k++) {
-          this.path.push({i, j});
-          this.board[i][j] = 1;
-          if (direction === 'right' && j < m - 1) j++;
-          else if (direction === 'down' && i < n - 1) i++;
-          else if (direction === 'left' && j > 0) j--;
-          else if (direction === 'up' && i > 0) i--;
+      // Follow the hard coded path
+      for (let dirIndex = 0; dirIndex < directions.length; dirIndex++) {
+        for (let step = 0; step < steps[dirIndex]; step++) {
+          switch (directions[dirIndex]) {
+            case 'down':
+              i++;
+              break;
+            case 'right':
+              j++;
+              break;
+            case 'up':
+              i--;
+              break;
+            case 'left':
+              j--;
+              break;
+          }
+          if (this.board[i][j] === 1) {
+            this.path.push({i, j});
+            console.log(`Added cell to path: (${i}, ${j})`);
+          }
         }
-      });
+      }
     },
 
-    getClass(cell) {
-      return {
-        cell: true,
-        'base-cell': cell === 'B',
-        'path-cell': cell === 1,
-      };
-    },
-
-    getPawnClasses(i, j) {
-      const pawnColor = Object.keys(this.pawns).find(color => {
-        const pawn = this.pawns[color];
-        const position = this.path[pawn.position];
-        return position && position.i === i && position.j === j;
-      });
-      return pawnColor ? `color-${pawnColor}` : '';
-    },
 
     rollDice() {
-      return Math.floor(Math.random() * 6) + 1;
+      this.rolled_dice = Math.floor(Math.random() * 6) + 1;
+      this.extraTurn = this.rolled_dice === 6 ? true : false;
+
+      if(this.rolled_dice === 6 && this.pawns[this.currentPlayer].home === true){
+        this.movePawnOut();
+      }
+      else if(this.extraTurn === false){
+        this.nextPlayer();
+      }
+    },
+
+    movePawnOut() {
+      if(this.pawns[this.currentPlayer].home === true && this.rolled_dice === 6){
+        this.pawns[this.currentPlayer].home = false;
+        this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos;
+      }
+    },
+
+    async movePawn() {
+      if (!this.pawns[this.currentPlayer]) return;
+      let pawn = this.pawns[this.currentPlayer];
+      let steps = this.rolled_dice;
+      while(steps > 0) {
+        let newPosition = pawn.position + 1;
+        // Update the pawn's position
+        pawn.position = newPosition;
+
+        steps--;
+
+        // Pause for Vue to update the DOM, then check for other pawns in the cell
+        await this.$nextTick();
+        await this.sleep(500);
+
+        if(steps === 0) {
+          let pawnInNewCell = this.getPawn(this.path[newPosition].i, this.path[newPosition].j);
+          pawnInNewCell.forEach(pawnInCell => {
+            if (pawnInCell.color !== this.currentPlayer) {
+              // Send the opponent's pawn back to home
+              this.pawns[pawnInCell.color].position = -1;
+              this.pawns[pawnInCell.color].home = true;
+            }
+          });
+        }
+
+        // Check if the player won
+        if(this.hasWon()) {
+          alert(`${this.currentPlayer} has won the game`);
+        }
+      }
+
+      if(this.extraTurn === false){
+        this.nextPlayer();
+      }
+      else{
+        this.extraTurn = false;
+      }
+    },
+
+
+// Add this method to the Vue component
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
+    hasWon() {
+      return this.pawns[this.currentPlayer].position >= this.path.length;
+    },
+
+    nextPlayer() {
+      let players = ['R', 'G', 'X', 'Y'];
+      let currentIndex = players.indexOf(this.currentPlayer);
+      let nextIndex = currentIndex + 1 === players.length ? 0 : currentIndex + 1;
+      this.currentPlayer = players[nextIndex];
     },
 
     isPawn(i, j) {
-      return Object.values(this.pawns).some(pawn => {
-        const position = this.path[pawn.position];
-        return position && position.i === i && position.j === j;
+      return Object.values(this.pawns).filter(pawn => {
+        const cell = this.path[pawn.position];
+        return cell && cell.i === i && cell.j === j;
       });
     },
 
-    async movePawn(pawnColor) {
-      this.buttonClicked = true;
-
-      const steps = await this.lobbyService.asyncRollDice();
-      console.log(steps)
-      const pawn = this.pawns[pawnColor];
-      if (!pawn.home) {
-        const start = this.startingPoints[Object.keys(this.pawns).indexOf(pawnColor)];
-        const index = this.path.findIndex(p => p.i === start.i && p.j === start.j);
-        pawn.position = index + steps - 1;
-        pawn.home = true;
-      } else {
-        pawn.position += steps;
-      }
-
-      if (pawn.position >= this.path.length) {
-        pawn.position = this.path.length - 1;
-      }
-
-      await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber)
-
+    getPawnClasses(pawn) {
+      return pawn ? `pawn-${pawn.color.toLowerCase()}${pawn.moving ? ' moving' : ''}` : '';
     },
 
+    getPawn(i, j) {
+      const pawns = Object.entries(this.pawns).filter(([color, pawn]) => {
+        const cell = this.path[pawn.position];
+        return cell && cell.i === i && cell.j === j;
+      });
+      return pawns.map(([color, pawn]) => ({ color: color, ...pawn }));
+    },
 
-    async checkIfYourTurn(){
-      this.whichTurn = await this.userLobbyService.asyncWhoseTurn(this.lobbyNumber)
-      this.whichUserTurn = await this.registerService.asyncFindById(this.whichTurn)
-      // this.currentColor = await this.userLobbyService.asyncFindById(this.lobbyNumber)
-      console.log(this.loggedInUser)
-      console.log(this.whichTurn)
-      if(this.whichTurn == this.sessionService.currentAccount.id){
-        this.canIPlay = true;
+    getClass(cell) {
+      if (typeof cell === 'string') {
+        switch (cell) {
+          case 'R': return 'base-cellR';
+          case 'G': return 'base-cellG';
+          case 'B': return 'block-cell';
+          case 'X': return 'base-cellB';
+          case 'Y': return 'base-cellY';
+          default: return '';
+        }
+      } else if (cell === 1) {
+        return 'path-cell';
       } else {
-      this.canIPlay = false}
+        return '';
+      }
     }
-  },
-
-  mounted() {
-    setInterval(() => {
-      window.location.reload();
-    }, 5000);
-
   }
-
 };
 </script>
+
 
 <style scoped>
 .board {
   display: flex;
   flex-direction: column;
   margin: auto;
-  width: 600px;
-  height: 600px;
+  width: 700px;
+  height: 700px;
 }
 
 .row {
@@ -201,12 +256,31 @@ export default {
   position: relative;
 }
 
-.base-cell {
-  background-color: lightblue;
+.block-cell {
+  background-color: gray;
+}
+
+.base-cellR {
+  background-color: red;
+}
+
+.base-cellG {
+  background-color: green;
+}
+
+.base-cellY {
+  background-color: yellow;
+}
+
+.base-cellB {
+  background-color: blue;
 }
 
 .path-cell {
-  background-color: white;
+  background-color: cadetblue;
+}
+.pawn.moving {
+  animation: hop 0.5s linear;
 }
 
 .pawn {
@@ -218,21 +292,34 @@ export default {
   height: 40px;
   border-radius: 50%;
   background-color: grey;
+  animation: hop 0.5s linear infinite; /* Added animation property */
 }
 
-.color-R {
+@keyframes hop {
+  0% { top: 50%; }
+  50% { top: 40%; }
+  100% { top: 50%; }
+}
+
+.cyan-cell {
+  background-color: cyan;
+}
+
+.pawn-r {
   background-color: red;
 }
 
-.color-G {
+
+
+.pawn-g {
   background-color: green;
 }
 
-.color-B {
+.pawn-b {
   background-color: blue;
 }
 
-.color-Y {
+.pawn-y {
   background-color: yellow;
 }
 </style>
