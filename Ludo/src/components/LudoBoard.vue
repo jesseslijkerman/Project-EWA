@@ -11,8 +11,8 @@
         </div>
       </div>
     </div>
-    <p> {{ rolled_dice }}</p>
-    <button @click="rollDice()" v-if="canIPlay">Roll Dice</button>
+    <p> {{ this.rolled_dice }}</p>
+    <button @click="rollDice()" :disabled="buttonClickedDice" v-if="canIPlay">Roll Dice</button>
     <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'X' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>
@@ -68,6 +68,7 @@ export default {
       whichTurn: null,
       whichUserTurn: 1,
       buttonClicked: false,
+      buttonClickedDice: false,
       lobbyNumber: new URL(window.location).pathname.split('/')[2]
     };
   },
@@ -120,15 +121,16 @@ export default {
     },
 
 
-    rollDice() {
-      this.rolled_dice = Math.floor(Math.random() * 6) + 1;
+    async rollDice() {
+      this.buttonClickedDice = true;
+      this.rolled_dice = await this.lobbyService.asyncRollDice();
       this.extraTurn = this.rolled_dice === 6 ? true : false;
 
       if(this.rolled_dice === 6 && this.pawns[this.currentPlayer].home === true){
         this.movePawnOut();
       }
       else if(this.extraTurn === false){
-        this.nextPlayer();
+        await this.nextPlayer();
       }
     },
 
@@ -337,8 +339,6 @@ export default {
 .pawn-r {
   background-color: red;
 }
-
-
 
 .pawn-g {
   background-color: green;

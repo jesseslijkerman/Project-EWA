@@ -2,6 +2,7 @@
   <div class="container">
     <div class="header">
       <h1 class="title">Ludo Lobbies</h1>
+      <h2>logged in as: {{ this.sessionService.currentAccount.userName }}</h2>
       <div class="slidercontainer">
         <label class="switch">
           <input type="checkbox" v-model="isJoinable" @change="joinableLobbies">
