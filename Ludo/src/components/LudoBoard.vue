@@ -6,11 +6,12 @@
 
     <div class="board">
       <div class="row" v-for="(row, i) in board" :key="i">
-        <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell)">
+        <div class="cell" v-for="(cell, j) in row" :key="j" :class="getClass(cell, i, j)" >
           <div v-for="pawn in getPawn(i, j)" class="pawn" :class="getPawnClasses(pawn)" v-if="isPawn(i, j).length > 0"></div>
         </div>
       </div>
     </div>
+    <br>
     <p v-if="canIPlay">Roll the dice before your turn ends!</p>
     <p v-if="!canIPlay"> {{ this.whichUserTurn.username }}'s turn will end in:</p>
     <h1 class="countdown" :style="countdownStyle">{{this.countdown}}s</h1>
@@ -40,15 +41,15 @@ export default {
       currentPlayer: 'R',
       board: [
         ['R', 'R', 'X', 'X', 1, 1, 1, 'X', 'X', 'B', 'B'],
-        ['R', 'R', 'X', 'X', 1, 0, 'B', 'X', 'X', 'B', 'B'],
+        ['R', 'R', 'X', 'X', 1, 0, 1, 'X', 'X', 'B', 'B'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
-        [1, 'R', 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 0, 1, 1, 1, 'Y', 1],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
-        ['G', 'G', 'X', 'X', 'G', 0, 1, 'X', 'X', 'Y', 'Y'],
+        ['G', 'G', 'X', 'X', 1, 0, 1, 'X', 'X', 'Y', 'Y'],
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
@@ -236,7 +237,7 @@ export default {
     async movePawn() {
       await this.findPR1();
       if(this.newPos.col === 0 && this.newPos.row === 0){
-        this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos - 3;
+        this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos;
       } else{
         // find pawn in path array
         const index = this.path.findIndex(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
@@ -254,9 +255,15 @@ export default {
           this.extraTurn = true;
         }
 
+        if(newPosition >= this.path.length ){
+          newPosition = -1 + 1;
+        }
+
         pawn.position = newPosition;
         console.log("current pos: " + pawn.position);
         steps--;
+
+
 
         await this.$nextTick();
         await this.sleep(500);
@@ -273,9 +280,9 @@ export default {
         }
 
         // Check if the player won
-        if (this.hasWon()) {
-          alert(`${this.currentPlayer} has won the game`);
-        }
+        // if (this.hasWon()) {
+        //   alert(`${this.currentPlayer} has won the game`);
+        // }
       }
 
       if(this.newPos !== { row: 0, col: 0} ){
@@ -369,7 +376,7 @@ export default {
       return pawns.map(([color, pawn]) => ({ color: color, ...pawn }));
     },
 
-    getClass(cell) {
+    getClass(cell, row, col) {
       if (typeof cell === 'string') {
         switch (cell) {
           case 'R': return 'base-cellR';
@@ -383,9 +390,18 @@ export default {
           case 'X': return 'block-cell';
           default: return '';
         }
+      } else if (cell === 1 && row === 4 && col === 1) {
+        return 'base-cellR';
+      } else if (cell === 1 && row === 1 && col === 6) {
+        return 'base-cellB';
+      } else if (cell === 1 && row === 9 && col === 4) {
+        return 'base-cellG';
+      } else if (cell === 1 && row === 6 && col === 9) {
+        return 'base-cellY';
       } else if (cell === 1) {
         return 'path-cell';
-      } else {
+      }
+      else {
         return '';
       }
     },
@@ -402,17 +418,22 @@ export default {
       }
       },
 
-   mounted() {
+   async mounted() {
 
-    const countdownInterval = setInterval(() => {
+    const countdownInterval = setInterval(async () => {
       this.countdown--; // Decrease the countdown value by 1
 
       if (this.countdown <= 0) {
         clearInterval(countdownInterval);
+        try {
+          await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
+          // eslint-disable-next-line no-empty
+        } catch (error) {
+        }
         location.reload(); // Refresh the page when countdown reaches zero
       } else if (this.countdown <= 10) {
         // Flash the countdown red when it's under 10 seconds
-        this.countdownStyle = { color: 'red' };
+        this.countdownStyle = {color: 'red'};
         setTimeout(() => {
           this.countdownStyle = {}; // Reset the style after 200 milliseconds
         }, 200);
@@ -445,6 +466,8 @@ export default {
   position: relative;
   background-color: black;
 }
+
+
 
 .pG1{
   width: 60px;

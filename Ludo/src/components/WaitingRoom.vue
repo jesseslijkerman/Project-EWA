@@ -66,6 +66,7 @@
     </div>
   </div>
 <div v-if="isHost">
+<!--  <p v-if="!enoughPlayers">You need at least 2 players to start the match!</p>-->
   <p v-if="buttonClicked">The match has been started, please wait until the page has refreshed to begin playing.</p>
   <button class="start-match-button" @click="startMatch" v-if="this.lobbyData.status === 'INACTIVE'" :disabled="buttonClicked">Start match</button>
 </div>
@@ -83,7 +84,8 @@ export default {
       playerData: null,
       lobbyNumber: null,
       gameStartedText: "Match has been started, click here to enter the game!",
-      buttonClicked: false
+      buttonClicked: false,
+      enoughPlayers: false,
     };
   },
   methods: {
@@ -120,16 +122,20 @@ export default {
     },
 
     async startMatch() {
-      this.buttonClicked = true;
-      await this.lobbyService.asyncStartMatch(this.lobbyNumber);
+      if(this.playerData.length > 1) {
+        this.buttonClicked = true;
+        this.enoughPlayers = true;
+        await this.lobbyService.asyncStartMatch(this.lobbyNumber);
+      } else {
+        alert("You need at least 2 players to start the match!");
+      }
+
     },
 
   },
   async created() {
     this.getLobbyInfo();
     this.checkHost();
-    let ding = await this.userLobbyService.asyncFindById(this.lobbyNumber);
-    console.log("MATCH INFO!!!!!!!!" + ding[2].playerNumber);
 },
 
   mounted() {

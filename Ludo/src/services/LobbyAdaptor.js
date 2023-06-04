@@ -60,7 +60,7 @@ export class LobbyAdaptor{
     async asyncFindUsersInLobby(lobby_id){
         console.log("LobbyAdaptor.asyncFindUsersInLobby()...")
         const users = await this.fetchJson(this.resourcesUrl + "/" + lobby_id + "/users")
-        return Lobby.copyConstructor(users)
+        return users
     }
 
     async asyncFindByUserId(id){
