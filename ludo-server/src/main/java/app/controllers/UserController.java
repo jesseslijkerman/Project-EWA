@@ -58,11 +58,9 @@ public class UserController {
     }
 
 
-    @PutMapping(path = "/changePassword/{id}")
-    public User changePassword(@RequestBody User user) {
-        userService.encodePassword(user);
-        usersRepo.save(user);
-        return user;
+    @PutMapping(path = "/changePassword/{id}/{newPassword}")
+    public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
+        return usersRepo.updatePassword(id, newPassword);
     }
 
     @DeleteMapping(path = "/{id}")

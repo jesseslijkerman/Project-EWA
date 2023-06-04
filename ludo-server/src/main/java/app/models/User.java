@@ -9,8 +9,12 @@ import java.util.List;
 @Entity
 // User is a reserved keyword, so I'm forcing hibernate to quote an identifier
 @Table(name = "`User`")
-@NamedQuery(name = "find_all_users", query = "select u from User u")
-@NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam"))
+@NamedQueries({
+        @NamedQuery(name = "find_all_users", query = "select u from User u"),
+        @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam")),
+        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId"))
+})
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
