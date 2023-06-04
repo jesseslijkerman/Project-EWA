@@ -2,6 +2,8 @@ package app.repositories;
 
 import app.models.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -15,6 +17,9 @@ import java.util.List;
 public class UsersRepository {
     @PersistenceContext
     EntityManager entityManager;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public List<User> findAll(){
         TypedQuery<User> namedQuery = entityManager.createNamedQuery("find_all_users", User.class);
@@ -39,5 +44,11 @@ public class UsersRepository {
         User user = findById(id);
         entityManager.remove(user);
         return user;
+    }
+
+    public User signup(User user) {
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        return save(user);
     }
 }
