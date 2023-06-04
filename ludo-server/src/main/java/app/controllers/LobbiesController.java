@@ -120,10 +120,25 @@ public class LobbiesController {
         return null;
     }
 
-    @DeleteMapping(path = "{id}/users/{username}")
-    public Lobby deleteUserFromLobby(@PathVariable String username, @PathVariable Long id){
-        userLobbyRepo.removeUserFromLobby(username, id);
-        return null;
+    @DeleteMapping(path = "{lobbyId}/users/{userId}")
+    public ResponseEntity<String> deleteUserFromLobby(@PathVariable Long userId, @PathVariable Long lobbyId){
+        Lobby lobby = lobbyRepo.findById(lobbyId);
+        User user = userRepo.findById(userId);
+
+        if (lobby == null || user == null) {
+            throw new ResourceNotFound("Lobby or User not found");
+        }
+
+        userLobbyRepo.removeUserFromLobby(userId, lobbyId);
+
+        // Check if the lobby has no more users
+        List<String> remainingUsers = userLobbyRepo.findAllUsersInLobby(lobbyId);
+        if (remainingUsers.isEmpty()) {
+            lobbyRepo.deleteById(lobbyId);
+            return ResponseEntity.ok("User removed successfully. Lobby deleted.");
+        }
+
+        return ResponseEntity.ok("User removed successfully.");
     }
 
 

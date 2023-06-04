@@ -42,14 +42,11 @@ export class UsersAdaptor {
     return User.copyConstructor(user);
   }
 
-  async changePass(newPassword){
-    const pass = await this.fetchJson(this.resourcesUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPassword),
-
-  });
-
-}}
+  async changePassword(userId, newPassword){
+      console.log("LobbyAdaptor.changePass()...");
+      const user = this.fetchJson(this.resourcesUrl + "/changePassword/" + userId + "/" + newPassword, {
+        method: "PUT"
+      });
+      return User.copyConstructor(user);
+    }
+}

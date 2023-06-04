@@ -1,8 +1,14 @@
 export class User {
-  id;
+  email;
+  password;
+  countryCode;
+  username;
 
-  constructor(id) {
-    this.id = id;
+  constructor(email, password, countryCode, username) {
+    this.email = email;
+    this.password = password;
+    this.countryCode = countryCode;
+    this.username = username;
   }
 
   static copyConstructor(user) {

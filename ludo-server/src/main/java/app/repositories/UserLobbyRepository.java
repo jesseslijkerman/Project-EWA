@@ -11,22 +11,21 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 
-    @Repository
-    @Transactional
-    public class UserLobbyRepository {
-        @PersistenceContext
-        EntityManager entityManager;
+@Repository
+@Transactional
+public class UserLobbyRepository {
 
-
+    @PersistenceContext
+    EntityManager entityManager;
 
     public List<UserLobby> findAll(){
         TypedQuery<UserLobby> namedQuery = entityManager.createNamedQuery("find_all_user_lobbies", UserLobby.class);
         return namedQuery.getResultList();
     }
 
-    public List<String> findAllUsersInLobby(Long id){
+    public List<String> findAllUsersInLobby(Long lobbyId){
         TypedQuery<String> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", String.class);
-        namedQuery.setParameter(1, id);
+        namedQuery.setParameter(1, lobbyId);
         return namedQuery.getResultList();
     }
 
@@ -37,9 +36,9 @@ import java.util.List;
         return namedQuery.getSingleResult();
     }
 
-    public void removeUserFromLobby(String username, Long lobbyId) {
+    public void removeUserFromLobby(Long userId, Long lobbyId) {
         Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
-        namedQuery.setParameter("username", username);
+        namedQuery.setParameter("userId", userId);
         namedQuery.setParameter("lobbyId", lobbyId);
         namedQuery.executeUpdate();
     }
@@ -73,7 +72,4 @@ import java.util.List;
             entityManager.remove(lobby);
             return lobby;
     }
-
-
-
-    }
+}

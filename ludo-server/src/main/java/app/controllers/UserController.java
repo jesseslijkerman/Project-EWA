@@ -4,7 +4,6 @@ import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.User;
 import app.repositories.UsersRepository;
-import app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +18,6 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UsersRepository usersRepo;
-
-    @Autowired
-    private UserService userService;
 
     @GetMapping(path = "", produces = "application/json")
     public List<User> getAllUsers(){
@@ -39,7 +35,7 @@ public class UserController {
 
     @PostMapping(path = "")
     public ResponseEntity<Object> createUser(@RequestBody User user){
-        User createdUser = userService.signup(user);
+        User createdUser = usersRepo.signup(user);
 
         // Return appropriate response status
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdUser.getId()).toUri();
@@ -54,6 +50,13 @@ public class UserController {
 
         usersRepo.save(user);
         return user;
+
+    }
+
+
+    @PutMapping(path = "/changePassword/{id}/{newPassword}")
+    public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
+        return usersRepo.updatePassword(id, newPassword);
     }
 
     @DeleteMapping(path = "/{id}")
