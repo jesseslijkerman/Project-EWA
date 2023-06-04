@@ -11,15 +11,19 @@
         </div>
       </div>
     </div>
+    <p v-if="canIPlay">Roll the dice before your turn ends!</p>
+    <p v-if="!canIPlay"> {{ this.whichUserTurn.username }}'s turn will end in:</p>
+    <h1 class="countdown" :style="countdownStyle">{{this.countdown}}s</h1>
     <img v-if="rolled_dice !== 0"
          class="dice"
          @click="rollDice"
          :src="getRollPicture(rolled_dice)"
     />
+
     <button @click="rollDice()" :disabled="buttonClickedDice" v-if="canIPlay">Roll Dice</button>
     <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'X' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>
+    <button @click="movePawn" v-if="currentPlayer === 'B' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'Y' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Yellow Pawn</button>
   </div>
 </template>
@@ -48,17 +52,17 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': {startPos: 0, position: -1, home: true},
+        'R': {startPos: 4, position: -1, home: true},
         'G': {startPos: 20, position: -1, home: true},
-        'X': {startPos: 10, position: -1, home: true},
+        'B': {startPos: 10, position: -1, home: true},
         'Y': {startPos: 30, position: -1, home: true}
       },
       path: [],
       startingPoints: [
-        {i: 0, j: 2}, // Red
-        {i: 2, j: 9}, // Green
-        {i: 9, j: 7}, // Blue
-        {i: 7, j: 0}  // Yellow
+        {i: 4, j: 1}, // Red
+        {i: 1, j: 6}, // Green
+        {i: 9, j: 4}, // Blue
+        {i: 6, j: 9}  // Yellow
       ],
       homePaths: {
         'R': {i: 0, j: 3, direction: 'right', length: 5},
@@ -73,7 +77,11 @@ export default {
       whichUserTurn: 1,
       buttonClicked: false,
       buttonClickedDice: false,
-      lobbyNumber: new URL(window.location).pathname.split('/')[2]
+      lobbyNumber: new URL(window.location).pathname.split('/')[2],
+      countdown: 30,
+      countdownStyle: {},
+      rowPosition: 0,
+      colPosition: 0,
     };
   },
 
@@ -81,6 +89,9 @@ export default {
     this.generatePath();
     await this.convertDBtoBoard();
     await this.checkIfYourTurn();
+    this.startingPointsPlayers();
+    this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
+    console.log(this.countdown);
 
   },
   methods: {
@@ -126,6 +137,13 @@ export default {
       }
     },
 
+    startingPointsPlayers(){
+        this.board[4][1]= 'R';
+        this.board[1][6]= 'B';
+        this.board[9][4]= 'G';
+        this.board[6][9]= 'Y';
+    },
+
 
     async rollDice() {
       this.buttonClickedDice = true;
@@ -142,13 +160,13 @@ export default {
     },
 
     getRollPicture(src) {
-      console.log(src)
       if (src === undefined) {
         return;
       } else {
         return "/src/assets/dice" + src + ".png";
       }
     },
+
 
     async convertDBtoBoard() {
       const inputObject = await this.lobbyService.asyncFindById(this.lobbyNumber);
@@ -199,24 +217,37 @@ export default {
       }
     },
 
+    getPlayerLocation(position) {
+      for (let i = 0; i < this.path.length; i++) {
+        const cell = this.path[i];
+        if (cell.i === position.i && cell.j === position.j) {
+          return { i: cell.i, j: cell.j }; // Include the 'j' value
+        }
+      }
+      return null;
+    },
+
     async movePawn() {
-      this.board[0][0] = 1
       this.buttonClicked = true;
       if (!this.pawns[this.currentPlayer]) return;
       let pawn = this.pawns[this.currentPlayer];
       let steps = this.rolled_dice;
-      while(steps > 0) {
-        let newPosition = pawn.position + 1;
-        // Update the pawn's position
-        pawn.position = newPosition;
 
+      while (steps >= 0) {
+        let newPosition = pawn.position + 1;
+
+        if (this.rolled_dice === 6) {
+          this.extraTurn = true;
+        }
+
+        pawn.position = newPosition;
+        console.log("current pos: " + pawn.position);
         steps--;
 
-        // Pause for Vue to update the DOM, then check for other pawns in the cell
         await this.$nextTick();
         await this.sleep(500);
 
-        if(steps === 0) {
+        if (steps === 0) {
           let pawnInNewCell = this.getPawn(this.path[newPosition].i, this.path[newPosition].j);
           pawnInNewCell.forEach(pawnInCell => {
             if (pawnInCell.color !== this.currentPlayer) {
@@ -228,21 +259,32 @@ export default {
         }
 
         // Check if the player won
-        if(this.hasWon()) {
+        if (this.hasWon()) {
           alert(`${this.currentPlayer} has won the game`);
         }
       }
 
-      if(this.extraTurn === false){
+      let newPosition = this.pawns[this.currentPlayer].position;
+      const currentPlayerLocation = this.getPlayerLocation(this.path[newPosition]);
+      console.log("currentPlayerLocation: ", currentPlayerLocation);
+      if (currentPlayerLocation) {
+        const { i, j } = currentPlayerLocation;
+        console.log("Player is at board location: ", i, j);
+        this.board[i][j] = this.currentPlayer;
+        await this.convertBoardToDB();
+      }
+
+      if (this.extraTurn === false) {
+        await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
+        console.log("Turn increased")
         await this.nextPlayer();
         await this.convertBoardToDB();
-        await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber)
-      }
-      else{
+      } else {
         this.extraTurn = false;
         await this.convertBoardToDB();
       }
-    },
+    }
+    ,
 
 
 // Add this method to the Vue component
@@ -255,7 +297,7 @@ export default {
     },
 
     async nextPlayer() {
-      let players = ['R', 'G', 'X', 'Y'];
+      let players = ['R', 'G', 'B', 'Y'];
       let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
 
       // Map the player number to the corresponding letter
@@ -287,8 +329,8 @@ export default {
         switch (cell) {
           case 'R': return 'base-cellR';
           case 'G': return 'base-cellG';
-          case 'B': return 'block-cell';
-          case 'X': return 'base-cellB';
+          case 'B': return 'base-cellB';
+          case 'X': return 'block-cell';
           case 'Y': return 'base-cellY';
           default: return '';
         }
@@ -311,17 +353,22 @@ export default {
       }
       },
 
-  mounted() {
-    const currentTime = new Date();
-    const seconds = currentTime.getSeconds();
-    const milliseconds = currentTime.getMilliseconds();
-    const timeUntilNextRefresh = (10 - seconds % 10) * 1000 - milliseconds;
+   mounted() {
 
-    setTimeout(() => {
-      location.reload(); // Refresh the page
-    }, timeUntilNextRefresh);
+    const countdownInterval = setInterval(() => {
+      this.countdown--; // Decrease the countdown value by 1
 
-    return timeUntilNextRefresh;
+      if (this.countdown <= 0) {
+        clearInterval(countdownInterval);
+        location.reload(); // Refresh the page when countdown reaches zero
+      } else if (this.countdown <= 10) {
+        // Flash the countdown red when it's under 10 seconds
+        this.countdownStyle = { color: 'red' };
+        setTimeout(() => {
+          this.countdownStyle = {}; // Reset the style after 200 milliseconds
+        }, 200);
+      }
+    }, 1000); // Repeat every second (1000 milliseconds)
   }
 };
 </script>
@@ -338,8 +385,9 @@ export default {
 
 .row {
   display: flex;
-  justify-content: space-between;
 }
+
+
 
 .cell {
   width: 60px;
@@ -354,6 +402,10 @@ export default {
 
 .base-cellR {
   background-color: red;
+}
+
+.base-cellX {
+  background-color: black;
 }
 
 .base-cellG {
@@ -391,6 +443,10 @@ export default {
   0% { top: 50%; }
   50% { top: 40%; }
   100% { top: 50%; }
+}
+
+.countdown{
+  text-align: center;
 }
 
 .cyan-cell {
