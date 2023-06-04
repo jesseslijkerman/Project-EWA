@@ -291,6 +291,7 @@ export default {
         } catch (error) {
           console.error("Error in fillInBoard:", error);
         }
+        if (currentPosition) break;
       }
 
       try {
