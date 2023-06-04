@@ -15,13 +15,13 @@ import javax.persistence.*;
 @NamedQuery(name = "get_current_turn", query = "SELECT l.whoseTurn FROM Lobby l WHERE l.id = :lobbyId")
 public class UserLobby {
     @Id
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
     @Id
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "lobby_id")
     @JsonIgnore
     private Lobby lobby;

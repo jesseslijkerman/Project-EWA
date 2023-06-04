@@ -54,6 +54,13 @@ public class UserController {
 
         usersRepo.save(user);
         return user;
+
+    }
+
+
+    @PutMapping(path = "/changePassword/{id}/{newPassword}")
+    public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
+        return usersRepo.updatePassword(id, newPassword);
     }
 
     @DeleteMapping(path = "/{id}")
