@@ -31,19 +31,7 @@ export default {
   },
   methods: {
     async handlePassChange() {
-
-      const accountData = {
-        id: this.sessionService.currentAccount.id,
-        email: this.sessionService.currentAccount.email,
-        password: this.entered_new_password,
-        username: this.sessionService.currentAccount.username,
-        countryCode: this.sessionService.currentAccount.countryCode,
-        picture: this.sessionService.currentAccount.picture,
-      }
-
-      console.log(this.sessionService.currentAccount)
-      console.log(accountData)
-      await this.registerService.changePass(accountData)
+      await this.registerService.changePassword(this.sessionService.currentAccount.id, this.entered_new_password)
     },
   }
 }

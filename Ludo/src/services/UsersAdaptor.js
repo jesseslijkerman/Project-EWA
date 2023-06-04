@@ -37,16 +37,11 @@ export class UsersAdaptor {
     return User.copyConstructor(user);
   }
 
-  async changePass(user){
+  async changePassword(userId, newPassword){
       console.log("LobbyAdaptor.changePass()...");
-      const password = this.fetchJson(this.resourcesUrl + "/changePassword/" + user.id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user)
+      const user = this.fetchJson(this.resourcesUrl + "/changePassword/" + userId + "/" + newPassword, {
+        method: "PUT"
       });
-      console.log(JSON.stringify(user))
-      return User.copyConstructor(password);
+      return User.copyConstructor(user);
     }
 }
