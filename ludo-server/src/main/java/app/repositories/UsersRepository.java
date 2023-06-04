@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -51,4 +52,15 @@ public class UsersRepository {
         user.setPassword(hashedPassword);
         return save(user);
     }
+
+    public User updatePassword(Long userId, String newPassword){
+        Query query = entityManager.createNamedQuery("reset_password");
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        query.setParameter("newPassword", hashedPassword);
+        query.setParameter("userId", userId);
+        query.executeUpdate();
+
+        return findById(userId);
+    }
+
 }
