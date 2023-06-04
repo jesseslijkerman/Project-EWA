@@ -40,22 +40,22 @@ export default {
       currentPlayer: 'R',
       board: [
         ['R', 'R', 'X', 'X', 1, 1, 1, 'X', 'X', 'B', 'B'],
-        ['R', 'R', 'X', 'X', 1, 0, 1, 'X', 'X', 'B', 'B'],
+        ['R', 'R', 'X', 'X', 1, 0, 'B', 'X', 'X', 'B', 'B'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
-        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 'R', 1, 1, 1, 0, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1, 'Y', 1],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
-        ['G', 'G', 'X', 'X', 1, 0, 1, 'X', 'X', 'Y', 'Y'],
+        ['G', 'G', 'X', 'X', 'G', 0, 1, 'X', 'X', 'Y', 'Y'],
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': {startPos: 4, position: -1, home: true},
-        'G': {startPos: 20, position: -1, home: true},
-        'B': {startPos: 10, position: -1, home: true},
-        'Y': {startPos: 30, position: -1, home: true}
+        'R': {startPos: 31, position: -1, home: true},
+        'G': {startPos: 21, position: -1, home: true},
+        'B': {startPos: 2, position: -1, home: true},
+        'Y': {startPos: 12, position: -1, home: true}
       },
       path: [],
       startingPoints: [
@@ -63,6 +63,7 @@ export default {
         {i: 1, j: 6}, // Green
         {i: 9, j: 4}, // Blue
         {i: 6, j: 9}  // Yellow
+
       ],
       homePaths: {
         'R': {i: 0, j: 3, direction: 'right', length: 5},
@@ -82,6 +83,7 @@ export default {
       countdownStyle: {},
       rowPosition: 0,
       colPosition: 0,
+      newPos: { row: 0, col: 0}
     };
   },
 
@@ -89,9 +91,14 @@ export default {
     this.generatePath();
     await this.convertDBtoBoard();
     await this.checkIfYourTurn();
-    this.startingPointsPlayers();
+    await this.defineCurrentPlayer();
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
     console.log(this.countdown);
+    console.log(this.currentPlayer);
+    console.log(this.path)
+    console.log(this.newPos)
+
+
 
   },
   methods: {
@@ -137,11 +144,13 @@ export default {
       }
     },
 
-    startingPointsPlayers(){
-        this.board[4][1]= 'R';
-        this.board[1][6]= 'B';
-        this.board[9][4]= 'G';
-        this.board[6][9]= 'Y';
+    async defineCurrentPlayer(){
+      let players = ['R', 'B', 'G', 'Y'];
+      let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+
+      let playerLetter = players[nextIndex -1];
+      console.log("current player color: " + playerLetter);
+      this.currentPlayer = playerLetter;
     },
 
 
@@ -151,10 +160,7 @@ export default {
       this.extraTurn = this.rolled_dice === 6 ? true : false;
       this.getRollPicture(this.rolled_dice)
 
-      if(this.rolled_dice === 6 && this.pawns[this.currentPlayer].home === true){
-        this.movePawnOut();
-      }
-      else if(this.extraTurn === false){
+      if(this.extraTurn === false){
         await this.nextPlayer();
       }
     },
@@ -228,10 +234,18 @@ export default {
     },
 
     async movePawn() {
+      await this.findPR1();
+      if(this.newPos.col === 0 && this.newPos.row === 0){
+        this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos - 3;
+      } else{
+        // find pawn in path array
+        const index = this.path.findIndex(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
+        this.pawns[this.currentPlayer].position = index;
+      }
       this.buttonClicked = true;
       if (!this.pawns[this.currentPlayer]) return;
       let pawn = this.pawns[this.currentPlayer];
-      let steps = this.rolled_dice;
+      let steps = this.rolled_dice - 1;
 
       while (steps >= 0) {
         let newPosition = pawn.position + 1;
@@ -264,27 +278,66 @@ export default {
         }
       }
 
-      let newPosition = this.pawns[this.currentPlayer].position;
-      const currentPlayerLocation = this.getPlayerLocation(this.path[newPosition]);
-      console.log("currentPlayerLocation: ", currentPlayerLocation);
-      if (currentPlayerLocation) {
-        const { i, j } = currentPlayerLocation;
-        console.log("Player is at board location: ", i, j);
-        this.board[i][j] = this.currentPlayer;
-        await this.convertBoardToDB();
+      if(this.newPos !== { row: 0, col: 0} ){
+        try {
+          await this.clearPR1();
+        } catch (error) {
+          console.error("Error in fillInBoard:", error);
+        }
+      }
+
+      try {
+        await this.fillInBoard();
+        console.log("Fill in board completed successfully");
+      } catch (error) {
+        console.error("Error in fillInBoard:", error);
+
       }
 
       if (this.extraTurn === false) {
+        console.log("Turn increased");
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
-        console.log("Turn increased")
-        await this.nextPlayer();
         await this.convertBoardToDB();
       } else {
+        console.log("Extra turn");
         this.extraTurn = false;
         await this.convertBoardToDB();
       }
     }
     ,
+
+    async findPR1() {
+      for (let i = 0; i < this.board.length; i++) {
+        for (let j = 0; j < this.board[i].length; j++) {
+          if (this.board[i][j] === 'p' + this.currentPlayer + '1') {
+            this.rowPosition = i;
+            this.colPosition = j;
+            this.newPos = { i, j };
+          }
+        }
+      }
+      this.rowPosition = null;
+      this.colPosition = null;
+    },
+
+    async clearPR1(){
+      const index = this.path.find(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
+      this.board[index.i][index.j] = 1;
+    },
+
+    async fillInBoard() {
+
+      let newPosition = this.pawns[this.currentPlayer].position;
+      const currentPlayerLocation = this.getPlayerLocation(this.path[newPosition]);
+      console.log("currentPlayerLocation: ", currentPlayerLocation);
+      if (currentPlayerLocation) {
+        const { i, j } = currentPlayerLocation;
+        this.newPos = { i, j };
+        console.log("Player is at board location: ", i, j);
+        this.board[i][j] = 'p' + this.currentPlayer + '1';
+        await this.convertBoardToDB();
+      }
+    },
 
 
 // Add this method to the Vue component
@@ -296,14 +349,6 @@ export default {
       return this.pawns[this.currentPlayer].position >= this.path.length;
     },
 
-    async nextPlayer() {
-      let players = ['R', 'G', 'B', 'Y'];
-      let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
-
-      // Map the player number to the corresponding letter
-      let playerLetter = players[nextIndex - 1];
-      this.currentPlayer = playerLetter;
-    },
 
     isPawn(i, j) {
       return Object.values(this.pawns).filter(pawn => {
@@ -328,10 +373,14 @@ export default {
       if (typeof cell === 'string') {
         switch (cell) {
           case 'R': return 'base-cellR';
+          case 'pR1': return 'pR1';
           case 'G': return 'base-cellG';
+          case 'pG1': return 'pG1';
           case 'B': return 'base-cellB';
-          case 'X': return 'block-cell';
+          case 'pB1': return 'pB1';
           case 'Y': return 'base-cellY';
+          case 'pY1': return 'pY1';
+          case 'X': return 'block-cell';
           default: return '';
         }
       } else if (cell === 1) {
@@ -379,21 +428,58 @@ export default {
   display: flex;
   flex-direction: column;
   margin: auto;
-  width: 700px;
-  height: 700px;
+  width: 647px;
+  height: 650px;
+  background: cadetblue;
 }
 
 .row {
   display: flex;
+
 }
-
-
 
 .cell {
   width: 60px;
   height: 60px;
   border: 1px solid black;
   position: relative;
+  background-color: black;
+}
+
+.pG1{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: green;
+  transform: scale(0.7);
+  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
+}
+
+.pB1{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: blue;
+  transform: scale(0.7);
+  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
+}
+
+.pY1{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: yellow;
+  transform: scale(0.7);
+  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
+}
+
+.pR1{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: red;
+  transform: scale(0.7);
+  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
 }
 
 .block-cell {

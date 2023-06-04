@@ -66,7 +66,8 @@
     </div>
   </div>
 <div v-if="isHost">
-  <button class="start-match-button" @click="startMatch" v-if="this.lobbyData.status === 'INACTIVE'" >Start match</button>
+  <p v-if="buttonClicked">The match has been started, please wait until the page has refreshed to begin playing.</p>
+  <button class="start-match-button" @click="startMatch" v-if="this.lobbyData.status === 'INACTIVE'" :disabled="buttonClicked">Start match</button>
 </div>
   <button class="start-match-button" @click="enterGame" v-if="this.lobbyData.status === 'ACTIVE'">{{ gameStartedText }}</button>
 </template>
@@ -81,7 +82,8 @@ export default {
       isHost: false,
       playerData: null,
       lobbyNumber: null,
-      gameStartedText: "Match has been started, click here to enter the game!"
+      gameStartedText: "Match has been started, click here to enter the game!",
+      buttonClicked: false
     };
   },
   methods: {
@@ -101,7 +103,8 @@ export default {
     },
 
     async removeFromLobby(){
-      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, this.sessionService.user);
+      // userName word id
+      await this.lobbyService.asyncRemoveUserFromLobby(this.lobbyNumber, this.sessionService.currentAccount.id);
     },
 
     // Check if currently logged in user is the host
@@ -117,6 +120,7 @@ export default {
     },
 
     async startMatch() {
+      this.buttonClicked = true;
       await this.lobbyService.asyncStartMatch(this.lobbyNumber);
     },
 
