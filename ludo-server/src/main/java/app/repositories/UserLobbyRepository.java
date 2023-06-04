@@ -24,9 +24,9 @@ import java.util.List;
         return namedQuery.getResultList();
     }
 
-    public List<String> findAllUsersInLobby(Long id){
+    public List<String> findAllUsersInLobby(Long lobbyId){
         TypedQuery<String> namedQuery = entityManager.createNamedQuery("find_users_in_lobby", String.class);
-        namedQuery.setParameter(1, id);
+        namedQuery.setParameter(1, lobbyId);
         return namedQuery.getResultList();
     }
 
@@ -37,9 +37,9 @@ import java.util.List;
         return namedQuery.getSingleResult();
     }
 
-    public void removeUserFromLobby(String username, Long lobbyId) {
+    public void removeUserFromLobby(Long userId, Long lobbyId) {
         Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
-        namedQuery.setParameter("username", username);
+        namedQuery.setParameter("userId", userId);
         namedQuery.setParameter("lobbyId", lobbyId);
         namedQuery.executeUpdate();
     }
