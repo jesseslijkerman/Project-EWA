@@ -1,10 +1,10 @@
 @import './base.css';
 
 #app {
-  height: 100vh; /* 100% of the viewport height */
-  width: 100vw; /* 100% of the viewport width */
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+
   font-weight: normal;
 }
 

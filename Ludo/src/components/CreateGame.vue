@@ -108,26 +108,38 @@
 
 <script>
 import {Lobby} from "../models/Lobby";
+import {UserLobby} from "../models/UserLobby";
 
 export default {
   name: "CreateGame",
-  inject: ["lobbyService"],
+  inject: ["lobbyService", "sessionService"],
+  created() {
+    this.currentAccount = this.sessionService.currentAccount;
+    console.log(this.currentAccount.id)
+  },
   data() {
     return {
-      gameMode: null,
-      maxPlayers: null,
-      name: null,
-      password: null,
-      turnTimer: null,
-    };
+      gameMode: this.gameMode,
+      maxPlayers: this.maxPlayers,
+      name: this.name,
+      password: this.password,
+      status: 'INACTIVE',
+      turnTimer: this.turnTimer,
+      whoseTurn: 1,
+      boardState: "['R','R','X','X',1,1,1,'X','X','B','B'],['R','R','X','X',1,0,1,'X','X','B','B'],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],[1,1,1,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],['G','G','X','X',1,0,1,'X','X','Y','Y'],['G','G','X','X',1,1,1,'X','X','Y','Y']"};
   },
   methods: {
     async createLobby(){
       var now = new Date();
-      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer);
+      let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer,  this.status, this.whoseTurn, this.boardState);
       console.log(lobby)
 
-      await this.lobbyService.asyncSave(JSON.stringify(lobby))
+      let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))
+
+      let userLobby = new UserLobby("RED",1)
+
+      console.log("Account Id = " + this.sessionService.currentAccount.id + "Lobby id = " + newLobby.id)
+      await this.lobbyService.asyncAddUserLobby(newLobby.id, this.sessionService.currentAccount.id, JSON.stringify(userLobby))
 
       this.$router.push("/ongoing-matches")
     }

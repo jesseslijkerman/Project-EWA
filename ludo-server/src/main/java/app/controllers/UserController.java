@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public User findById(@PathVariable int id){
+    public User findById(@PathVariable Long id){
         User user = this.usersRepo.findById(id);
         if (user==null){
             throw new ResourceNotFound("id-" + id);
@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping(path = "")
     public ResponseEntity<Object> createUser(@RequestBody User user){
-        User createdUser = usersRepo.save(user);
+        User createdUser = usersRepo.signup(user);
 
         // Return appropriate response status
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdUser.getId()).toUri();
@@ -43,17 +43,24 @@ public class UserController {
     }
 
     @PutMapping(path = "/{id}")
-    public User editUser(@PathVariable int id, @RequestBody User user){
+    public User editUser(@PathVariable Long id, @RequestBody User user){
         if (user.getId() != id){
             throw new PreConditionFailed("id-" + id + " doesn't match id of body");
         }
 
         usersRepo.save(user);
         return user;
+
+    }
+
+
+    @PutMapping(path = "/changePassword/{id}/{newPassword}")
+    public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
+        return usersRepo.updatePassword(id, newPassword);
     }
 
     @DeleteMapping(path = "/{id}")
-    public User deleteUser(@PathVariable int id){
+    public User deleteUser(@PathVariable Long id){
         User user = usersRepo.deleteById(id);
         if (user==null){
             throw new ResourceNotFound("id-" + id);

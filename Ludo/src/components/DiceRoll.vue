@@ -167,6 +167,10 @@ export default {
     }
 
   },
+  created() {
+    console.log("Start positie: ")
+    console.log("Kleur starter: " + this.playerList[this.currentPlayer].name)
+  }
 
 };
 </script>

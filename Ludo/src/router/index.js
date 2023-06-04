@@ -5,6 +5,10 @@ import Register from "@/components/Register.vue";
 import LudoBoard from "../components/LudoBoard.vue";
 import OngoingMatches from "@/components/OngoingMatches.vue";
 import CreateGame from "../components/CreateGame.vue";
+import DiceRoll from "@/components/DiceRoll.vue";
+import GameRules from "@/components/GameRules.vue";
+import ResetPassword from "@/components/ResetPassword.vue";
+import WaitingRoom from "@/components/WaitingRoom.vue";
 
 
 const router = createRouter({
@@ -14,6 +18,9 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      meta: {
+        hideNavbar: true,
+      }
     },
     {
       path: "/about",
@@ -51,6 +58,11 @@ const router = createRouter({
     },
     {
       path: "/match/:id",
+      name: "waiting-room",
+      component: WaitingRoom,
+    },
+    {
+      path: "/match/:id/play",
       name: "clickedMatch",
       component: LudoBoard,
     },
@@ -59,6 +71,21 @@ const router = createRouter({
       name: "createGame",
       component: CreateGame,
     },
+    {
+      path: "/roll",
+      name: "roll",
+      component: DiceRoll
+    },
+    {
+      path: "/gamerules",
+      name: "gamerules",
+      component: GameRules
+    },
+    {
+      path: "/reset-password",
+      name: "resetPassword",
+      component: ResetPassword
+    }
   ],
 });
 

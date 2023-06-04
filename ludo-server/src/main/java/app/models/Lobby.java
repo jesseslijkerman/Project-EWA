@@ -2,9 +2,9 @@ package app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,11 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "find_all_lobbies", query = "select l from Lobby l"),
         @NamedQuery(name = "find_lobbies_by_user_id", query = "SELECT l FROM Lobby l JOIN l.userLobbies ul WHERE ul.user.id = ?1"),
+        @NamedQuery(name = "update_lobby_status", query = "UPDATE Lobby l SET l.status = 'ACTIVE' WHERE l.id = ?1"),
+        @NamedQuery(name = "update_game_board", query = "UPDATE Lobby l SET l.boardState = ?1 WHERE l.id = ?2"),
+        @NamedQuery(name = "find_lobby_by_id", query = "SELECT l FROM Lobby l WHERE l.id = :id"),
+        @NamedQuery(name = "update_lobby_turn", query = "UPDATE Lobby l SET l.whoseTurn = (l.whoseTurn + 1) * (CASE WHEN l.whoseTurn < l.maxPlayers THEN 1 ELSE 0 END) + 1 * (CASE WHEN l.whoseTurn >= l.maxPlayers THEN 1 ELSE 0 END) WHERE l.id = :lobbyId"),
+        @NamedQuery(name = "find_all_joinable_lobbies", query = "SELECT l FROM Lobby l WHERE l.id NOT IN (SELECT ul.lobby.id FROM UserLobby ul WHERE ul.user.id = ?1) AND l.status = 'INACTIVE'")
 })
 
 public class Lobby {
@@ -28,6 +33,7 @@ public class Lobby {
     private LocalDateTime created;
     private String status;
     private int whoseTurn;
+    private String boardState;
     @OneToMany(mappedBy = "lobby")
     @JsonIgnoreProperties("lobby")
     private List<UserLobby> userLobbies = new ArrayList<>();
@@ -37,6 +43,11 @@ public class Lobby {
 
     public Lobby() {
 
+    }
+
+    public boolean associateUser(UserLobby userLobby){
+        userLobbies.add(userLobby);
+        return true;
     }
 
     public Long getId() {
@@ -117,5 +128,13 @@ public class Lobby {
 
     public void setWhoseTurn(int whoseTurn) {
         this.whoseTurn = whoseTurn;
+    }
+
+    public String getBoardState() {
+        return boardState;
+    }
+
+    public void setBoardState(String boardState) {
+        this.boardState = boardState;
     }
 }

@@ -19,6 +19,11 @@ export class UsersAdaptor {
     }
   }
 
+  async asyncFindById(id) {
+    const user = await this.fetchJson(this.resourcesUrl + "/" + id);
+    return User.copyConstructor(user);
+  }
+
   async asyncFindAllUsers() {
     console.log("OrdersAdaptor.asyncFindAll()...");
     const users = await this.fetchJson(this.resourcesUrl);
@@ -32,8 +37,16 @@ export class UsersAdaptor {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(users),
+      body: users,
     });
     return User.copyConstructor(user);
   }
+
+  async changePassword(userId, newPassword){
+      console.log("LobbyAdaptor.changePass()...");
+      const user = this.fetchJson(this.resourcesUrl + "/changePassword/" + userId + "/" + newPassword, {
+        method: "PUT"
+      });
+      return User.copyConstructor(user);
+    }
 }
