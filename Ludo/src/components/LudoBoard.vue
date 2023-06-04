@@ -291,7 +291,7 @@ export default {
         } catch (error) {
           console.error("Error in fillInBoard:", error);
         }
-        if (currentPosition) break;
+        // if (currentPosition) break;
       }
 
       try {
@@ -427,7 +427,7 @@ export default {
       if (this.countdown <= 0) {
         clearInterval(countdownInterval);
         try {
-          await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
+          // await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
           // eslint-disable-next-line no-empty
         } catch (error) {
         }
