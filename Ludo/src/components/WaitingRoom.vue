@@ -1,6 +1,6 @@
 <template>
   <div class="leaveButton">
-    <a @click="removeFromLobby">Leave lobby</a>
+    <a  @click="removeFromLobby">Leave lobby</a>
   </div>
   <h2 v-if="this.lobbyData.status === 'INACTIVE'" class="waiting-message">Waiting for host to start the match...</h2>
   <div class="page-container">
@@ -159,6 +159,7 @@ export default {
 .leaveButton {
 
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .start-match-button {
@@ -188,15 +189,28 @@ export default {
   border-collapse: collapse;
 }
 
+.page-container{
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #fff;
+}
+
 .data-table th,
 .data-table td {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  align-items: center;
   color: black;
 }
 
+.data-table{
+  align-content: center;
+}
+
 .data-table th {
+  align-content: center;
   font-weight: bold;
 }
 
