@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div v-if="!hasWonBool">
     <p> ingelogd als: <b>{{ this.loggedInUser }}</b></p>
     <p> Speler aan de beurt: <b> {{ this.whichUserTurn.username }} </b> </p>
     <p> </p>
@@ -26,6 +27,13 @@
     <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'B' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>
     <button @click="movePawn" v-if="currentPlayer === 'Y' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Yellow Pawn</button>
+  </div>
+    <div v-if="hasWonBool">
+
+    <h1> {{ this.whichUserTurn.username  }} has won!</h1>
+    <button @click="returnToMatches()">Return to menu</button>
+
+    </div>
   </div>
 </template>
 
@@ -84,7 +92,9 @@ export default {
       countdownStyle: {},
       rowPosition: 0,
       colPosition: 0,
-      newPos: { row: 0, col: 0}
+      newPos: { row: 0, col: 0},
+      hasWonBool: false,
+      matchStatus: null,
     };
   },
 
@@ -93,11 +103,15 @@ export default {
     await this.convertDBtoBoard();
     await this.checkIfYourTurn();
     await this.defineCurrentPlayer();
+    this.matchStatus = (await this.lobbyService.asyncFindById(this.lobbyNumber)).status;
+    await this.checkIfFinished();
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
     console.log(this.countdown);
     console.log(this.currentPlayer);
     console.log(this.path)
     console.log(this.newPos)
+
+    console.log(this.matchStatus)
 
 
 
@@ -143,6 +157,18 @@ export default {
           }
         }
       }
+    },
+
+    async checkIfFinished(){
+      if (this.matchStatus === 'FINISHED'){
+        this.hasWonBool = true;
+      } else  {
+        this.hasWonBool = false;
+      }
+    },
+
+    returnToMatches(){
+      this.$router.push('/ongoing-matches');
     },
 
     async defineCurrentPlayer(){
@@ -280,9 +306,14 @@ export default {
         }
 
         // Check if the player won
-        // if (this.hasWon()) {
-        //   alert(`${this.currentPlayer} has won the game`);
-        // }
+
+        if (this.pawns[this.currentPlayer].position === this.pawns[this.currentPlayer].startPos) {
+          this.pawns[this.currentPlayer].home = true;
+          await this.lobbyService.asyncFinishMatch(this.lobbyNumber);
+          alert(`${this.currentPlayer} has won the game`);
+          this.hasWonBool = true;
+        }
+
       }
 
       if(this.newPos !== { row: 0, col: 0} ){
@@ -291,7 +322,6 @@ export default {
         } catch (error) {
           console.error("Error in fillInBoard:", error);
         }
-        // if (currentPosition) break;
       }
 
       try {
@@ -458,6 +488,16 @@ export default {
 .row {
   display: flex;
 
+}
+
+h2 {
+  text-align: center;
+}
+
+h1{
+  margin-top: 250px;
+  text-align: center;
+  color: gold;
 }
 
 .cell {

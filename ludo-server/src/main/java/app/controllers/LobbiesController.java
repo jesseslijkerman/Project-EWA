@@ -67,6 +67,15 @@ public class LobbiesController {
         return ResponseEntity.ok("Lobby status updated successfully.");
     }
 
+    @PutMapping(path = "/{id}/finish")
+    public ResponseEntity<String> endLobby(@PathVariable Long id){
+        Lobby lobby = lobbyRepo.findById(id);
+        lobby.setStatus("FINISHED");
+        lobbyRepo.save(lobby);
+
+        return ResponseEntity.ok("Lobby status updated successfully.");
+    }
+
 
     @PostMapping(path = "")
     public ResponseEntity<Object> createLobby(@RequestBody Lobby lobby){

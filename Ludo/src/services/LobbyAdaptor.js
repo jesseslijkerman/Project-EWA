@@ -20,6 +20,8 @@ export class LobbyAdaptor{
         }
     }
 
+
+
     async asyncUpdateById(lobbyId, gameBoard){
         console.log("LobbyAdaptor.asyncUpdateById()...")
         const lobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/updateBoard/" + gameBoard, {
@@ -105,6 +107,14 @@ export class LobbyAdaptor{
             method: "DELETE"
         });
         return Lobby.copyConstructor(lobby);
+    }
+
+    async asyncFinishMatch(lobbyId){
+        const lobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/finish", {
+            method: "PUT"
+        });
+        return Lobby.copyConstructor(lobby)
+
     }
 
     async asyncStartMatch(lobbyId){
