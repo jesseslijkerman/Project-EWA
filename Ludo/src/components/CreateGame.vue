@@ -95,11 +95,18 @@
       <!-- Submit button -->
       <div class="text-center">
         <button
-          type="button"
-          class="btn btn-primary btn-block mb-4"
-          v-on:click="createLobby"
+            type="button"
+            class="btn btn-primary btn-block mb-4"
+            v-on:click="createLobby"
+            :disabled="isLoading"
         >
-          Create game
+          <span v-if="isLoading">
+            <i class="fas fa-spinner fa-spin"></i>
+            Creating...
+          </span>
+          <span v-else>
+            Create game
+          </span>
         </button>
       </div>
     </form>
@@ -124,12 +131,14 @@ export default {
       name: this.name,
       password: this.password,
       status: 'INACTIVE',
+      isLoading: false,
       turnTimer: this.turnTimer,
       whoseTurn: 1,
       boardState: "['R','R','X','X',1,1,1,'X','X','B','B'],['R','R','X','X',1,0,1,'X','X','B','B'],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],[1,1,1,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],['G','G','X','X',1,0,1,'X','X','Y','Y'],['G','G','X','X',1,1,1,'X','X','Y','Y']"};
   },
   methods: {
     async createLobby(){
+      this.isLoading = true;
       var now = new Date();
       let lobby = new Lobby(now, this.gameMode, this.maxPlayers, this.name, this.password, this.turnTimer,  this.status, this.whoseTurn, this.boardState);
       console.log(lobby)
@@ -148,5 +157,68 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 14px 28px rgba(0,0,0,0.1), 0px 10px 10px rgba(0,0,0,0.12);
+  background-color: #282c34;
+  color: #fff;
+}
 
+.form-outline {
+  margin-bottom: 1.5rem;
+}
+
+.form-outline label {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.form-check-label {
+  margin-left: 0.5rem;
+  color: #ffffff;
+}
+
+.form-control {
+  border: none;
+  border-bottom: 2px solid #ffffff;
+  border-radius: 0;
+  box-shadow: none;
+  color: #ffffff;
+  background: transparent;
+}
+
+.form-control:focus {
+  border-color: #61dafb;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: #61dafb;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #282c34;
+}
+
+.btn-primary:hover {
+  background-color: #21a1c1;
+}
+
+.btn-primary:disabled {
+  background-color: #61dafb;
+  cursor: not-allowed;
+}
+
+.form-control {
+  color: #ffffff;
+}
+
+.form-control::placeholder {
+  color: #b3b3b3;
+}
 </style>

@@ -120,32 +120,47 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 860px;
-  margin: 0 auto;
+  max-width: 90%;
+  margin: 2rem auto;
   padding: 2rem;
-  background-color: #222;
+  background-color: #121212;
   color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .title {
-  margin-bottom: 1.5rem;
   font-size: 2.5rem;
   font-weight: bold;
+  color: #007bff;
 }
 
 .matches {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 2rem;
 }
 
 .match {
-  width: 250px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border-radius: 0.25rem;
-  margin: 1px;
   background-color: #333;
   color: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+}
+
+.match:hover {
+  transform: scale(1.03);
 }
 
 .match-info {
@@ -153,17 +168,10 @@ export default {
 }
 
 .match-title {
-  margin-bottom: 0.5rem;
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-}
-
-.match-description {
-}
-
-.match-turn {
-  font-size: 1rem;
+  color: #007bff;  
 }
 
 .btn {
@@ -174,54 +182,44 @@ export default {
   color: #fff;
   text-decoration: none;
   transition: background-color 0.2s ease;
-  margin-left: 70px;
 }
 
 .btn:hover {
   background-color: #0069d9;
 }
 
-.create-btn{
-  margin-top: 5px;
+.create-btn {
+  background-color: #007bff;
+  color: #fff;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  display: inline-block;
+  font-weight: bold;
 }
 
-.container {
-  position: relative;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.create-btn:hover {
+  background-color: #0069d9;
 }
 
 .switch {
-  display: flex;
-  align-items: center;
-}
-
-.slider {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #ccc;
+  transition: .4s;
   border-radius: 34px;
-  transition: background-color 0.3s;
-}
-
-.slidercontainer{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-span#switchStatus {
-  display: inline-block;
-}
-
-.switch input {
-  display: none;
 }
 
 .slider:before {
@@ -232,8 +230,8 @@ span#switchStatus {
   left: 4px;
   bottom: 4px;
   background-color: white;
+  transition: .4s;
   border-radius: 50%;
-  transition: transform 0.3s;
 }
 
 input:checked + .slider {
@@ -244,4 +242,16 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+.slidercontainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+span#switchStatus {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
+}
 </style>
