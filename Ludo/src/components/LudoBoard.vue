@@ -30,7 +30,7 @@
   </div>
     <div v-if="hasWonBool">
 
-    <h1> {{ this.whichUserTurn.username  }} has won!</h1>
+    <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
     <button @click="returnToMatches()">Return to menu</button>
 
     </div>
@@ -494,7 +494,7 @@ h2 {
   text-align: center;
 }
 
-h1{
+.winner{
   margin-top: 250px;
   text-align: center;
   color: gold;
