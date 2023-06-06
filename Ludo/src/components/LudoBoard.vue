@@ -61,14 +61,21 @@
         </div>
     </div>
 
-
+        <div v-if="hasPawnsOnBoard">
+          <div v-if="rolled_dice > 0 && rolled_dice < 6">
+            <p>Which pawn would you like to move?</p>
+            <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
+                    v-for="existingPawn in existingPawns"
+                    :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
+          </div>
+        </div>
+      </div>
 
     <div v-if="hasWonBool">
     <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
     <button @click="returnToMatches()">Return to menu</button>
     </div>
 
-  </div>
   </div>
   </div>
 </template>
@@ -97,25 +104,25 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': [{startPos: 31, position: -1, home: 0},
-          {startPos: 31, position: -1, home: 0},
-          {startPos: 31, position: -1, home: 0},
-          {startPos: 31, position: -1, home: 0}],
+        'R': [{startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1}],
 
-        'G': [{startPos: 21, position: -1, home: 0},
-          {startPos: 21, position: -1, home: 0},
-          {startPos: 21, position: -1, home: 0},
-          {startPos: 21, position: -1, home: 0}],
+        'G': [{startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1}],
 
-        'B': [{startPos: 2, position: -1, home: 0},
-          {startPos: 2, position: -1, home: 0},
-          {startPos: 2, position: -1, home: 0},
-          {startPos: 2, position: -1, home: 0}],
+        'B': [{startPos: 2, position: -1, home: 1},
+          {startPos: 2, position: -1, home: 1},
+          {startPos: 2, position: -1, home: 1},
+          {startPos: 2, position: -1, home: 1}],
 
-        'Y': [{startPos: 12, position: -1, home: 0},
-          {startPos: 12, position: -1, home: 0},
-          {startPos: 12, position: -1, home: 0},
-          {startPos: 12, position: -1, home: 0}]
+        'Y': [{startPos: 12, position: -1, home: 1},
+          {startPos: 12, position: -1, home: 1},
+          {startPos: 12, position: -1, home: 1},
+          {startPos: 12, position: -1, home: 1}]
       },
       path: [],
       startingPoints: [
@@ -150,8 +157,7 @@ export default {
       availablePawns: [],
       existingPawns: [],
       chosenPawn: null,
-      hasPawnsOnBoard: null
-
+      hasPawnsOnBoard: false
     };
   },
 
@@ -161,7 +167,9 @@ export default {
     await this.checkIfYourTurn();
     await this.defineCurrentPlayer();
     await this.setHomes();
+    console.log(this.pawns[this.currentPlayer][0].home)
     await this.hasPawnsOnBoardMethod();
+
     this.matchStatus = (await this.lobbyService.asyncFindById(this.lobbyNumber)).status;
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
     console.log("current player: " + this.currentPlayer);
@@ -225,8 +233,6 @@ export default {
       this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome3;
       this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
 
-      console.log("HOME : " +  this.pawns[this.currentPlayer][0].home)
-
     },
 
     async checkIfFinished(){
@@ -238,18 +244,24 @@ export default {
     },
 
     async hasPawnsOnBoardMethod(){
-      if (this.pawns[this.currentPlayer][0].home === 1 || this.pawns[this.currentPlayer][1].home === 1 || this.pawns[this.currentPlayer][2].home === 1 || this.pawns[this.currentPlayer][3].home === 1){
+      if (this.pawns[this.currentPlayer][0].home === 1 && this.pawns[this.currentPlayer][1].home === 1 && this.pawns[this.currentPlayer][2].home === 1 && this.pawns[this.currentPlayer][3].home === 1){
         this.hasPawnsOnBoard = false;
+        console.log("does not have pawns on board")
       } else {
         this.hasPawnsOnBoard = true;
+        console.log("has pawns on board")
       }
     },
 
     async addToBoard(chosenPawn) {
       this.chosenPawn = chosenPawn;
-      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn);
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn)
+      const playerNumber = await this.lobbyService.asyncFindById(this.lobbyNumber);
       this.pawns[this.currentPlayer][chosenPawnIndex].home = 0;
-      await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, this.whichTurn, chosenPawnIndex + 1, 0);
+      console.log("LOBBY NUMBER: " + this.lobbyNumber)
+      console.log(playerNumber.whoseTurn)
+      console.log("WELKE HOME: " + (chosenPawnIndex + 1))
+      await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, playerNumber.whoseTurn, (chosenPawnIndex + 1), 0);
     },
 
     returnToMatches(){
@@ -467,10 +479,10 @@ export default {
           }
         }
 
-
       // fill existing pawns array with pawns that are not in home
-      for (let i = 0; i < playerPawns.length; i++) {
+      for (let i = 1; i < playerPawns.length; i++) {
         if (playerPawns[i].home === 0) {
+          console.log(playerPawns[i]);
           this.existingPawns.push(playerPawns[i]);
         }
       }

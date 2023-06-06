@@ -36,10 +36,10 @@ public class UserLobbyRepository {
         return namedQuery.getSingleResult();
     }
 
-    public void updateBoardHome(Long lobbyId, int whichTurn, int whichHome, int zeroOrOne){
+    public void updateBoardHome(Long lobbyId, int playerNumber, int whichHome, int zeroOrOne){
         Query namedQuery = entityManager.createNamedQuery("update_home");
         namedQuery.setParameter("lobbyId", lobbyId);
-        namedQuery.setParameter("whichTurn", whichTurn);
+        namedQuery.setParameter("playerNumber", playerNumber);
         namedQuery.setParameter("whichHome", whichHome);
         namedQuery.setParameter("zeroOrOne", zeroOrOne);
         namedQuery.executeUpdate();
