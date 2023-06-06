@@ -1,6 +1,6 @@
 package app.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "find_all_users", query = "select u from User u"),
         @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam")),
-        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId"))
+        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId")),
+        @NamedQuery(name = "find_friends_by_user_id", query = "select u.friends from User u where u.id = :userId")
 })
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,6 +100,7 @@ public class User {
         this.userLobbies.add(userLobby);
     }
 
+    @JsonIgnore
     public List<User> getFriends() {
         return friends;
     }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.persistence.TypedQuery;
 import java.net.URI;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping(path = "/{userId}/addFriend/{friendId}")
+    @PutMapping(path = "/{userId}/friend/{friendId}")
     public User addFriend(@PathVariable Long userId, @PathVariable Long friendId){
         User user = usersRepo.findById(userId);
         User friend = usersRepo.findById(friendId);
@@ -80,5 +81,24 @@ public class UserController {
         }
 
         return usersRepo.addFriend(user, friend);
+    }
+
+    @DeleteMapping(path = "/{userId}/friend/{friendId}")
+    public User removeFriend(@PathVariable Long userId, @PathVariable Long friendId){
+        User user = usersRepo.findById(userId);
+        User friend = usersRepo.findById(friendId);
+
+        if (user == null){
+            throw new ResourceNotFound("User with id " + userId + " not found");
+        } else if (friend == null){
+            throw new ResourceNotFound("User with id " + friendId + " not found");
+        }
+
+        return usersRepo.removeFriend(user, friend);
+    }
+
+    @GetMapping(path = "/friends/{id}")
+    public List<User> findFriendsByUserId(@PathVariable Long id) {
+        return this.usersRepo.findFriendsByUserId(id);
     }
 }

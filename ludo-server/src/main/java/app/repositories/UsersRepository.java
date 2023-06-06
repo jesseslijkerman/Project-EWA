@@ -68,4 +68,15 @@ public class UsersRepository {
         return user;
     }
 
+    public User removeFriend(User user, User friend){
+        user.removeFriend(friend);
+        return user;
+    }
+
+    public List<User> findFriendsByUserId(Long userId) {
+        Query query = entityManager.createNamedQuery("find_friends_by_user_id");
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
 }
