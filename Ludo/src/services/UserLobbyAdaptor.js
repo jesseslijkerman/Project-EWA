@@ -19,8 +19,8 @@ export class UserLobbyAdaptor{
         }
     }
 
-    async asyncUpdateHome(lobbyId, whichTurn, whichHome, zeroOrOne){
-        const userLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/" + whichTurn + "/" + whichHome + "/" + zeroOrOne, {
+    async asyncUpdateHome(lobbyId, playerNumber, whichHome, zeroOrOne){
+        const userLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/" + playerNumber + "/" + whichHome + "/" + zeroOrOne, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

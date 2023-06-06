@@ -13,27 +13,13 @@ import javax.persistence.*;
 @NamedQuery(name = "remove_user_from_lobby", query = "DELETE FROM UserLobby ul WHERE ul.user.id IN (SELECT u.id FROM User u WHERE u.id = :userId) AND ul.lobby.id = :lobbyId")
 @NamedQuery(name = "get_userId_turn", query = "SELECT ul.user.id FROM Lobby l JOIN UserLobby ul ON l.id = ul.lobby.id WHERE l.id = :lobbyId AND ul.playerNumber = l.whoseTurn")
 @NamedQuery(name = "get_current_turn", query = "SELECT l.whoseTurn FROM Lobby l WHERE l.id = :lobbyId")
-@NamedQuery(
-        name = "update_home",
-        query = "UPDATE UserLobby u " +
-                "SET u.pawnAtHome1 = CASE " +
-                "   WHEN :whichHome = 1 THEN :zeroOrOne " +
-                "   ELSE u.pawnAtHome1 " +
-                "   END, " +
-                "   u.pawnAtHome2 = CASE " +
-                "   WHEN :whichHome = 2 THEN :zeroOrOne " +
-                "   ELSE u.pawnAtHome2 " +
-                "   END, " +
-                "   u.pawnAtHome3 = CASE " +
-                "   WHEN :whichHome = 3 THEN :zeroOrOne " +
-                "   ELSE u.pawnAtHome3 " +
-                "   END, " +
-                "   u.pawnAtHome4 = CASE " +
-                "   WHEN :whichHome = 4 THEN :zeroOrOne " +
-                "   ELSE u.pawnAtHome4 " +
-                "   END " +
-                "WHERE u.lobby.id = :lobbyId " +
-                "AND u.playerNumber = :whichTurn"
+@NamedQuery(name = "update_home",
+        query = "UPDATE UserLobby u SET " +
+                "u.pawnAtHome1 = CASE WHEN :whichHome = 1 THEN :zeroOrOne ELSE u.pawnAtHome1 END, " +
+                "u.pawnAtHome2 = CASE WHEN :whichHome = 2 THEN :zeroOrOne ELSE u.pawnAtHome2 END, " +
+                "u.pawnAtHome3 = CASE WHEN :whichHome = 3 THEN :zeroOrOne ELSE u.pawnAtHome3 END, " +
+                "u.pawnAtHome4 = CASE WHEN :whichHome = 4 THEN :zeroOrOne ELSE u.pawnAtHome4 END " +
+                "WHERE u.lobby.id = :lobbyId AND u.playerNumber = :playerNumber"
 )
 public class UserLobby {
     @Id
