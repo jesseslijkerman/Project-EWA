@@ -67,4 +67,18 @@ public class UserController {
         }
         return user;
     }
+
+    @PutMapping(path = "/{userId}/addFriend/{friendId}")
+    public User addFriend(@PathVariable Long userId, @PathVariable Long friendId){
+        User user = usersRepo.findById(userId);
+        User friend = usersRepo.findById(friendId);
+
+        if (user == null){
+            throw new ResourceNotFound("User with id " + userId + " not found");
+        } else if (friend == null){
+            throw new ResourceNotFound("User with id " + friendId + " not found");
+        }
+
+        return usersRepo.addFriend(user, friend);
+    }
 }

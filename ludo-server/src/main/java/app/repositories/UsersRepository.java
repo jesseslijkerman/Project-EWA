@@ -63,4 +63,9 @@ public class UsersRepository {
         return findById(userId);
     }
 
+    public User addFriend(User user, User friend){
+        user.addFriend(friend);
+        return user;
+    }
+
 }
