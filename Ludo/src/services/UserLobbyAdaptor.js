@@ -19,6 +19,17 @@ export class UserLobbyAdaptor{
         }
     }
 
+    async asyncUpdateHome(lobbyId, whichTurn, whichHome, zeroOrOne){
+        const userLobby = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/" + whichTurn + "/" + whichHome + "/" + zeroOrOne, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: zeroOrOne
+        })
+        return UserLobby.copyConstructor(userLobby)
+    }
+
     async asyncGetLobbyTurn(lobbyId){
         const lobbyTurn = await this.fetchJson(this.resourcesUrl + "/" + lobbyId + "/current_turn")
         return lobbyTurn

@@ -145,7 +145,9 @@ export default {
 
       let newLobby = await this.lobbyService.asyncSave(JSON.stringify(lobby))
 
-      let userLobby = new UserLobby("RED",1)
+      let userLobby = new UserLobby("RED",1, 1, 1, 1, 1)
+      console.log(userLobby)
+      console.log(JSON.stringify(userLobby))
 
       console.log("Account Id = " + this.sessionService.currentAccount.id + "Lobby id = " + newLobby.id)
       await this.lobbyService.asyncAddUserLobby(newLobby.id, this.sessionService.currentAccount.id, JSON.stringify(userLobby))

@@ -1,4 +1,4 @@
 export default {
-    BACKEND_URL: "https://ludo-be-project-production.up.railway.app",
+    BACKEND_URL: "http://localhost:6969",
     JWT_STORAGE_ITEM: "JWT_LUDO"
 }
