@@ -36,10 +36,10 @@ export default {
         new FetchInterceptor(this.theSessionSbService, this.$router);
 
     return{
-      lobbyService: new LobbyAdaptor(CONFIG.BACKEND_URL + "/lobbies"),
-      registerService: new UsersAdaptor(CONFIG.BACKEND_URL + "/users"),
-      authenticationService: new AuthenticationService(CONFIG.BACKEND_URL + "/usersAuth/login"),
-      userLobbyService: new UserLobbyAdaptor(CONFIG.BACKEND_URL + "/userLobbies"),
+      lobbyService: new LobbyAdaptor("http://localhost:6969/lobbies"),
+      registerService: new UsersAdaptor("http://localhost:6969/users"),
+      authenticationService: new AuthenticationService("http://localhost:6969/usersAuth/login"),
+      userLobbyService: new UserLobbyAdaptor("http://localhost:6969/userLobbies"),
 
       // reactive, stateful services
       sessionService: this.theSessionSbService,

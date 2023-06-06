@@ -3,11 +3,19 @@ export class UserLobby {
 
     color;
     playerNumber;
+    pawnAtHome1;
+    pawnAtHome2;
+    pawnAtHome3;
+    pawnAtHome4;
 
 
-    constructor(color, playerNumber) {
+    constructor(color, playerNumber, pawnAtHome1, pawnAtHome2, pawnAtHome3, pawnAtHome4) {
         this.color = color;
         this.playerNumber = playerNumber;
+        this.pawnAtHome1 = pawnAtHome1;
+        this.pawnAtHome2 = pawnAtHome2;
+        this.pawnAtHome3 = pawnAtHome3;
+        this.pawnAtHome4 = pawnAtHome4;
     }
 
     static copyConstructor(userLobby) {
@@ -36,35 +44,5 @@ export class UserLobby {
         this.lobby = lobby;
     }
 
-    getPawnPosition1() {
-        return this.pawnPosition1;
-    }
 
-    setPawnPosition1(pawnPosition1) {
-        this.pawnPosition1 = pawnPosition1;
-    }
-
-    getPawnPosition2() {
-        return this.pawnPosition2;
-    }
-
-    setPawnPosition2(pawnPosition2) {
-        this.pawnPosition2 = pawnPosition2;
-    }
-
-    getPawnPosition3() {
-        return this.pawnPosition3;
-    }
-
-    setPawnPosition3(pawnPosition3) {
-        this.pawnPosition3 = pawnPosition3;
-    }
-
-    getPawnPosition4() {
-        return this.pawnPosition4;
-    }
-
-    setPawnPosition4(pawnPosition4) {
-        this.pawnPosition4 = pawnPosition4;
-    }
 }
