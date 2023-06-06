@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "`User`")
 @NamedQueries({
         @NamedQuery(name = "find_all_users", query = "select u from User u"),
-        @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam")),
+        @NamedQuery(name = "find_user_by_email_or_username", query = ("select user from User user where user.email = :param or user.username = :param")),
         @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId")),
         @NamedQuery(name = "find_friends_by_user_id", query = "select u.friends from User u where u.id = :userId")
 })

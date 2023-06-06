@@ -36,7 +36,7 @@ public class UsersRepository {
     }
 
     public User findByEmail(String email){
-        TypedQuery<User> query = this.entityManager.createNamedQuery("findUserByEmail", User.class).setParameter("emailParam", email);
+        TypedQuery<User> query = this.entityManager.createNamedQuery("find_user_by_email_or_username", User.class).setParameter("param", email);
 
         return (User) query.getSingleResult();
     }

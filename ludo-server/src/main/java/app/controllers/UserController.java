@@ -34,6 +34,15 @@ public class UserController {
         return user;
     }
 
+    @GetMapping(path = "/nameOrEmail/{param}", produces = "application/json")
+    public User findByNameOrEmail(@PathVariable String param){
+        User user = this.usersRepo.findByEmail(param);
+        if (user==null){
+            throw new ResourceNotFound("param-" + param);
+        }
+        return user;
+    }
+
     @PostMapping(path = "")
     public ResponseEntity<Object> createUser(@RequestBody User user){
         User createdUser = usersRepo.signup(user);
