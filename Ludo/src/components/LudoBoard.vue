@@ -125,10 +125,9 @@ export default {
       path: [],
       startingPoints: [
         {i: 4, j: 1}, // Red
-        {i: 1, j: 6}, // Green
-        {i: 9, j: 4}, // Blue
+        {i: 1, j: 6}, // Blue
+        {i: 9, j: 4}, // Green
         {i: 6, j: 9}  // Yellow
-
       ],
       homePaths: {
         'R': {i: 0, j: 3, direction: 'right', length: 5},
@@ -155,7 +154,8 @@ export default {
       availablePawns: [],
       existingPawns: [],
       chosenPawn: null,
-      hasPawnsOnBoard: false
+      hasPawnsOnBoard: false,
+      playerNumber: null,
     };
   },
 
@@ -250,7 +250,15 @@ export default {
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn)
       const playerNumber = await this.lobbyService.asyncFindById(this.lobbyNumber);
       this.buttonClicked = true;
-      await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, playerNumber.whoseTurn, (chosenPawnIndex + 1), 0);
+      this.board[this.startingPoints[playerNumber.whoseTurn - 1].i][this.startingPoints[playerNumber.whoseTurn - 1].j] =
+          "p" + this.currentPlayer + (chosenPawnIndex + 1);
+      try {
+        await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, playerNumber.whoseTurn, (chosenPawnIndex + 1), 0);
+      } catch (e) {
+        console.log(e);
+      }
+
+      await this.convertBoardToDB();
     },
 
     returnToMatches(){
@@ -488,12 +496,30 @@ export default {
 
           const playerContent = this.board[i][j];
           const whichPawn = playerContent[2];
-          const playerIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
-          console.log("playerIndex: ", playerIndex - 1);
+
+          switch (playerContent[1]) {
+            case 'R':
+              this.playerNumber = 1;
+              break;
+            case 'B':
+              this.playerNumber = 2;
+              break;
+            case 'G':
+              this.playerNumber = 3;
+              break;
+            case 'Y':
+              this.playerNumber = 4;
+              break;}
+
+          console.log("playerIndex: ", this.playerNumber);
           console.log("whichPawn: ", whichPawn);
 
           this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
-          await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, (playerIndex-1), whichPawn, 1);
+          try {
+            await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, this.playerNumber, whichPawn, 1);
+          } catch (error) {
+            console.error("Error in fillInBoard:", error);
+          }
           await this.convertBoardToDB();
         } else {
           this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
