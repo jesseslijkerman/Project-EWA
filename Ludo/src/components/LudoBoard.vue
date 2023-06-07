@@ -249,10 +249,7 @@ export default {
       this.chosenPawn = chosenPawn;
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn)
       const playerNumber = await this.lobbyService.asyncFindById(this.lobbyNumber);
-      this.pawns[this.currentPlayer][chosenPawnIndex].home = 0;
-      console.log("LOBBY NUMBER: " + this.lobbyNumber)
-      console.log(playerNumber.whoseTurn)
-      console.log("WELKE HOME: " + (chosenPawnIndex + 1))
+      this.buttonClicked = true;
       await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, playerNumber.whoseTurn, (chosenPawnIndex + 1), 0);
     },
 
@@ -486,8 +483,23 @@ export default {
         const { i, j } = currentPlayerLocation;
         this.newPos = { i, j };
         console.log("Player is at board location: ", i, j);
-        this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
-        await this.convertBoardToDB();
+
+        if (this.board[i][j] !== 1) {
+
+          const playerContent = this.board[i][j];
+          const whichPawn = playerContent[2];
+          const playerIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+          console.log("playerIndex: ", playerIndex - 1);
+          console.log("whichPawn: ", whichPawn);
+
+          this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
+          await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, (playerIndex-1), whichPawn, 1);
+          await this.convertBoardToDB();
+        } else {
+          this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
+          await this.convertBoardToDB();
+        }
+
       }
     },
 
