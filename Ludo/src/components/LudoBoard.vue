@@ -643,8 +643,10 @@ export default {
   display: flex;
   flex-direction: column;
   margin: auto;
-  width: 647px;
-  height: 650px;
+  width: 655px;
+  height: 658px;
+  padding-left: 10px;
+  padding-bottom: 10px;
   background: cadetblue;
 }
 
@@ -687,6 +689,7 @@ h2 {
   align-items: center;
   color: white;
   font-size: 24px;
+
 }
 
 .pR1::before,
@@ -926,7 +929,7 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
+  color: black;
   font-size: 24px;
 }
 
@@ -936,7 +939,7 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
+  color: black;
   font-size: 24px;
 }
 
@@ -946,7 +949,7 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
+  color: black;
   font-size: 24px;
 }
 
@@ -956,7 +959,7 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
+  color: black;
   font-size: 24px;
 }
 
