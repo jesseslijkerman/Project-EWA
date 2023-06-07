@@ -13,21 +13,23 @@
       </div>
     </div>
     <br>
+
+      <div v-if="hasWonBool">
+        <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
+        <button @click="returnToMatches()">Return to menu</button>
+      </div>
+
+      <div v-if="!hasWonBool">
+
     <p v-if="canIPlay">Roll the dice before your turn ends!</p>
     <p v-if="!canIPlay"> {{ this.whichUserTurn.username }}'s turn will end in:</p>
     <h1 class="countdown" :style="countdownStyle">{{this.countdown}}s</h1>
     <img v-if="rolled_dice !== 0"
          class="dice"
-         @click="rollDice"
          :src="getRollPicture(rolled_dice)"
     />
 
     <button @click="rollDice()" :disabled="buttonClickedDice" v-if="canIPlay">Roll Dice</button>
-<!--    <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>-->
-<!--    <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>-->
-<!--    <button @click="movePawn" v-if="currentPlayer === 'B' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>-->
-<!--    <button @click="movePawn" v-if="currentPlayer === 'Y' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Yellow Pawn</button>-->
-
 
       <div v-if="rolled_dice !== 0">
         <div v-if="rolled_dice === 6">
@@ -36,7 +38,7 @@
             <p>Put a new pawn on board:</p>
             <button @click="addToBoard(availablePawn); this.chosenPawn = availablePawn"
                     v-for="availablePawn in availablePawns"
-                    :key="availablePawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(availablePawn) + 1}} </button>
+                    :key="availablePawn" :disabled="buttonClicked"> Pawn {{ this.pawns[this.currentPlayer].indexOf(availablePawn) + 1}} </button>
           </div>
 
           <p>or...</p>
@@ -47,7 +49,7 @@
                 <p>Move an existing pawn:</p>
                 <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
                         v-for="existingPawn in existingPawns"
-                        :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1 }} </button>
+                        :key="existingPawn" :disabled="buttonClicked"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1 }} </button>
               </div>
 
 
@@ -56,7 +58,7 @@
                 <p>Which pawn would you like to move?</p>
                 <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
                         v-for="existingPawn in existingPawns"
-                        :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
+                        :key="existingPawn" :disabled="buttonClicked"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
               </div>
         </div>
     </div>
@@ -66,16 +68,12 @@
             <p>Which pawn would you like to move?</p>
             <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
                     v-for="existingPawn in existingPawns"
-                    :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
+                    :key="existingPawn" :disabled="buttonClicked"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
           </div>
         </div>
       </div>
 
-    <div v-if="hasWonBool">
-    <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
-    <button @click="returnToMatches()">Return to menu</button>
-    </div>
-
+  </div>
   </div>
   </div>
 </template>
@@ -104,10 +102,10 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': [{startPos: 31, position: -1, home: 1},
-          {startPos: 31, position: -1, home: 1},
-          {startPos: 31, position: -1, home: 1},
-          {startPos: 31, position: -1, home: 1}],
+        'R': [{startPos: 32, position: -1, home: 1},
+          {startPos: 32, position: -1, home: 1},
+          {startPos: 32, position: -1, home: 1},
+          {startPos: 32, position: -1, home: 1}],
 
         'G': [{startPos: 21, position: -1, home: 1},
           {startPos: 21, position: -1, home: 1},
@@ -167,15 +165,12 @@ export default {
     await this.checkIfYourTurn();
     await this.defineCurrentPlayer();
     await this.setHomes();
-    console.log(this.pawns[this.currentPlayer][0].home)
     await this.hasPawnsOnBoardMethod();
+    await this.checkIfFinished();
 
     this.matchStatus = (await this.lobbyService.asyncFindById(this.lobbyNumber)).status;
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
-    console.log("current player: " + this.currentPlayer);
-    console.log(this.path)
-    console.log(this.newPos)
-    console.log(this.matchStatus)
+
 
   },
   methods: {
@@ -215,7 +210,6 @@ export default {
           }
           if (this.board[i][j] === 1) {
             this.path.push({i, j});
-            console.log(`Added cell to path: (${i}, ${j})`);
           }
         }
       }
@@ -224,14 +218,12 @@ export default {
     async setHomes(){
 
       let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
-      console.log(whoseTurn)
-      let ding = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1
-      console.log(ding)
 
       this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
       this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome2;
       this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome3;
-      this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
+      this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome4;
+
 
     },
 
@@ -287,7 +279,6 @@ export default {
 
       if(this.hasPawnsOnBoard === false && this.rolled_dice !== 6){
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
-
       }
 
     },
@@ -304,7 +295,6 @@ export default {
     async convertDBtoBoard() {
       const inputObject = await this.lobbyService.asyncFindById(this.lobbyNumber);
       const inputString = inputObject.boardState;
-      console.log(inputObject);
       const rows = inputString.slice(1, -1).split("],[");
       this.board = rows.map((row) => {
         const rowValues = row
@@ -410,7 +400,6 @@ export default {
         // Check if the player won
 
         if (this.pawns[this.currentPlayer][chosenPawnIndex].position === this.pawns[this.currentPlayer][chosenPawnIndex].startPos) {
-          this.pawns[this.currentPlayer][chosenPawnIndex].home = 1;
           await this.lobbyService.asyncFinishMatch(this.lobbyNumber);
           alert(`${this.currentPlayer} has won the game`);
           this.hasWonBool = true;
@@ -449,7 +438,6 @@ export default {
     async findPawnPosition(chosenPawn) {
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn);
       console.log("die chosen pawn:" + chosenPawnIndex)
-      console.log("pawn die gaat moven: " + 'p' + this.currentPlayer + (chosenPawnIndex + 1));
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
           if (this.board[i][j] === 'p' + this.currentPlayer + (chosenPawnIndex + 1)) {
@@ -480,9 +468,8 @@ export default {
         }
 
       // fill existing pawns array with pawns that are not in home
-      for (let i = 1; i < playerPawns.length; i++) {
+      for (let i = 0; i < playerPawns.length; i++) {
         if (playerPawns[i].home === 0) {
-          console.log(playerPawns[i]);
           this.existingPawns.push(playerPawns[i]);
         }
       }
@@ -541,12 +528,23 @@ export default {
           case 'R': return 'base-cellR';
           case 'pR1': return 'pR1';
           case 'pR2': return 'pR2';
+          case 'pR3': return 'pR3';
+          case 'pR4': return 'pR4';
           case 'G': return 'base-cellG';
           case 'pG1': return 'pG1';
+          case 'pG2': return 'pG2';
+          case 'pG3': return 'pG3';
+          case 'pG4': return 'pG4';
           case 'B': return 'base-cellB';
           case 'pB1': return 'pB1';
+          case 'pB2': return 'pB2';
+          case 'pB3': return 'pB3';
+          case 'pB4': return 'pB4';
           case 'Y': return 'base-cellY';
           case 'pY1': return 'pY1';
+          case 'pY2': return 'pY2';
+          case 'pY3': return 'pY3';
+          case 'pY4': return 'pY4';
           case 'X': return 'block-cell';
           default: return '';
         }
@@ -569,8 +567,6 @@ export default {
     async checkIfYourTurn(){
       this.whichTurn = await this.userLobbyService.asyncWhoseTurn(this.lobbyNumber)
       this.whichUserTurn = await this.registerService.asyncFindById(this.whichTurn)
-      console.log(this.loggedInUser)
-      console.log(this.whichTurn)
       if(this.whichTurn == this.sessionService.currentAccount.id){
         this.canIPlay = true;
       } else {
@@ -638,35 +634,10 @@ h2 {
 }
 
 
-
-.pG1{
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: green;
-  transform: scale(0.7);
-  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
-}
-
-.pB1{
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: blue;
-  transform: scale(0.7);
-  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
-}
-
-.pY1{
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: yellow;
-  transform: scale(0.7);
-  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
-}
-
-.pR1 {
+.pR1,
+.pR2,
+.pR3,
+.pR4 {
   position: relative;
   width: 60px;
   height: 60px;
@@ -680,7 +651,10 @@ h2 {
   font-size: 24px;
 }
 
-.pR1::before {
+.pR1::before,
+.pR2::before,
+.pR3::before,
+.pR4::before {
   content: "";
   position: absolute;
   top: 50%;
@@ -689,7 +663,6 @@ h2 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: red;
 }
 
 .pR1::after {
@@ -702,32 +675,6 @@ h2 {
   font-size: 24px;
 }
 
-.pR2 {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: red;
-  transform: scale(0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 24px;
-}
-
-.pR2::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: red;
-}
-
 .pR2::after {
   content: "2";
   position: absolute;
@@ -737,6 +684,248 @@ h2 {
   color: white;
   font-size: 24px;
 }
+
+.pR3::after {
+  content: "3";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pR4::after {
+  content: "4";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pB1,
+.pB2,
+.pB3,
+.pB4 {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: blue;
+  transform: scale(0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+}
+
+.pB1::before,
+.pB2::before,
+.pB3::before,
+.pB4::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: blue;
+}
+
+
+.pB1::after {
+  content: "1";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pB2::after {
+  content: "2";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pB3::after {
+  content: "3";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pB4::after {
+  content: "4";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pG1,
+.pG2,
+.pG3,
+.pG4 {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: green;
+  transform: scale(0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+}
+
+.pG1::before,
+.pG2::before,
+.pG3::before,
+.pG4::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: green;
+}
+
+.pG1::after {
+  content: "1";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pG2::after {
+  content: "2";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pG3::after {
+  content: "3";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pG4::after {
+  content: "4";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pY1,
+.pY2,
+.pY3,
+.pY4 {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: yellow;
+  transform: scale(0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+}
+
+.pY1::before,
+.pY2::before,
+.pY3::before,
+.pY4::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: yellow;
+}
+
+.pY1::after {
+  content: "1";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pY2::after {
+  content: "2";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pY3::after {
+  content: "3";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pY4::after {
+  content: "4";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+
+
+
+
 
 
 .block-cell {
