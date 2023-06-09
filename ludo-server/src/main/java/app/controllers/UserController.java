@@ -24,6 +24,15 @@ public class UserController {
         return this.usersRepo.findAll();
     }
 
+    @GetMapping(path = "/ForgotPassword/{email}", produces = "application/json")
+    public User findByEmail(@PathVariable String email){
+        User user = this.usersRepo.findByEmail(email);
+        if (user==null){
+            throw new ResourceNotFound("email-" + email);
+        }
+        return user;
+    }
+
     @GetMapping(path = "/{id}", produces = "application/json")
     public User findById(@PathVariable Long id){
         User user = this.usersRepo.findById(id);
@@ -52,7 +61,6 @@ public class UserController {
         return user;
 
     }
-
 
     @PutMapping(path = "/changePassword/{id}/{newPassword}")
     public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {

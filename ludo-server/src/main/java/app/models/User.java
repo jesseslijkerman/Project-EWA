@@ -12,7 +12,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "find_all_users", query = "select u from User u"),
         @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam")),
-        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId"))
+        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId")),
 })
 
 public class User {

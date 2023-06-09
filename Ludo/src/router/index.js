@@ -9,6 +9,7 @@ import DiceRoll from "@/components/DiceRoll.vue";
 import GameRules from "@/components/GameRules.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import WaitingRoom from "@/components/WaitingRoom.vue";
+import ForgotPassword from "@/components/ForgotPassword.vue";
 
 
 const router = createRouter({
@@ -85,6 +86,14 @@ const router = createRouter({
       path: "/reset-password",
       name: "resetPassword",
       component: ResetPassword
+    },
+    {
+      path: "/ForgotPassword",
+      name: "forgotPassword",
+      component: ForgotPassword,
+      meta: {
+        hideNavbar: true
+      }
     }
   ],
 });
