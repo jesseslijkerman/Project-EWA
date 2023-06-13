@@ -48,5 +48,27 @@ export class UsersAdaptor {
         method: "PUT"
       });
       return User.copyConstructor(user);
-    }
+  }
+
+  async asyncFindFriendsById(userId){
+    console.log("OrdersAdaptor.asyncFindFriendsById()...");
+    const users = await this.fetchJson(this.resourcesUrl + "/friends/" + userId);
+    return users?.map((s) => User.copyConstructor(s));
+  }
+
+  async asyncAddFriend(userId, friendId){
+    console.log("OrdersAdaptor.asyncAddFriend()...");
+    const user = this.fetchJson(this.resourcesUrl + "/" + userId + "/friend/" + friendId, {
+      method: "PUT"
+    });
+    return User.copyConstructor(user);
+  }
+
+  async asyncRemoveFriend(userId, friendId){
+    console.log("OrdersAdaptor.asyncAddFriend()...");
+    const user = this.fetchJson(this.resourcesUrl + "/" + userId + "/friend/" + friendId, {
+      method: "DELETE"
+    });
+    return User.copyConstructor(user);
+  }
 }
