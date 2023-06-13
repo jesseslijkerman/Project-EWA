@@ -27,13 +27,16 @@
     </div>
     <router-link :to="'/createGame'" class="btn btn-primary create-btn">Create game</router-link>
   </div>
+  <FriendsList></FriendsList>
 </template>
 
 <script>
 
 import {UserLobby} from "@/models/UserLobby";
+import FriendsList from "./FriendsList.vue";
 export default {
   name: "OngoingMatches",
+  components: {FriendsList},
   inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {

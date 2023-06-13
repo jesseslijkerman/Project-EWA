@@ -14,6 +14,11 @@
       <a :class="{ active: currentRoute === '/reset-password' }" href="/reset-password">Reset password</a>
     </div>
 
+    <div class="right">
+      <button class="logout-button" @click="active = !active">Friends</button>
+      <div v-if="active">menu</div>
+    </div>
+
   </div>
 </template>
 
@@ -21,6 +26,11 @@
 export default {
   name: "NavBar",
   inject: ['sessionService'],
+  data () {
+    return {
+      active: false
+    }
+  },
   methods: {
     confirmLogout() {
       if (confirm("Are you sure you want to sign out?")) {
