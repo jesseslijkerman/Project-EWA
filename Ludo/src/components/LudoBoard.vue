@@ -87,15 +87,15 @@ export default {
     return {
       rolled_dice: 0,
       extraTurn: false,
-      currentPlayer: 'R',
+      currentPlayer: null,
       board: [
         ['R', 'R', 'X', 'X', 1, 1, 1, 'X', 'X', 'B', 'B'],
         ['R', 'R', 'X', 'X', 1, 0, 1, 'X', 'X', 'B', 'B'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
-        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['X', 'X', 'X', 'X', 1, 0, 1, 'X', 'X', 'X', 'X'],
         ['G', 'G', 'X', 'X', 1, 0, 1, 'X', 'X', 'Y', 'Y'],
@@ -129,11 +129,11 @@ export default {
         {i: 9, j: 4}, // Green
         {i: 6, j: 9}  // Yellow
       ],
-      homePaths: {
-        'R': {i: 0, j: 3, direction: 'right', length: 5},
-        'G': {i: 3, j: 9, direction: 'down', length: 5},
-        'B': {i: 9, j: 6, direction: 'left', length: 5},
-        'Y': {i: 6, j: 0, direction: 'up', length: 5}
+      homeCells: {
+        'R': [{i: 5, j: 1}, {i: 5, j: 2}, {i: 5, j: 3}, {i: 5, j: 4}],
+        'B': [{i: 1, j: 5}, {i: 2, j: 5}, {i: 3, j: 5}, {i: 4, j: 5}],
+        'Y': [{i: 5, j: 9}, {i: 5, j: 8}, {i: 5, j: 7}, {i: 5, j: 6}],
+        'G': [{i: 9, j: 5}, {i: 8, j: 5}, {i: 7, j: 5}, {i: 6, j: 5}],
       },
       cellSize: 60,
       canIPlay: false,
@@ -156,6 +156,7 @@ export default {
       chosenPawn: null,
       hasPawnsOnBoard: false,
       playerNumber: null,
+      whichPawn: null,
     };
   },
 
@@ -167,7 +168,7 @@ export default {
     await this.setHomes();
     await this.hasPawnsOnBoardMethod();
     await this.checkIfFinished();
-
+    this.whichTurn = (await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber))
     this.matchStatus = (await this.lobbyService.asyncFindById(this.lobbyNumber)).status;
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
 
@@ -177,6 +178,12 @@ export default {
     generatePath() {
       const directions = ['right', 'down', 'right', 'down', 'left', 'down', 'left', 'up', 'left', 'up', 'right', 'up'];
       const steps = [2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4];
+
+      // const directions = ['right', 'down', 'up', 'right', 'down', 'right', 'down', 'left', 'right', 'down', 'left', 'down', 'left', 'up', 'down', 'left', 'up', 'left', 'up', 'right', 'left', 'up', 'right', 'up'];
+      // const steps = [1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4];
+
+
+
 
       let i = 0, j = 0;
       // Look for the first '1' on the board to start the path
@@ -218,13 +225,46 @@ export default {
     async setHomes(){
 
       let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+      console.log(whoseTurn-1);
 
       this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
       this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome2;
       this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome3;
       this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome4;
 
+    },
 
+    searchValueInArray() {
+      const excludedCoordinates = [
+        this.homeCells[this.currentPlayer][0],
+        this.homeCells[this.currentPlayer][1],
+        this.homeCells[this.currentPlayer][2],
+        this.homeCells[this.currentPlayer][3]
+      ];
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(this.chosenPawn)
+      for (let i = 0; i < this.board.length; i++) {
+        for (let j = 0; j < this.board[i].length; j++) {
+          if (!this.isCoordinateExcluded(i, j, excludedCoordinates)) {
+            console.log("pawn gevonden op 1: " + i + " " + j)
+            if (this.board[i][j] === 'p' + this.currentPlayer + (chosenPawnIndex + 1)) {
+              this.board[i][j] = 1;
+              console.log("pawn gevonden op 2: " + i + " " + j)
+              return { row: i, column: j };
+            }
+          }
+        }
+      }
+      return null;
+    },
+
+    isCoordinateExcluded(row, column, excludedCoordinates) {
+      for (let i = 0; i < excludedCoordinates.length; i++) {
+        const excludedCoordinate = excludedCoordinates[i];
+        if (excludedCoordinate.i === row && excludedCoordinate.j === column) {
+          return true;
+        }
+      }
+      return false;
     },
 
     async checkIfFinished(){
@@ -235,13 +275,23 @@ export default {
       }
     },
 
-    async hasPawnsOnBoardMethod(){
-      if (this.pawns[this.currentPlayer][0].home === 1 && this.pawns[this.currentPlayer][1].home === 1 && this.pawns[this.currentPlayer][2].home === 1 && this.pawns[this.currentPlayer][3].home === 1){
+    async hasPawnsOnBoardMethod() {
+      console.log(this.pawns[this.currentPlayer]);
+      if (
+          (this.pawns[this.currentPlayer][0].home === 1 &&
+              this.pawns[this.currentPlayer][1].home === 1 &&
+              this.pawns[this.currentPlayer][2].home === 1 &&
+              this.pawns[this.currentPlayer][3].home === 1) ||
+          (this.pawns[this.currentPlayer][0].home === 2 ||
+              this.pawns[this.currentPlayer][1].home === 2 ||
+              this.pawns[this.currentPlayer][2].home === 2 ||
+              this.pawns[this.currentPlayer][3].home === 2)
+      ) {
         this.hasPawnsOnBoard = false;
-        console.log("does not have pawns on board")
+        console.log("does not have pawns on board");
       } else {
         this.hasPawnsOnBoard = true;
-        console.log("has pawns on board")
+        console.log("has pawns on board");
       }
     },
 
@@ -250,6 +300,15 @@ export default {
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn)
       const playerNumber = await this.lobbyService.asyncFindById(this.lobbyNumber);
       this.buttonClicked = true;
+
+      for (let i = 0; i < this.board.length; i++) {
+        for (let j = 0; j < this.board[i].length; j++) {
+          if (this.board[i][j] === 'p' + this.currentPlayer +  (chosenPawnIndex + 1)) {
+            this.board[i][j] = 1;
+          }
+        }
+      }
+
       this.board[this.startingPoints[playerNumber.whoseTurn - 1].i][this.startingPoints[playerNumber.whoseTurn - 1].j] =
           "p" + this.currentPlayer + (chosenPawnIndex + 1);
       try {
@@ -269,7 +328,7 @@ export default {
       let players = ['R', 'B', 'G', 'Y'];
       let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
 
-      let playerLetter = players[nextIndex -1];
+      let playerLetter = players[nextIndex - 1];
       console.log("current player color: " + playerLetter);
       this.currentPlayer = playerLetter;
     },
@@ -281,6 +340,9 @@ export default {
       this.extraTurn = this.rolled_dice === 6 ? true : false;
       this.getRollPicture(this.rolled_dice)
       this.checkPawns();
+
+      console.log(this.hasPawnsOnBoard)
+      console.log(this.rolled_dice)
 
       if(this.hasPawnsOnBoard === false && this.rolled_dice !== 6){
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
@@ -361,6 +423,7 @@ export default {
       console.log("chosen pawn index: " + chosenPawnIndex);
       if(this.newPos.col === 0 && this.newPos.row === 0){
         this.pawns[this.currentPlayer][chosenPawnIndex].position = this.pawns[this.currentPlayer][chosenPawnIndex].startPos;
+
       } else{
         // find pawn in path array
         const index = this.path.findIndex(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
@@ -402,12 +465,30 @@ export default {
           });
         }
 
-        // Check if the player won
+        console.log("currentpos: " + this.pawns[this.currentPlayer][chosenPawnIndex].position);
+        console.log("startpos: " + this.pawns[this.currentPlayer][chosenPawnIndex].startPos);
 
-        if (this.pawns[this.currentPlayer][chosenPawnIndex].position === this.pawns[this.currentPlayer][chosenPawnIndex].startPos) {
-          await this.lobbyService.asyncFinishMatch(this.lobbyNumber);
-          alert(`${this.currentPlayer} has won the game`);
-          this.hasWonBool = true;
+        // Add pawn to finish line
+        if (this.pawns[this.currentPlayer][chosenPawnIndex].position === this.pawns[this.currentPlayer][chosenPawnIndex].startPos - 2) {
+          let playerPawn = 'p' + this.currentPlayer + (chosenPawnIndex + 1)
+          this.board[this.homeCells[this.currentPlayer][chosenPawnIndex].i][this.homeCells[this.currentPlayer][chosenPawnIndex].j] = playerPawn
+           try {
+             console.log("lobbyNumber: " + this.lobbyNumber)
+             console.log("welke speler: " + this.whichTurn)
+             console.log("Welke pawn: " + (chosenPawnIndex + 1))
+             await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, this.whichTurn, (chosenPawnIndex + 1), 2);
+
+        } catch (error) {
+            console.error("Error in movePawn:", error);
+        }
+
+        }
+
+        // Check if the player won
+        for (let i = 0; i < this.pawns[this.currentPlayer].length; i++) {
+          if (this.board[this.homeCells[this.currentPlayer].i, this.homeCells[this.currentPlayer].j] === 'p' + this.currentPlayer + (i + 1)) {
+            this.hasWonBool = true;
+          }
         }
 
       }
@@ -420,13 +501,24 @@ export default {
         }
       }
 
-      try {
-        await this.fillInBoard();
-        console.log("Fill in board completed successfully");
-      } catch (error) {
-        console.error("Error in fillInBoard:", error);
+      await this.convertBoardToDB();
+      await this.setHomes();
 
+      console.log("home of pawn: " + this.pawns[this.currentPlayer][chosenPawnIndex].home);
+
+      if(this.pawns[this.currentPlayer][chosenPawnIndex].home == 2){
+        this.searchValueInArray();
+      } else {
+        try {
+          await this.fillInBoard();
+          console.log("Fill in board completed successfully");
+        } catch (error) {
+          console.error("Error in fillInBoard:", error);
+        }
       }
+
+
+
 
       if (this.extraTurn === false) {
         console.log("Turn increased");
@@ -437,12 +529,11 @@ export default {
         this.extraTurn = false;
         await this.convertBoardToDB();
       }
-    }
-    ,
+      await this.convertBoardToDB();
+    },
 
     async findPawnPosition(chosenPawn) {
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn);
-      console.log("die chosen pawn:" + chosenPawnIndex)
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
           if (this.board[i][j] === 'p' + this.currentPlayer + (chosenPawnIndex + 1)) {
@@ -464,11 +555,16 @@ export default {
     checkPawns() {
 
       const playerPawns = this.pawns[this.currentPlayer];
-
+      console.log("speler aan de beurt: " + this.currentPlayer);
+      console.log("home1: " + playerPawns[0].home);
+      console.log("home2: " + playerPawns[1].home);
+      console.log("home3: " + playerPawns[2].home);
+      console.log("home4: " + playerPawns[3].home);
           // fill available pawns array with pawns that are in home
         for (let i = 0; i < playerPawns.length; i++) {
           if (playerPawns[i].home === 1) {
             this.availablePawns.push(playerPawns[i]);
+            console.log("available pawns: " + this.availablePawns)
           }
         }
 
@@ -476,6 +572,7 @@ export default {
       for (let i = 0; i < playerPawns.length; i++) {
         if (playerPawns[i].home === 0) {
           this.existingPawns.push(playerPawns[i]);
+          console.log("existing pawns: " + this.existingPawns)
         }
       }
 
@@ -513,6 +610,7 @@ export default {
 
           console.log("playerIndex: ", this.playerNumber);
           console.log("whichPawn: ", whichPawn);
+          this.whichPawn = whichPawn;
 
           this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
           try {
@@ -561,6 +659,7 @@ export default {
     },
 
     getClass(cell, row, col) {
+
       if (typeof cell === 'string') {
         switch (cell) {
           case 'R': return 'base-cellR';
@@ -568,21 +667,37 @@ export default {
           case 'pR2': return 'pR2';
           case 'pR3': return 'pR3';
           case 'pR4': return 'pR4';
+          case 'hR1': return 'hR1';
+          case 'hR2': return 'hR2';
+          case 'hR3': return 'hR3';
+          case 'hR4': return 'hR4';
           case 'G': return 'base-cellG';
           case 'pG1': return 'pG1';
           case 'pG2': return 'pG2';
           case 'pG3': return 'pG3';
           case 'pG4': return 'pG4';
+          case 'hG1': return 'hG1';
+          case 'hG2': return 'hG2';
+          case 'hG3': return 'hG3';
+          case 'hG4': return 'hG4';
           case 'B': return 'base-cellB';
           case 'pB1': return 'pB1';
           case 'pB2': return 'pB2';
           case 'pB3': return 'pB3';
           case 'pB4': return 'pB4';
+          case 'hB1': return 'hB1';
+          case 'hB2': return 'hB2';
+          case 'hB3': return 'hB3';
+          case 'hB4': return 'hB4';
           case 'Y': return 'base-cellY';
           case 'pY1': return 'pY1';
           case 'pY2': return 'pY2';
           case 'pY3': return 'pY3';
           case 'pY4': return 'pY4';
+          case 'hY1': return 'hY1';
+          case 'hY2': return 'hY2';
+          case 'hY3': return 'hY3';
+          case 'hY4': return 'hY4';
           case 'X': return 'block-cell';
           default: return '';
         }
@@ -596,6 +711,9 @@ export default {
         return 'base-cellY';
       } else if (cell === 1) {
         return 'path-cell';
+      } else if (cell === 'pR1' && this.pawns['R'][0].home === 0){
+        return 'block-cell'
+
       }
       else {
         return '';
@@ -673,6 +791,34 @@ h2 {
   background-color: black;
 }
 
+
+.hR1,
+.hR2,
+.hR3,
+.hR4 {
+  background-color: lightcoral;
+}
+
+.hB1,
+.hB2,
+.hB3,
+.hB4 {
+  background-color: lightblue;
+}
+
+.hG1,
+.hG2,
+.hG3,
+.hG4 {
+  background-color: lightgreen;
+}
+
+.hY1,
+.hY2,
+.hY3,
+.hY4 {
+  background-color: lightyellow;
+}
 
 .pR1,
 .pR2,
