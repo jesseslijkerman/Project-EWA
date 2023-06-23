@@ -14,10 +14,6 @@
     </div>
     <br>
 
-      <div v-if="hasWonBool">
-        <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
-        <button @click="returnToMatches()">Return to menu</button>
-      </div>
 
       <div v-if="!hasWonBool">
 
@@ -74,7 +70,13 @@
       </div>
 
   </div>
-  </div>
+    </div>
+
+    <div v-if="hasWonBool">
+      <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
+      <button @click="returnToMatches()">Return to menu</button>
+    </div>
+
   </div>
 </template>
 
@@ -168,6 +170,7 @@ export default {
     await this.setHomes();
     await this.hasPawnsOnBoardMethod();
     await this.checkIfFinished();
+    await this.hasWon();
     this.whichTurn = (await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber))
     this.matchStatus = (await this.lobbyService.asyncFindById(this.lobbyNumber)).status;
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
@@ -278,14 +281,10 @@ export default {
     async hasPawnsOnBoardMethod() {
       console.log(this.pawns[this.currentPlayer]);
       if (
-          (this.pawns[this.currentPlayer][0].home === 1 &&
-              this.pawns[this.currentPlayer][1].home === 1 &&
-              this.pawns[this.currentPlayer][2].home === 1 &&
-              this.pawns[this.currentPlayer][3].home === 1) ||
-          (this.pawns[this.currentPlayer][0].home === 2 ||
-              this.pawns[this.currentPlayer][1].home === 2 ||
-              this.pawns[this.currentPlayer][2].home === 2 ||
-              this.pawns[this.currentPlayer][3].home === 2)
+          (this.pawns[this.currentPlayer][0].home !== 0 &&
+              this.pawns[this.currentPlayer][1].home !== 0 &&
+              this.pawns[this.currentPlayer][2].home !== 0 &&
+              this.pawns[this.currentPlayer][3].home !== 0)
       ) {
         this.hasPawnsOnBoard = false;
         console.log("does not have pawns on board");
@@ -484,13 +483,6 @@ export default {
 
         }
 
-        // Check if the player won
-        for (let i = 0; i < this.pawns[this.currentPlayer].length; i++) {
-          if (this.board[this.homeCells[this.currentPlayer].i, this.homeCells[this.currentPlayer].j] === 'p' + this.currentPlayer + (i + 1)) {
-            this.hasWonBool = true;
-          }
-        }
-
       }
 
       if(this.newPos !== { row: 0, col: 0} ){
@@ -550,6 +542,14 @@ export default {
     async clearPawnPosition(){
       const index = this.path.find(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
       this.board[index.i][index.j] = 1;
+    },
+
+    async hasWon(){
+      if (this.pawns[this.currentPlayer][0].home === 2 && this.pawns[this.currentPlayer][1].home === 2
+          && this.pawns[this.currentPlayer][2].home === 2 && this.pawns[this.currentPlayer][3].home === 2) {
+        this.hasWonBool = true;
+        await this.lobbyService.asyncFinishMatch(this.lobbyNumber);
+      }
     },
 
     checkPawns() {
@@ -632,12 +632,6 @@ export default {
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
-
-    hasWon() {
-      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(this.chosenPawn);
-      return this.pawns[this.currentPlayer][chosenPawnIndex].position >= this.path.length;
-    },
-
 
     isPawn(i, j) {
       return Object.values(this.pawns).filter(pawn => {
@@ -730,27 +724,23 @@ export default {
       }
       },
 
-   async mounted() {
-
+  mounted() {
     const countdownInterval = setInterval(async () => {
-      this.countdown--; // Decrease the countdown value by 1
-
+      this.countdown--;
       if (this.countdown <= 0) {
         clearInterval(countdownInterval);
         try {
-          // await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
           // eslint-disable-next-line no-empty
         } catch (error) {
         }
-        location.reload(); // Refresh the page when countdown reaches zero
+        location.reload();
       } else if (this.countdown <= 10) {
-        // Flash the countdown red when it's under 10 seconds
         this.countdownStyle = {color: 'red'};
         setTimeout(() => {
-          this.countdownStyle = {}; // Reset the style after 200 milliseconds
+          this.countdownStyle = {};
         }, 200);
       }
-    }, 1000); // Repeat every second (1000 milliseconds)
+    }, 1000);
   }
 };
 </script>
