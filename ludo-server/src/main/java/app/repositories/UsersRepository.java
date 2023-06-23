@@ -5,7 +5,6 @@ import app.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -61,6 +60,23 @@ public class UsersRepository {
         query.executeUpdate();
 
         return findById(userId);
+    }
+
+    public User findByResetPasswordToken(String token){
+        return null;
+    }
+
+    public void updateResetPassword(String token, String email){
+        User user = findByEmail(email);
+
+        if (user != null){
+            user.setResetPasswordToken(token);
+            save(user);
+        }
+    }
+
+    public User get(String resetPasswordToken){
+        return  findByResetPasswordToken(resetPasswordToken);
     }
 
 }

@@ -35,8 +35,8 @@ export default {
     async handleSubmit(){
       const response = this.email;
       console.log(response)
-      await this.registerService.findUserByEmail(response)
-      if(this.registerService.findUserByEmail(response) == null){
+      await this.registerService.forgotPassword(response)
+      if(this.registerService.forgotPassword(response) === null){
         alert("There is no account with this email!")
       }
     },

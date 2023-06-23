@@ -42,10 +42,21 @@ export class UsersAdaptor {
     return User.copyConstructor(user);
   }
 
-  async findUserByEmail(email){
-    console.log("UsersAdaptor.findUserByEmail")
-    const user = this.fetchJson(this.resourcesUrl + "/ForgotPassword/" + email, {
-      method: "GET",
+  // async findUserByEmail(email){
+  //   console.log("UsersAdaptor.findUserByEmail")
+  //   const user = this.fetchJson(this.resourcesUrl + "/ForgotPassword/" + email, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     }
+  //   });
+  //   return User.copyConstructor(user)
+  // }
+
+  async forgotPassword(email) {
+    console.log("UsersAdaptor.forgotPassword")
+    const user = this.fetchJson(this.resourcesUrl + "/ForgotPassword/" + email ,{
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       }

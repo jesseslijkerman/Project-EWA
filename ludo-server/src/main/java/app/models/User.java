@@ -36,6 +36,9 @@ public class User {
     )
     private List<User> friends = new ArrayList<>();
 
+    private String resetPasswordToken;
+
+
     public User() {
     }
 
@@ -110,5 +113,13 @@ public class User {
 
     public void removeFriend(User friend) {
         this.friends.remove(friend);
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 }
