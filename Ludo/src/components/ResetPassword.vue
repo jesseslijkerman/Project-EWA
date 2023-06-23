@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <h1 class="title">Reset your password</h1>
     <form class="loginForm" @submit.prevent="handleLogin">
 
 
@@ -38,5 +39,25 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.container {
+  max-width: 20%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #121212;
+  color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+}
+
+label {
+  font-size: 25px;
+  margin-top: 30px;
+}
 
 </style>

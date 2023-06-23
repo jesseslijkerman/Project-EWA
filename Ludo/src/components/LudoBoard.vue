@@ -13,8 +13,6 @@
       </div>
     </div>
     <br>
-
-
       <div v-if="!hasWonBool">
 
     <p v-if="canIPlay">Roll the dice before your turn ends!</p>
@@ -158,7 +156,6 @@ export default {
       newPos: { row: 0, col: 0},
       hasWonBool: false,
       matchStatus: null,
-      chooseNewPawn: 2,
       availablePawns: [],
       existingPawns: [],
       chosenPawn: null,
@@ -187,10 +184,6 @@ export default {
     generatePath() {
       const directions = ['right', 'down', 'right', 'down', 'left', 'down', 'left', 'up', 'left', 'up', 'right', 'up'];
       const steps = [2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4];
-
-      // const directions = ['right', 'down', 'up', 'right', 'down', 'right', 'down', 'left', 'right', 'down', 'left', 'down', 'left', 'up', 'down', 'left', 'up', 'left', 'up', 'right', 'left', 'up', 'right', 'up'];
-      // const steps = [1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4];
-
 
       let i = 0, j = 0;
       // Look for the first '1' on the board to start the path
@@ -232,7 +225,6 @@ export default {
     async setHomes(){
 
       let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
-      console.log(whoseTurn-1);
 
       this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
       this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome2;
@@ -252,10 +244,8 @@ export default {
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
           if (!this.isCoordinateExcluded(i, j, excludedCoordinates)) {
-            console.log("pawn gevonden op 1: " + i + " " + j)
             if (this.board[i][j] === 'p' + this.currentPlayer + (chosenPawnIndex + 1)) {
               this.board[i][j] = 1;
-              console.log("pawn gevonden op 2: " + i + " " + j)
               return { row: i, column: j };
             }
           }
@@ -291,10 +281,8 @@ export default {
               this.pawns[this.currentPlayer][3].home !== 0)
       ) {
         this.hasPawnsOnBoard = false;
-        console.log("does not have pawns on board");
       } else {
         this.hasPawnsOnBoard = true;
-        console.log("has pawns on board");
       }
     },
 
@@ -332,7 +320,6 @@ export default {
       let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
 
       let playerLetter = players[nextIndex - 1];
-      console.log("current player color: " + playerLetter);
       this.currentPlayer = playerLetter;
     },
 
@@ -343,9 +330,6 @@ export default {
       this.extraTurn = this.rolled_dice === 6 ? true : false;
       this.getRollPicture(this.rolled_dice)
       this.checkPawns();
-
-      console.log(this.hasPawnsOnBoard)
-      console.log(this.rolled_dice)
 
       if(this.hasPawnsOnBoard === false && this.rolled_dice !== 6){
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
@@ -393,12 +377,10 @@ export default {
         return "[" + rowValues.join(",") + "]";
       });
       const inputString = rows.join(",");
-      console.log(inputString);
 
       const encodedInputString = encodeURIComponent(inputString); // URL-encode the inputString
 
       const inputObject = { boardState: encodedInputString }; // Assign the URL-encoded inputString to the boardState property
-      console.log(typeof inputObject.boardState);
       await this.lobbyService.asyncUpdateById(this.lobbyNumber, inputObject.boardState);
     },
 
@@ -423,7 +405,6 @@ export default {
     async movePawn(chosenPawn) {
       await this.findPawnPosition(chosenPawn);
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn);
-      console.log("chosen pawn index: " + chosenPawnIndex);
       if(this.newPos.col === 0 && this.newPos.row === 0){
         this.pawns[this.currentPlayer][chosenPawnIndex].position = this.pawns[this.currentPlayer][chosenPawnIndex].startPos;
 
@@ -449,7 +430,6 @@ export default {
         }
 
         pawn.position = newPosition;
-        console.log("current pos: " + pawn.position);
         steps--;
 
 
@@ -468,17 +448,11 @@ export default {
           });
         }
 
-        console.log("currentpos: " + this.pawns[this.currentPlayer][chosenPawnIndex].position);
-        console.log("startpos: " + this.pawns[this.currentPlayer][chosenPawnIndex].startPos);
-
         // Add pawn to finish line
         if (this.pawns[this.currentPlayer][chosenPawnIndex].position === this.pawns[this.currentPlayer][chosenPawnIndex].startPos - 2) {
           let playerPawn = 'p' + this.currentPlayer + (chosenPawnIndex + 1)
           this.board[this.goalCells[this.currentPlayer][chosenPawnIndex].i][this.goalCells[this.currentPlayer][chosenPawnIndex].j] = playerPawn
            try {
-             console.log("lobbyNumber: " + this.lobbyNumber)
-             console.log("welke speler: " + this.whichTurn)
-             console.log("Welke pawn: " + (chosenPawnIndex + 1))
              await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, this.whichTurn, (chosenPawnIndex + 1), 2);
 
         } catch (error) {
@@ -498,28 +472,21 @@ export default {
       await this.convertBoardToDB();
       await this.setHomes();
 
-      console.log("home of pawn: " + this.pawns[this.currentPlayer][chosenPawnIndex].home);
-
       if(this.pawns[this.currentPlayer][chosenPawnIndex].home == 2){
         this.searchValueInArray();
       } else {
         try {
           await this.fillInBoard();
-          console.log("Fill in board completed successfully");
         } catch (error) {
           console.error("Error in fillInBoard:", error);
         }
       }
 
 
-
-
       if (this.extraTurn === false) {
-        console.log("Turn increased");
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
         await this.convertBoardToDB();
       } else {
-        console.log("Extra turn");
         this.extraTurn = false;
         await this.convertBoardToDB();
       }
@@ -557,16 +524,10 @@ export default {
     checkPawns() {
 
       const playerPawns = this.pawns[this.currentPlayer];
-      console.log("speler aan de beurt: " + this.currentPlayer);
-      console.log("home1: " + playerPawns[0].home);
-      console.log("home2: " + playerPawns[1].home);
-      console.log("home3: " + playerPawns[2].home);
-      console.log("home4: " + playerPawns[3].home);
           // fill available pawns array with pawns that are in home
         for (let i = 0; i < playerPawns.length; i++) {
           if (playerPawns[i].home === 1) {
             this.availablePawns.push(playerPawns[i]);
-            console.log("available pawns: " + this.availablePawns)
           }
         }
 
@@ -574,7 +535,6 @@ export default {
       for (let i = 0; i < playerPawns.length; i++) {
         if (playerPawns[i].home === 0) {
           this.existingPawns.push(playerPawns[i]);
-          console.log("existing pawns: " + this.existingPawns)
         }
       }
 
@@ -585,11 +545,9 @@ export default {
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(this.chosenPawn);
       let newPosition = this.pawns[this.currentPlayer][chosenPawnIndex].position;
       const currentPlayerLocation = this.getPlayerLocation(this.path[newPosition]);
-      console.log("currentPlayerLocation: ", currentPlayerLocation);
       if (currentPlayerLocation) {
         const { i, j } = currentPlayerLocation;
         this.newPos = { i, j };
-        console.log("Player is at board location: ", i, j);
 
         if (this.board[i][j] !== 1) {
 
@@ -610,8 +568,6 @@ export default {
               this.playerNumber = 4;
               break;}
 
-          console.log("playerIndex: ", this.playerNumber);
-          console.log("whichPawn: ", whichPawn);
           this.whichPawn = whichPawn;
 
           // put opponents pawn back in its home cell
