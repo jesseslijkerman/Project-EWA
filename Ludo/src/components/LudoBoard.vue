@@ -104,10 +104,10 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': [{startPos: 32, position: -1, home: 1},
-          {startPos: 32, position: -1, home: 1},
-          {startPos: 32, position: -1, home: 1},
-          {startPos: 32, position: -1, home: 1}],
+        'R': [{startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1}],
 
         'G': [{startPos: 21, position: -1, home: 1},
           {startPos: 21, position: -1, home: 1},
@@ -131,11 +131,17 @@ export default {
         {i: 9, j: 4}, // Green
         {i: 6, j: 9}  // Yellow
       ],
-      homeCells: {
+      goalCells: {
         'R': [{i: 5, j: 1}, {i: 5, j: 2}, {i: 5, j: 3}, {i: 5, j: 4}],
         'B': [{i: 1, j: 5}, {i: 2, j: 5}, {i: 3, j: 5}, {i: 4, j: 5}],
         'Y': [{i: 5, j: 9}, {i: 5, j: 8}, {i: 5, j: 7}, {i: 5, j: 6}],
         'G': [{i: 9, j: 5}, {i: 8, j: 5}, {i: 7, j: 5}, {i: 6, j: 5}],
+      },
+      homeCells: {
+        'R': [{i: 0, j: 0}, {i: 0, j: 0}, {i: 0, j: 1}, {i: 1, j: 0}, {i: 1, j: 1}],
+        'B': [{i: 0, j: 0}, {i: 0, j: 9}, {i: 0, j: 10}, {i: 1, j: 9}, {i: 1, j: 10}],
+        'Y': [{i: 9, j: 9}, {i: 9, j: 10}, {i: 10, j: 9}, {i: 10, j: 10}],
+        'G': [{i: 9, j: 0}, {i: 9, j: 1}, {i: 10, j: 0}, {i: 10, j: 1}],
       },
       cellSize: 60,
       canIPlay: false,
@@ -184,8 +190,6 @@ export default {
 
       // const directions = ['right', 'down', 'up', 'right', 'down', 'right', 'down', 'left', 'right', 'down', 'left', 'down', 'left', 'up', 'down', 'left', 'up', 'left', 'up', 'right', 'left', 'up', 'right', 'up'];
       // const steps = [1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4, 4];
-
-
 
 
       let i = 0, j = 0;
@@ -239,10 +243,10 @@ export default {
 
     searchValueInArray() {
       const excludedCoordinates = [
-        this.homeCells[this.currentPlayer][0],
-        this.homeCells[this.currentPlayer][1],
-        this.homeCells[this.currentPlayer][2],
-        this.homeCells[this.currentPlayer][3]
+        this.goalCells[this.currentPlayer][0],
+        this.goalCells[this.currentPlayer][1],
+        this.goalCells[this.currentPlayer][2],
+        this.goalCells[this.currentPlayer][3]
       ];
       const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(this.chosenPawn)
       for (let i = 0; i < this.board.length; i++) {
@@ -470,7 +474,7 @@ export default {
         // Add pawn to finish line
         if (this.pawns[this.currentPlayer][chosenPawnIndex].position === this.pawns[this.currentPlayer][chosenPawnIndex].startPos - 2) {
           let playerPawn = 'p' + this.currentPlayer + (chosenPawnIndex + 1)
-          this.board[this.homeCells[this.currentPlayer][chosenPawnIndex].i][this.homeCells[this.currentPlayer][chosenPawnIndex].j] = playerPawn
+          this.board[this.goalCells[this.currentPlayer][chosenPawnIndex].i][this.goalCells[this.currentPlayer][chosenPawnIndex].j] = playerPawn
            try {
              console.log("lobbyNumber: " + this.lobbyNumber)
              console.log("welke speler: " + this.whichTurn)
@@ -480,9 +484,7 @@ export default {
         } catch (error) {
             console.error("Error in movePawn:", error);
         }
-
         }
-
       }
 
       if(this.newPos !== { row: 0, col: 0} ){
@@ -611,6 +613,10 @@ export default {
           console.log("playerIndex: ", this.playerNumber);
           console.log("whichPawn: ", whichPawn);
           this.whichPawn = whichPawn;
+
+          // put opponents pawn back in its home cell
+          this.board[this.homeCells[playerContent[1]][playerContent[2]].i][this.homeCells[playerContent[1]][playerContent[2]].j] =
+              playerContent;
 
           this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
           try {
