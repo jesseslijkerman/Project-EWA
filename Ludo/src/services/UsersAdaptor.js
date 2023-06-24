@@ -56,6 +56,12 @@ export class UsersAdaptor {
     return users?.map((s) => User.copyConstructor(s));
   }
 
+  async asyncFindByNameOrEmail(input){
+    console.log("OrdersAdaptor.asyncFindByNameOrEmail()...");
+    const friend = await this.fetchJson(this.resourcesUrl + "/nameOrEmail/" + input);
+    return User.copyConstructor(friend);
+  }
+
   async asyncAddFriend(userId, friendId){
     console.log("OrdersAdaptor.asyncAddFriend()...");
     const user = this.fetchJson(this.resourcesUrl + "/" + userId + "/friend/" + friendId, {

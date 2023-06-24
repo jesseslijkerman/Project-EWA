@@ -6,8 +6,7 @@
       </div>
       <div class="col-md-7 col-sm-7">
         <h5><a href="#" class="profile-link">{{username}}</a></h5>
-        <p>Software Engineer</p>
-        <p class="text-muted">500m away</p>
+        <p class="text-muted">{{countryCode}}</p>
       </div>
       <div class="col-md-3 col-sm-3">
         <button class="btn btn-primary pull-right">Add Friend</button>
@@ -26,9 +25,14 @@ export default {
     countryCode: String,
     picture: String
   },
-  created() {
-    if (this.picture == null){
-      this.picture =
+  data() {
+    return {
+      genericPicture: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    };
+  },
+  methods: {
+    hasPicture(){
+      return this.picture !== null;
     }
   }
 }

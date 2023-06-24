@@ -6,17 +6,14 @@
 
     <a :class="{ active: currentRoute === '/gamerules' }" href="/gamerules">Rules</a>
 
+    <a :class="{ active: currentRoute === '/friends' }" href="/friends">Friends</a>
+
     <div class="right">
       <button class="logout-button" @click="confirmLogout">Logout</button>
     </div>
 
     <div class="right">
       <a :class="{ active: currentRoute === '/reset-password' }" href="/reset-password">Reset password</a>
-    </div>
-
-    <div class="right">
-      <button class="logout-button" @click="active = !active">Friends</button>
-      <div v-if="active">menu</div>
     </div>
 
   </div>
