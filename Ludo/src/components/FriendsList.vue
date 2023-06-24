@@ -7,20 +7,13 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="container">
-    <div>
-      <input v-model="input" type="text" placeholder="Search"/>
-      <button class="btn btn-primary pull-right" v-on:click="findFriend">Find</button>
-    </div>
-    <FriendTemplate class="friend" v-bind="foundFriend" v-show="foundFriend !== null"></FriendTemplate>
-
-
+    <button class="btn btn-primary pull-right" v-on:click="handleRedirect">Find friends</button>
   </div>
 </template>
 
 <script>
 import FriendTemplate from "./Friend.vue";
+import router from "../router";
 export default {
   name: "FriendsList",
   components: {FriendTemplate},
@@ -43,6 +36,9 @@ export default {
       this.foundFriend = await this.registerService.asyncFindByNameOrEmail(this.input)
       console.log(this.input)
       console.log(this.foundFriend)
+    },
+    handleRedirect(){
+      router.push("/find-players");
     }
   }
 

@@ -27,7 +27,6 @@
     </div>
     <router-link :to="'/createGame'" class="btn btn-primary create-btn">Create game</router-link>
   </div>
-  <FriendsList></FriendsList>
 </template>
 
 <script>

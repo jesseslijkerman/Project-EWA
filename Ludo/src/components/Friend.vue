@@ -9,7 +9,7 @@
         <p class="text-muted">{{countryCode}}</p>
       </div>
       <div class="col-md-3 col-sm-3">
-        <button class="btn btn-primary pull-right" v-on:click="addFriend">Add Friend</button>
+        <button class="btn btn-primary pull-right" v-on:click="addFriend" v-if="button == 'add'">Add Friend</button>
       </div>
     </div>
   </div>
@@ -28,16 +28,27 @@ export default {
   },
   data() {
     return {
-      genericPicture: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+      genericPicture: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      userId: null,
+      button: null
     };
+  },
+  created() {
+    this.userId = this.sessionService.currentAccount.id
+    this.checkUrl();
+    console.log(this.button)
   },
   methods: {
     hasPicture(){
       return this.picture !== null;
     },
     async addFriend(){
-      await this.registerService.asyncAddFriend(this.sessionService.currentAccount.id, this.id)
-
+      await this.registerService.asyncAddFriend(this.userId, this.id)
+    },
+    checkUrl(){
+      if (window.location.href.indexOf("find-players") != -1){
+        this.button = "add"
+      }
     }
   }
 }

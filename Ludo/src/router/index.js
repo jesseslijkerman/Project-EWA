@@ -10,6 +10,7 @@ import GameRules from "@/components/GameRules.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import WaitingRoom from "@/components/WaitingRoom.vue";
 import FriendsList from "../components/FriendsList.vue";
+import FindPlayers from "../components/FindPlayers.vue";
 
 
 const router = createRouter({
@@ -91,6 +92,11 @@ const router = createRouter({
       path: "/friends",
       name: "friendsList",
       component: FriendsList
+    },
+    {
+      path: "/find-players",
+      name: "findPlayers",
+      component: FindPlayers
     }
   ],
 });
