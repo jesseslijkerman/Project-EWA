@@ -9,7 +9,7 @@
         <p class="text-muted">{{countryCode}}</p>
       </div>
       <div class="col-md-3 col-sm-3">
-        <button class="btn btn-primary pull-right">Add Friend</button>
+        <button class="btn btn-primary pull-right" v-on:click="addFriend">Add Friend</button>
       </div>
     </div>
   </div>
@@ -18,6 +18,7 @@
 <script>
 export default {
   name: "FriendTemplate",
+  inject: ["registerService", "sessionService"],
   props: {
     id: Number,
     username: String,
@@ -33,6 +34,10 @@ export default {
   methods: {
     hasPicture(){
       return this.picture !== null;
+    },
+    async addFriend(){
+      await this.registerService.asyncAddFriend(this.sessionService.currentAccount.id, this.id)
+
     }
   }
 }
