@@ -98,7 +98,7 @@ const router = createRouter({
     },
     {
       path: "/resetPassword/:token",
-      name: "resetPasswordWithToken",
+      name: "ResetPasswordWithToken",
       component: ResetPasswordWithToken,
       meta: {
         hideNavbar: true

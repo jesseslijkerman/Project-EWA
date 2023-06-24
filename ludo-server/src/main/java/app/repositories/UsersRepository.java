@@ -62,21 +62,28 @@ public class UsersRepository {
         return findById(userId);
     }
 
-    public User findByResetPasswordToken(String token){
-        return null;
+
+    /**
+     * findIdByToken is used to get the id to reset the password from the user with that id
+     */
+    public User findIdByToken(String token){
+        TypedQuery<User> query = this.entityManager.createNamedQuery("findIdByToken", User.class).setParameter("tokenParam", token);
+        return  query.getSingleResult();
     }
 
-    public void updateResetPassword(String token, String email){
-        User user = findByEmail(email);
 
-        if (user != null){
-            user.setResetPasswordToken(token);
-            save(user);
-        }
+    /**
+     * resetPassword is used to reset the password and token. This way the token is null again and not able to reset the password again
+     */
+    public User resetPassword(Long userId, String newPassword){
+        Query query = entityManager.createNamedQuery("reset_password_and_token");
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        query.setParameter("newPassword", hashedPassword);
+        query.setParameter("userId", userId);
+        query.executeUpdate();
+
+        return findById(userId);
     }
 
-    public User get(String resetPasswordToken){
-        return  findByResetPasswordToken(resetPasswordToken);
-    }
 
 }

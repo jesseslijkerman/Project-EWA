@@ -13,9 +13,11 @@ public class EmailService {
         message.setFrom("ewateam5@outlook.com");
         message.setSubject("Password Reset");
         message.setText("To reset your password, click the following link: " +
-                "http://localhost:5173/resetPassword/?token=" + resetToken);
+                "http://localhost:5173/resetPassword/" + resetToken);
 
         mailSender.send(message);
     }
+
+
 
 }

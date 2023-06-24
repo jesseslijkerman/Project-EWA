@@ -30,26 +30,8 @@ public class UserController {
         return this.usersRepo.findAll();
     }
 
-//    @GetMapping(path = "/ForgotPassword/{email}", produces = "application/json")
-//    public User findByEmail(@PathVariable String email){
-//        User user = this.usersRepo.findByEmail(email);
-//        if (user==null){
-//            throw new ResourceNotFound("email-" + email);
-//        }
-//        return user;
-//    }
 
 
-    @PostMapping(path = "/ForgotPassword/{email}", produces = "application/json")
-    public ResponseEntity<String> processForgotPassword(@PathVariable String email){
-        User user = usersRepo.findByEmail(email);
-        if (user != null){
-            userService.generatePasswordResetToken(email);
-            return ResponseEntity.ok("Password reset email sent.");
-        } else {
-            return ResponseEntity.ok("There is no account with this email");
-        }
-    }
 
 
     @GetMapping(path = "/{id}", produces = "application/json")
@@ -81,9 +63,21 @@ public class UserController {
 
     }
 
-    @PostMapping(path = "/try/{email}")
-    public ResponseEntity<String> try1(@PathVariable String email){
-        User user = this.usersRepo.findByEmail(email);
+    @PutMapping(path = "/changePassword/{id}/{newPassword}")
+    public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
+        return usersRepo.updatePassword(id, newPassword);
+    }
+
+
+    @PutMapping(path = "/resetPassword/{token}/{newPassword}")
+    public User changePasswordWithToken(@PathVariable String token, @PathVariable String newPassword) {
+        User user = usersRepo.findIdByToken(token);
+        return usersRepo.resetPassword(user.getId(), newPassword);
+    }
+
+    @PostMapping(path = "/ForgotPassword/{email}", produces = "application/json")
+    public ResponseEntity<String> processForgotPassword(@PathVariable String email){
+        User user = usersRepo.findByEmail(email);
         if (user != null){
             userService.generatePasswordResetToken(email);
             return ResponseEntity.ok("Password reset email sent.");
@@ -92,10 +86,7 @@ public class UserController {
         }
     }
 
-    @PutMapping(path = "/changePassword/{id}/{newPassword}")
-    public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
-        return usersRepo.updatePassword(id, newPassword);
-    }
+    @GetMapping
 
     @DeleteMapping(path = "/{id}")
     public User deleteUser(@PathVariable Long id){

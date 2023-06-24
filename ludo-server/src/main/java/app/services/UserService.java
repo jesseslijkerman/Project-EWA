@@ -31,6 +31,11 @@ public class UserService {
             String resetToken = generateRandomToken();
             user.setResetPasswordToken(resetToken);
             userRepository.save(user);
+
+            /**
+             * These 2 lines are needed to send emails. JavaMailSender retrieves the configuration from the MailConfig.java
+             * The emailService is used to create the emails and sends the emails.
+             */
             JavaMailSender javaMailSender = mailConfig.javaMailSender();
             emailService.sendResetPasswordEmail(javaMailSender, user.getEmail(), resetToken);
         }
