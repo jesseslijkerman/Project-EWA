@@ -40,7 +40,6 @@ public class User {
 
     private String resetPasswordToken;
 
-
     public User() {
     }
 
