@@ -5,6 +5,7 @@
   width: 100vw; /* 100% of the viewport width */
   margin: 0 auto;
   font-weight: normal;
+  background-color: #1a2234;
 }
 
 a,
