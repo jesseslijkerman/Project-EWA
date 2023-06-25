@@ -46,6 +46,7 @@
       </tr>
       </tbody>
     </table>
+
     <div class="extra-divs">
       <div class="extra-div red">
         <div class="color-box"></div>
@@ -65,6 +66,7 @@
       </div>
     </div>
   </div>
+  <FriendsList></FriendsList>
 <div v-if="isHost">
 <!--  <p v-if="!enoughPlayers">You need at least 2 players to start the match!</p>-->
   <p v-if="buttonClicked">The match has been started, please wait until the page has refreshed to begin playing.</p>
@@ -74,8 +76,10 @@
 </template>
 
 <script>
+import FriendsList from "./FriendsList.vue";
 export default {
   name: "WaitingRoom",
+  components: {FriendsList},
   inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {
@@ -253,6 +257,10 @@ export default {
 .yellow {
   background-color: yellow;
   color: black;
+}
+
+.container{
+  width: 500px;
 }
 
 

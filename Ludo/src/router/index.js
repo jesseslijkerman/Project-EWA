@@ -103,7 +103,8 @@ const router = createRouter({
       component: ResetPasswordWithToken,
       meta: {
         hideNavbar: true
-      },
+      }
+    },
     {
       path: "/friends",
       name: "friendsList",

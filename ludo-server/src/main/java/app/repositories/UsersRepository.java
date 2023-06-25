@@ -2,7 +2,10 @@ package app.repositories;
 
 import app.models.User;
 
+import app.services.EmailService;
+import app.services.MailConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
@@ -20,6 +23,12 @@ public class UsersRepository {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MailConfig mailConfig;
+
+    @Autowired
+    private EmailService emailService;
 
     public List<User> findAll(){
         TypedQuery<User> namedQuery = entityManager.createNamedQuery("find_all_users", User.class);
@@ -100,6 +109,11 @@ public class UsersRepository {
         Query query = entityManager.createNamedQuery("find_friends_by_user_id");
         query.setParameter("userId", userId);
         return query.getResultList();
+    }
+
+    public void inviteToGame(User invitedUser, User user, Long matchId){
+        JavaMailSender javaMailSender = mailConfig.javaMailSender();
+        emailService.sendGameInvite(javaMailSender, invitedUser.getEmail(), user.getUsername(), matchId);
     }
 
 }

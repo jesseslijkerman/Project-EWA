@@ -10,6 +10,7 @@
       </div>
       <div class="col-md-3 col-sm-3">
         <button class="btn btn-primary pull-right" v-on:click="addFriend" v-if="button == 'add'">Add Friend</button>
+        <button class="btn btn-primary pull-right" v-on:click="invitePlayer" v-if="button == 'invite'">Invite</button>
       </div>
     </div>
   </div>
@@ -48,6 +49,8 @@ export default {
     checkUrl(){
       if (window.location.href.indexOf("find-players") != -1){
         this.button = "add"
+      } else if (window.location.href.indexOf("match") != -1){
+        this.button = "invite"
       }
     }
   }

@@ -93,6 +93,21 @@ public class UserController {
         }
     }
 
+    @PostMapping(path = "/{userId}/invite/{friendId}/{matchId}")
+    public ResponseEntity<String> inviteToGame(@PathVariable Long userId, @PathVariable Long friendId, @PathVariable Long matchId){
+        User user = usersRepo.findById(userId);
+        User friend = usersRepo.findById(friendId);
+
+        if (user == null){
+            throw new ResourceNotFound("User with id " + userId + " not found");
+        } else if (friend == null){
+            throw new ResourceNotFound("User with id " + friendId + " not found");
+        }
+
+        usersRepo.inviteToGame(friend, user, matchId);
+        return ResponseEntity.ok("Invite email sent");
+    }
+
     @GetMapping
 
     @DeleteMapping(path = "/{id}")
