@@ -1,36 +1,10 @@
-stages:
-  - deploy
+variables:
+  API_TOKEN: $DEPLOYMENT_TOKEN
+  APP_PATH: '$CI_PROJECT_DIR'
+  OUTPUT_PATH: '$CI_PROJECT_DIR/dist'
 
-deploy_fe:
+deploy:
   stage: deploy
-  image: node:latest
-  tags:
-    - hva
-  only:
-    refs:
-      - main
-    changes:
-      - "Ludo/**/*"
+  image: registry.gitlab.com/static-web-apps/azure-static-web-apps-deploy
   script:
-    - apt-get update && apt-get install -y curl
-    - curl -fsSL https://railway.app/install.sh | sh
-    - export RAILWAY_TOKEN=${RAILWAY_TOKEN_FE}
-    - cd Ludo
-    - railway up --service=ludo-fe-project -d
-
-deploy_be:
-  stage: deploy
-  image: node:latest
-  tags:
-    - hva
-  only:
-    refs:
-      - main
-    changes:
-      - "ludo-server/**/*"
-  script:
-    - apt-get update && apt-get install -y curl
-    - curl -fsSL https://railway.app/install.sh | sh
-    - export RAILWAY_TOKEN=${RAILWAY_TOKEN_BE}
-    - cd ludo-server
-    - railway up --service=ludo-be-project -d
+    - echo "App deployed successfully."
