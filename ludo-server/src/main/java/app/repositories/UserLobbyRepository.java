@@ -36,6 +36,15 @@ public class UserLobbyRepository {
         return namedQuery.getSingleResult();
     }
 
+    public void updateBoardHome(Long lobbyId, int playerNumber, int whichHome, int zeroOrOne){
+        Query namedQuery = entityManager.createNamedQuery("update_home");
+        namedQuery.setParameter("lobbyId", lobbyId);
+        namedQuery.setParameter("playerNumber", playerNumber);
+        namedQuery.setParameter("whichHome", whichHome);
+        namedQuery.setParameter("zeroOrOne", zeroOrOne);
+        namedQuery.executeUpdate();
+    }
+
     public void removeUserFromLobby(Long userId, Long lobbyId) {
         Query namedQuery = entityManager.createNamedQuery("remove_user_from_lobby");
         namedQuery.setParameter("userId", userId);

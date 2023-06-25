@@ -11,7 +11,8 @@ import ResetPassword from "@/components/ResetPassword.vue";
 import WaitingRoom from "@/components/WaitingRoom.vue";
 import FriendsList from "../components/FriendsList.vue";
 import FindPlayers from "../components/FindPlayers.vue";
-
+import ForgotPassword from "@/components/ForgotPassword.vue";
+import ResetPasswordWithToken from "@/components/ResetPasswordWithToken.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +89,21 @@ const router = createRouter({
       name: "resetPassword",
       component: ResetPassword
     },
+    {
+      path: "/ForgotPassword",
+      name: "forgotPassword",
+      component: ForgotPassword,
+      meta: {
+        hideNavbar: true
+      }
+    },
+    {
+      path: "/resetPassword/:token",
+      name: "ResetPasswordWithToken",
+      component: ResetPasswordWithToken,
+      meta: {
+        hideNavbar: true
+      },
     {
       path: "/friends",
       name: "friendsList",

@@ -91,11 +91,11 @@ export default {
 
             let userLobby;
             if (availablePlayerNumber === 2) {
-              userLobby = new UserLobby("BLUE", 2);
+              userLobby = new UserLobby("BLUE", 2, 1, 1, 1, 1);
             } else if (availablePlayerNumber === 3) {
-              userLobby = new UserLobby("GREEN", 3);
+              userLobby = new UserLobby("GREEN", 3, 1, 1, 1, 1);
             } else if (availablePlayerNumber === 4) {
-              userLobby = new UserLobby("YELLOW", 4);
+              userLobby = new UserLobby("YELLOW", 4, 1, 1, 1, 1);
             }
 
             await this.lobbyService.asyncAddUserLobby(matchId, this.sessionService.currentAccount.id, JSON.stringify(userLobby));

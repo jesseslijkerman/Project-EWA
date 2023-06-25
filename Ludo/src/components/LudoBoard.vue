@@ -23,17 +23,60 @@
     />
 
     <button @click="rollDice()" :disabled="buttonClickedDice" v-if="canIPlay">Roll Dice</button>
-    <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'B' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>
-    <button @click="movePawn" v-if="currentPlayer === 'Y' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Yellow Pawn</button>
-  </div>
-    <div v-if="hasWonBool">
+<!--    <button @click="movePawn" v-if="currentPlayer === 'R' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Red Pawn</button>-->
+<!--    <button @click="movePawn" v-if="currentPlayer === 'G' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Green Pawn</button>-->
+<!--    <button @click="movePawn" v-if="currentPlayer === 'B' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Blue Pawn</button>-->
+<!--    <button @click="movePawn" v-if="currentPlayer === 'Y' && canIPlay && rolled_dice !== 0" :disabled="buttonClicked">Move Yellow Pawn</button>-->
 
+
+      <div v-if="rolled_dice !== 0">
+        <div v-if="rolled_dice === 6">
+
+          <div>
+            <p>Put a new pawn on board:</p>
+            <button @click="addToBoard(availablePawn); this.chosenPawn = availablePawn"
+                    v-for="availablePawn in availablePawns"
+                    :key="availablePawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(availablePawn) + 1}} </button>
+          </div>
+
+          <p>or...</p>
+
+          <div v-if="hasPawnsOnBoard">
+
+              <div>
+                <p>Move an existing pawn:</p>
+                <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
+                        v-for="existingPawn in existingPawns"
+                        :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1 }} </button>
+              </div>
+
+
+
+              <div v-if="rolled_dice > 0 && rolled_dice < 6">
+                <p>Which pawn would you like to move?</p>
+                <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
+                        v-for="existingPawn in existingPawns"
+                        :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
+              </div>
+        </div>
+    </div>
+
+        <div v-if="hasPawnsOnBoard">
+          <div v-if="rolled_dice > 0 && rolled_dice < 6">
+            <p>Which pawn would you like to move?</p>
+            <button @click="movePawn(existingPawn); this.chosenPawn = existingPawn"
+                    v-for="existingPawn in existingPawns"
+                    :key="existingPawn"> Pawn {{ this.pawns[this.currentPlayer].indexOf(existingPawn) + 1}} </button>
+          </div>
+        </div>
+      </div>
+
+    <div v-if="hasWonBool">
     <h1 class="winner"> {{ this.whichUserTurn.username  }} has won!</h1>
     <button @click="returnToMatches()">Return to menu</button>
-
     </div>
+
+  </div>
   </div>
 </template>
 
@@ -61,10 +104,25 @@ export default {
         ['G', 'G', 'X', 'X', 1, 1, 1, 'X', 'X', 'Y', 'Y'],
       ],
       pawns: {
-        'R': {startPos: 31, position: -1, home: true},
-        'G': {startPos: 21, position: -1, home: true},
-        'B': {startPos: 2, position: -1, home: true},
-        'Y': {startPos: 12, position: -1, home: true}
+        'R': [{startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1},
+          {startPos: 31, position: -1, home: 1}],
+
+        'G': [{startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1}],
+
+        'B': [{startPos: 2, position: -1, home: 1},
+          {startPos: 2, position: -1, home: 1},
+          {startPos: 2, position: -1, home: 1},
+          {startPos: 2, position: -1, home: 1}],
+
+        'Y': [{startPos: 12, position: -1, home: 1},
+          {startPos: 12, position: -1, home: 1},
+          {startPos: 12, position: -1, home: 1},
+          {startPos: 12, position: -1, home: 1}]
       },
       path: [],
       startingPoints: [
@@ -95,6 +153,11 @@ export default {
       newPos: { row: 0, col: 0},
       hasWonBool: false,
       matchStatus: null,
+      chooseNewPawn: 2,
+      availablePawns: [],
+      existingPawns: [],
+      chosenPawn: null,
+      hasPawnsOnBoard: false
     };
   },
 
@@ -103,17 +166,16 @@ export default {
     await this.convertDBtoBoard();
     await this.checkIfYourTurn();
     await this.defineCurrentPlayer();
+    await this.setHomes();
+    console.log(this.pawns[this.currentPlayer][0].home)
+    await this.hasPawnsOnBoardMethod();
+
     this.matchStatus = (await this.lobbyService.asyncFindById(this.lobbyNumber)).status;
-    await this.checkIfFinished();
     this.countdown = (await this.lobbyService.asyncFindById(this.lobbyNumber)).turnTimer;
-    console.log(this.countdown);
-    console.log(this.currentPlayer);
+    console.log("current player: " + this.currentPlayer);
     console.log(this.path)
     console.log(this.newPos)
-
     console.log(this.matchStatus)
-
-
 
   },
   methods: {
@@ -159,12 +221,47 @@ export default {
       }
     },
 
+    async setHomes(){
+
+      let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+      console.log(whoseTurn)
+      let ding = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1
+      console.log(ding)
+
+      this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
+      this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome2;
+      this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome3;
+      this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
+
+    },
+
     async checkIfFinished(){
       if (this.matchStatus === 'FINISHED'){
         this.hasWonBool = true;
       } else  {
         this.hasWonBool = false;
       }
+    },
+
+    async hasPawnsOnBoardMethod(){
+      if (this.pawns[this.currentPlayer][0].home === 1 && this.pawns[this.currentPlayer][1].home === 1 && this.pawns[this.currentPlayer][2].home === 1 && this.pawns[this.currentPlayer][3].home === 1){
+        this.hasPawnsOnBoard = false;
+        console.log("does not have pawns on board")
+      } else {
+        this.hasPawnsOnBoard = true;
+        console.log("has pawns on board")
+      }
+    },
+
+    async addToBoard(chosenPawn) {
+      this.chosenPawn = chosenPawn;
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn)
+      const playerNumber = await this.lobbyService.asyncFindById(this.lobbyNumber);
+      this.pawns[this.currentPlayer][chosenPawnIndex].home = 0;
+      console.log("LOBBY NUMBER: " + this.lobbyNumber)
+      console.log(playerNumber.whoseTurn)
+      console.log("WELKE HOME: " + (chosenPawnIndex + 1))
+      await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, playerNumber.whoseTurn, (chosenPawnIndex + 1), 0);
     },
 
     returnToMatches(){
@@ -186,10 +283,13 @@ export default {
       this.rolled_dice = await this.lobbyService.asyncRollDice();
       this.extraTurn = this.rolled_dice === 6 ? true : false;
       this.getRollPicture(this.rolled_dice)
+      this.checkPawns();
 
-      if(this.extraTurn === false){
-        await this.nextPlayer();
+      if(this.hasPawnsOnBoard === false && this.rolled_dice !== 6){
+        await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
+
       }
+
     },
 
     getRollPicture(src) {
@@ -244,8 +344,8 @@ export default {
 
 
     movePawnOut() {
-      if(this.pawns[this.currentPlayer].home === true && this.rolled_dice === 6){
-        this.pawns[this.currentPlayer].home = false;
+      if(this.pawns[this.currentPlayer].home === 1 && this.rolled_dice === 6){
+        this.pawns[this.currentPlayer].home = 0;
         this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos;
       }
     },
@@ -260,18 +360,20 @@ export default {
       return null;
     },
 
-    async movePawn() {
-      await this.findPR1();
+    async movePawn(chosenPawn) {
+      await this.findPawnPosition(chosenPawn);
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn);
+      console.log("chosen pawn index: " + chosenPawnIndex);
       if(this.newPos.col === 0 && this.newPos.row === 0){
-        this.pawns[this.currentPlayer].position = this.pawns[this.currentPlayer].startPos;
+        this.pawns[this.currentPlayer][chosenPawnIndex].position = this.pawns[this.currentPlayer][chosenPawnIndex].startPos;
       } else{
         // find pawn in path array
         const index = this.path.findIndex(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
-        this.pawns[this.currentPlayer].position = index;
+        this.pawns[this.currentPlayer][chosenPawnIndex].position = index;
       }
       this.buttonClicked = true;
-      if (!this.pawns[this.currentPlayer]) return;
-      let pawn = this.pawns[this.currentPlayer];
+      if (!this.pawns[this.currentPlayer][chosenPawnIndex]) return;
+      let pawn = this.pawns[this.currentPlayer][chosenPawnIndex];
       let steps = this.rolled_dice - 1;
 
       while (steps >= 0) {
@@ -300,15 +402,15 @@ export default {
             if (pawnInCell.color !== this.currentPlayer) {
               // Send the opponent's pawn back to home
               this.pawns[pawnInCell.color].position = -1;
-              this.pawns[pawnInCell.color].home = true;
+              this.pawns[pawnInCell.color].home = 1;
             }
           });
         }
 
         // Check if the player won
 
-        if (this.pawns[this.currentPlayer].position === this.pawns[this.currentPlayer].startPos) {
-          this.pawns[this.currentPlayer].home = true;
+        if (this.pawns[this.currentPlayer][chosenPawnIndex].position === this.pawns[this.currentPlayer][chosenPawnIndex].startPos) {
+          this.pawns[this.currentPlayer][chosenPawnIndex].home = 1;
           await this.lobbyService.asyncFinishMatch(this.lobbyNumber);
           alert(`${this.currentPlayer} has won the game`);
           this.hasWonBool = true;
@@ -318,7 +420,7 @@ export default {
 
       if(this.newPos !== { row: 0, col: 0} ){
         try {
-          await this.clearPR1();
+          await this.clearPawnPosition();
         } catch (error) {
           console.error("Error in fillInBoard:", error);
         }
@@ -344,10 +446,13 @@ export default {
     }
     ,
 
-    async findPR1() {
+    async findPawnPosition(chosenPawn) {
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(chosenPawn);
+      console.log("die chosen pawn:" + chosenPawnIndex)
+      console.log("pawn die gaat moven: " + 'p' + this.currentPlayer + (chosenPawnIndex + 1));
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
-          if (this.board[i][j] === 'p' + this.currentPlayer + '1') {
+          if (this.board[i][j] === 'p' + this.currentPlayer + (chosenPawnIndex + 1)) {
             this.rowPosition = i;
             this.colPosition = j;
             this.newPos = { i, j };
@@ -358,21 +463,43 @@ export default {
       this.colPosition = null;
     },
 
-    async clearPR1(){
+    async clearPawnPosition(){
       const index = this.path.find(coord => coord.i === this.newPos.i && coord.j === this.newPos.j);
       this.board[index.i][index.j] = 1;
     },
 
-    async fillInBoard() {
+    checkPawns() {
 
-      let newPosition = this.pawns[this.currentPlayer].position;
+      const playerPawns = this.pawns[this.currentPlayer];
+
+          // fill available pawns array with pawns that are in home
+        for (let i = 0; i < playerPawns.length; i++) {
+          if (playerPawns[i].home === 1) {
+            this.availablePawns.push(playerPawns[i]);
+          }
+        }
+
+      // fill existing pawns array with pawns that are not in home
+      for (let i = 1; i < playerPawns.length; i++) {
+        if (playerPawns[i].home === 0) {
+          console.log(playerPawns[i]);
+          this.existingPawns.push(playerPawns[i]);
+        }
+      }
+
+
+   },
+
+    async fillInBoard() {
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(this.chosenPawn);
+      let newPosition = this.pawns[this.currentPlayer][chosenPawnIndex].position;
       const currentPlayerLocation = this.getPlayerLocation(this.path[newPosition]);
       console.log("currentPlayerLocation: ", currentPlayerLocation);
       if (currentPlayerLocation) {
         const { i, j } = currentPlayerLocation;
         this.newPos = { i, j };
         console.log("Player is at board location: ", i, j);
-        this.board[i][j] = 'p' + this.currentPlayer + '1';
+        this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
         await this.convertBoardToDB();
       }
     },
@@ -384,7 +511,8 @@ export default {
     },
 
     hasWon() {
-      return this.pawns[this.currentPlayer].position >= this.path.length;
+      const chosenPawnIndex = this.pawns[this.currentPlayer].indexOf(this.chosenPawn);
+      return this.pawns[this.currentPlayer][chosenPawnIndex].position >= this.path.length;
     },
 
 
@@ -412,6 +540,7 @@ export default {
         switch (cell) {
           case 'R': return 'base-cellR';
           case 'pR1': return 'pR1';
+          case 'pR2': return 'pR2';
           case 'G': return 'base-cellG';
           case 'pG1': return 'pG1';
           case 'B': return 'base-cellB';
@@ -537,14 +666,78 @@ h2 {
   /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
 }
 
-.pR1{
+.pR1 {
+  position: relative;
   width: 60px;
   height: 60px;
   border-radius: 50%;
   background-color: red;
   transform: scale(0.7);
-  /*animation: hop 0.5s linear infinite; !* Added animation property *!*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
 }
+
+.pR1::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: red;
+}
+
+.pR1::after {
+  content: "1";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
+.pR2 {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: red;
+  transform: scale(0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+}
+
+.pR2::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: red;
+}
+
+.pR2::after {
+  content: "2";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+}
+
 
 .block-cell {
   background-color: gray;

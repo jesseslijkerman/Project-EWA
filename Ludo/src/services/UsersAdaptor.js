@@ -42,6 +42,25 @@ export class UsersAdaptor {
     return User.copyConstructor(user);
   }
 
+  async forgotPassword(email) {
+    console.log("UsersAdaptor.forgotPassword")
+    const user = this.fetchJson(this.resourcesUrl + "/ForgotPassword/" + email ,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    return User.copyConstructor(user)
+  }
+
+  async resetPassword(token, newPassword){
+    console.log("LobbyAdaptor.changePass()...");
+    const user = this.fetchJson(this.resourcesUrl + "/resetPassword/" + token + "/" + newPassword, {
+      method: "PUT"
+    });
+    return User.copyConstructor(user);
+  }
+
   async changePassword(userId, newPassword){
       console.log("LobbyAdaptor.changePass()...");
       const user = this.fetchJson(this.resourcesUrl + "/changePassword/" + userId + "/" + newPassword, {
