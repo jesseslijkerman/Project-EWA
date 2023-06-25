@@ -28,6 +28,14 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<UserLobby> userLobbies = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "UserFriends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private List<User> friends = new ArrayList<>();
+
     public User() {
     }
 
@@ -90,5 +98,17 @@ public class User {
 
     public void addUserLobby(UserLobby userLobby) {
         this.userLobbies.add(userLobby);
+    }
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void addFriend(User friend) {
+        this.friends.add(friend);
+    }
+
+    public void removeFriend(User friend) {
+        this.friends.remove(friend);
     }
 }

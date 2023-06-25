@@ -1,8 +1,9 @@
 <template>
   <div class="container">
+    <h2>logged in as: <b>{{ this.sessionService.currentAccount.userName }}</b></h2>
     <div class="header">
       <h1 class="title">Ludo Lobbies</h1>
-      <h2>logged in as: {{ this.sessionService.currentAccount.userName }}</h2>
+
       <div class="slidercontainer">
         <label class="switch">
           <input type="checkbox" v-model="isJoinable" @change="joinableLobbies">
@@ -10,7 +11,9 @@
         </label>
         <span id="switchStatus">{{switchStatus}}</span>
       </div>
+
     </div>
+
     <div class="matches">
       <div v-for="(match, index) in matches" :key="index" class="match">
         <div class="match-info">
@@ -89,11 +92,11 @@ export default {
 
             let userLobby;
             if (availablePlayerNumber === 2) {
-              userLobby = new UserLobby("BLUE", 2);
+              userLobby = new UserLobby("BLUE", 2, 1, 1, 1, 1);
             } else if (availablePlayerNumber === 3) {
-              userLobby = new UserLobby("GREEN", 3);
+              userLobby = new UserLobby("GREEN", 3, 1, 1, 1, 1);
             } else if (availablePlayerNumber === 4) {
-              userLobby = new UserLobby("YELLOW", 4);
+              userLobby = new UserLobby("YELLOW", 4, 1, 1, 1, 1);
             }
 
             await this.lobbyService.asyncAddUserLobby(matchId, this.sessionService.currentAccount.id, JSON.stringify(userLobby));
@@ -119,6 +122,10 @@ export default {
 </script>
 
 <style scoped>
+
+
+
+
 .container {
   max-width: 90%;
   margin: 2rem auto;

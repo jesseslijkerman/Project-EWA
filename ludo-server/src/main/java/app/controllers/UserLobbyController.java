@@ -62,6 +62,11 @@ public class UserLobbyController {
         return userLobby;
     }
 
+    @PutMapping(path = "/{lobbyId}/{whichTurn}/{whichHome}/{zeroOrOne}")
+    public void updateBoardHome(@PathVariable Long lobbyId, @PathVariable Integer whichTurn, @PathVariable Integer whichHome, @PathVariable Integer zeroOrOne){
+       userLobbyRepo.updateBoardHome(lobbyId, whichTurn, whichHome, zeroOrOne);
+    }
+
     @DeleteMapping(path = "/{id}")
     public UserLobby deleteLobby(@PathVariable Long id){
         UserLobby userLobby = userLobbyRepo.deleteById(id);
