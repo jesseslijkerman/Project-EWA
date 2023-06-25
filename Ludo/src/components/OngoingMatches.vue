@@ -35,8 +35,10 @@
 <script>
 
 import {UserLobby} from "@/models/UserLobby";
+import FriendsList from "./FriendsList.vue";
 export default {
   name: "OngoingMatches",
+  components: {FriendsList},
   inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {

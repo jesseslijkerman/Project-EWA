@@ -1,6 +1,6 @@
 package app.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,10 +11,13 @@ import java.util.List;
 @Table(name = "`User`")
 @NamedQueries({
         @NamedQuery(name = "find_all_users", query = "select u from User u"),
+        @NamedQuery(name = "find_user_by_email_or_username", query = ("select user from User user where user.email = :param or user.username = :param")),
+        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId")),
+        @NamedQuery(name = "find_friends_by_user_id", query = "select u.friends from User u where u.id = :userId"),
         @NamedQuery(name = "findUserByEmail", query = ("select user from User user where user.email = :emailParam")),
-        @NamedQuery(name = "reset_password", query = ("UPDATE User SET password = :newPassword WHERE id = :userId"))
+        @NamedQuery(name = "reset_password_and_token", query = ("UPDATE User SET password = :newPassword, resetPasswordToken = null WHERE id = :userId")),
+        @NamedQuery(name = "findIdByToken", query = ("select user from User user where user.resetPasswordToken = :tokenParam")),
 })
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +38,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private List<User> friends = new ArrayList<>();
+
+    private String resetPasswordToken;
 
     public User() {
     }
@@ -100,6 +105,7 @@ public class User {
         this.userLobbies.add(userLobby);
     }
 
+    @JsonIgnore
     public List<User> getFriends() {
         return friends;
     }
@@ -110,5 +116,13 @@ public class User {
 
     public void removeFriend(User friend) {
         this.friends.remove(friend);
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 }

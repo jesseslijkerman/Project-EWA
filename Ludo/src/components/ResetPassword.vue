@@ -3,8 +3,6 @@
     <h1 class="title">Reset your password</h1>
     <form class="loginForm" @submit.prevent="handleLogin">
 
-
-
       <div class="form-outline mb-4">
         <label class="form-label">New password</label>
         <input type="text" class="form-control form-control-lg" v-model="entered_new_password"
@@ -32,7 +30,11 @@ export default {
   },
   methods: {
     async handlePassChange() {
-      await this.registerService.changePassword(this.sessionService.currentAccount.id, this.entered_new_password)
+      if (confirm("Do you want to reset your password?") == true){
+        await this.registerService.changePassword(this.sessionService.currentAccount.id, this.entered_new_password)
+      } else {
+        return
+      }
     },
   }
 }
@@ -59,5 +61,8 @@ label {
   font-size: 25px;
   margin-top: 30px;
 }
+  .form-label {
+    font-size: 26px;
+  }
 
 </style>
