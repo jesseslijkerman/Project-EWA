@@ -4,11 +4,12 @@ import app.exceptions.PreConditionFailed;
 import app.exceptions.ResourceNotFound;
 import app.models.User;
 import app.repositories.UsersRepository;
+import app.services.EmailService;
+import app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 
@@ -18,11 +19,20 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UsersRepository usersRepo;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private EmailService emailService;
+
 
     @GetMapping(path = "", produces = "application/json")
     public List<User> getAllUsers(){
         return this.usersRepo.findAll();
     }
+
+
+
+
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public User findById(@PathVariable Long id){
@@ -53,11 +63,30 @@ public class UserController {
 
     }
 
-
     @PutMapping(path = "/changePassword/{id}/{newPassword}")
     public User changePassword(@PathVariable Long id, @PathVariable String newPassword) {
         return usersRepo.updatePassword(id, newPassword);
     }
+
+
+    @PutMapping(path = "/resetPassword/{token}/{newPassword}")
+    public User changePasswordWithToken(@PathVariable String token, @PathVariable String newPassword) {
+        User user = usersRepo.findIdByToken(token);
+        return usersRepo.resetPassword(user.getId(), newPassword);
+    }
+
+    @PostMapping(path = "/ForgotPassword/{email}", produces = "application/json")
+    public ResponseEntity<String> processForgotPassword(@PathVariable String email){
+        User user = usersRepo.findByEmail(email);
+        if (user != null){
+            userService.generatePasswordResetToken(email);
+            return ResponseEntity.ok("Password reset email sent.");
+        } else {
+            return ResponseEntity.ok("There is no account with this email");
+        }
+    }
+
+    @GetMapping
 
     @DeleteMapping(path = "/{id}")
     public User deleteUser(@PathVariable Long id){
