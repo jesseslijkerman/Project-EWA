@@ -10,5 +10,5 @@ deploy:
   image: registry.gitlab.com/static-web-apps/azure-static-web-apps-deploy
   script:
     - npm install
-    - npm run dev
+    - npm run build
     - echo "App deployed successfully."
