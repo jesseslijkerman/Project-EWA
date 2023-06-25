@@ -1,4 +1,4 @@
-import { User } from "../models/User.js";
+import {User} from "../models/User.js";
 
 export class UsersAdaptor {
   resourcesUrl;
@@ -67,5 +67,40 @@ export class UsersAdaptor {
         method: "PUT"
       });
       return User.copyConstructor(user);
-    }
+  }
+
+  async asyncFindFriendsById(userId){
+    console.log("OrdersAdaptor.asyncFindFriendsById()...");
+    const users = await this.fetchJson(this.resourcesUrl + "/friends/" + userId);
+    return users?.map((s) => User.copyConstructor(s));
+  }
+
+  async asyncFindByNameOrEmail(input){
+    console.log("OrdersAdaptor.asyncFindByNameOrEmail()...");
+    const friend = await this.fetchJson(this.resourcesUrl + "/nameOrEmail/" + input);
+    return User.copyConstructor(friend);
+  }
+
+  async asyncAddFriend(userId, friendId){
+    console.log("OrdersAdaptor.asyncAddFriend()...");
+    const user = this.fetchJson(this.resourcesUrl + "/" + userId + "/friend/" + friendId, {
+      method: "PUT"
+    });
+    return User.copyConstructor(user);
+  }
+
+  async asyncRemoveFriend(userId, friendId){
+    console.log("OrdersAdaptor.asyncRemoveFriend()...");
+    const user = this.fetchJson(this.resourcesUrl + "/" + userId + "/friend/" + friendId, {
+      method: "DELETE"
+    });
+    return User.copyConstructor(user);
+  }
+
+  async asyncInvitePlayer(userId, friendId, matchId){
+    console.log("OrdersAdaptor.asyncInvitePlayer()...");
+    return this.fetchJson(this.resourcesUrl + "/" + userId + "/invite/" + friendId + "/" + matchId,{
+      method: "POST"
+    });
+  }
 }

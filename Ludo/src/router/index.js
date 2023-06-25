@@ -9,9 +9,10 @@ import DiceRoll from "@/components/DiceRoll.vue";
 import GameRules from "@/components/GameRules.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import WaitingRoom from "@/components/WaitingRoom.vue";
+import FriendsList from "../components/FriendsList.vue";
+import FindPlayers from "../components/FindPlayers.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
 import ResetPasswordWithToken from "@/components/ResetPasswordWithToken.vue";
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -103,6 +104,16 @@ const router = createRouter({
       meta: {
         hideNavbar: true
       }
+    },
+    {
+      path: "/friends",
+      name: "friendsList",
+      component: FriendsList
+    },
+    {
+      path: "/find-players",
+      name: "findPlayers",
+      component: FindPlayers
     }
   ],
 });

@@ -18,6 +18,14 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendGameInvite(JavaMailSender mailSender, String email, String inviter, Long matchId) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setFrom("ewateam5@outlook.com");
+        message.setSubject(inviter + " has invited you to a game!");
+        message.setText("Click the following link to join: http://localhost:5173/match/" +
+                matchId);
 
-
+        mailSender.send(message);
+    }
 }

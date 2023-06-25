@@ -6,6 +6,8 @@
 
     <a :class="{ active: currentRoute === '/gamerules' }" href="/gamerules">Rules</a>
 
+    <a :class="{ active: currentRoute === '/friends' }" href="/friends">Friends</a>
+
     <div class="right">
       <button class="logout-button" @click="confirmLogout">Logout</button>
     </div>
@@ -21,6 +23,11 @@
 export default {
   name: "NavBar",
   inject: ['sessionService'],
+  data () {
+    return {
+      active: false
+    }
+  },
   methods: {
     confirmLogout() {
       if (confirm("Are you sure you want to sign out?")) {
