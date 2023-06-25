@@ -107,15 +107,15 @@ export default {
           {startPos: 31, position: -1, home: 1},
           {startPos: 31, position: -1, home: 1}],
 
-        'G': [{startPos: 21, position: -1, home: 1},
-          {startPos: 21, position: -1, home: 1},
-          {startPos: 21, position: -1, home: 1},
-          {startPos: 21, position: -1, home: 1}],
-
         'B': [{startPos: 2, position: -1, home: 1},
           {startPos: 2, position: -1, home: 1},
           {startPos: 2, position: -1, home: 1},
           {startPos: 2, position: -1, home: 1}],
+
+        'G': [{startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1},
+          {startPos: 21, position: -1, home: 1}],
 
         'Y': [{startPos: 12, position: -1, home: 1},
           {startPos: 12, position: -1, home: 1},
@@ -162,6 +162,7 @@ export default {
       hasPawnsOnBoard: false,
       playerNumber: null,
       whichPawn: null,
+      homeMoveVar: null,
     };
   },
 
@@ -171,6 +172,7 @@ export default {
     await this.checkIfYourTurn();
     await this.defineCurrentPlayer();
     await this.setHomes();
+    this.checkPawns();
     await this.hasPawnsOnBoardMethod();
     await this.checkIfFinished();
     await this.hasWon();
@@ -225,11 +227,35 @@ export default {
     async setHomes(){
 
       let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+      console.log(whoseTurn);
 
-      this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
-      this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome2;
-      this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome3;
-      this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome4;
+      if(whoseTurn === 1){
+        this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[0].pawnAtHome1;
+        this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[0].pawnAtHome2;
+        this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[0].pawnAtHome3;
+        this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[0].pawnAtHome4;
+      } else if(whoseTurn === 2){
+        this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[1].pawnAtHome1;
+        this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[1].pawnAtHome2;
+        this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[1].pawnAtHome3;
+        this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[1].pawnAtHome4;
+      } else if(whoseTurn === 3){
+        this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[2].pawnAtHome1;
+        this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[2].pawnAtHome2;
+        this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[2].pawnAtHome3;
+        this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[2].pawnAtHome4;
+      } else if(whoseTurn === 4){
+        this.pawns[this.currentPlayer][0].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[3].pawnAtHome1;
+        this.pawns[this.currentPlayer][1].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[3].pawnAtHome2;
+        this.pawns[this.currentPlayer][2].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[3].pawnAtHome3;
+        this.pawns[this.currentPlayer][3].home = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[3].pawnAtHome4;
+      }
+
+      console.log( this.pawns[this.currentPlayer][0].home);
+      console.log( this.pawns[this.currentPlayer][1].home);
+      console.log( this.pawns[this.currentPlayer][2].home);
+      console.log( this.pawns[this.currentPlayer][3].home);
+
 
     },
 
@@ -273,15 +299,20 @@ export default {
     },
 
     async hasPawnsOnBoardMethod() {
+
       console.log(this.pawns[this.currentPlayer]);
+      console.log(this.currentPlayer)
+      console.log(this.pawns[this.currentPlayer][0].home);
       if (
           (this.pawns[this.currentPlayer][0].home !== 0 &&
               this.pawns[this.currentPlayer][1].home !== 0 &&
               this.pawns[this.currentPlayer][2].home !== 0 &&
               this.pawns[this.currentPlayer][3].home !== 0)
       ) {
+        console.log("hasPawnsOnBoardMethodFalse");
         this.hasPawnsOnBoard = false;
       } else {
+        console.log("hasPawnsOnBoardMethodTrue");
         this.hasPawnsOnBoard = true;
       }
     },
@@ -316,11 +347,18 @@ export default {
     },
 
     async defineCurrentPlayer(){
-      let players = ['R', 'B', 'G', 'Y'];
       let nextIndex = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+      if (nextIndex === 1){
+        this.currentPlayer = 'R';
+      } else if(nextIndex === 2){
+        this.currentPlayer = 'B';
+      } else if(nextIndex === 3){
+        this.currentPlayer = 'G';
+      } else if(nextIndex === 4){
+        this.currentPlayer = 'Y';
+      }
 
-      let playerLetter = players[nextIndex - 1];
-      this.currentPlayer = playerLetter;
+      console.log(this.currentPlayer);
     },
 
 
@@ -329,7 +367,7 @@ export default {
       this.rolled_dice = await this.lobbyService.asyncRollDice();
       this.extraTurn = this.rolled_dice === 6 ? true : false;
       this.getRollPicture(this.rolled_dice)
-      this.checkPawns();
+      // this.checkPawns();
 
       if(this.hasPawnsOnBoard === false && this.rolled_dice !== 6){
         await this.lobbyService.asyncIncreaseTurn(this.lobbyNumber);
@@ -463,16 +501,30 @@ export default {
 
       if(this.newPos !== { row: 0, col: 0} ){
         try {
+          console.log(this.newPos)
           await this.clearPawnPosition();
         } catch (error) {
           console.error("Error in fillInBoard:", error);
         }
       }
 
-      await this.convertBoardToDB();
-      await this.setHomes();
+      let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+      console.log(whoseTurn);
+      if(chosenPawnIndex === 0){
+        let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+        this.homeMoveVar = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome1;
+      } else if(chosenPawnIndex === 1){
+        let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+        this.homeMoveVar = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome2;
+      } else if(chosenPawnIndex === 2){
+        let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+        this.homeMoveVar = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome3;
+      } else if(chosenPawnIndex === 3){
+        let whoseTurn = await this.userLobbyService.asyncGetLobbyTurn(this.lobbyNumber);
+        this.homeMoveVar = (await this.userLobbyService.asyncFindById(this.lobbyNumber))[whoseTurn-1].pawnAtHome4;
+      }
 
-      if(this.pawns[this.currentPlayer][chosenPawnIndex].home == 2){
+      if(this.homeMoveVar === 2){
         this.searchValueInArray();
       } else {
         try {
@@ -523,11 +575,15 @@ export default {
 
     checkPawns() {
 
+      console.log("kleur van de huidige speler: " + this.currentPlayer)
+      console.log("pawns van de huidige speler: " + this.pawns['R'])
+
       const playerPawns = this.pawns[this.currentPlayer];
           // fill available pawns array with pawns that are in home
         for (let i = 0; i < playerPawns.length; i++) {
           if (playerPawns[i].home === 1) {
             this.availablePawns.push(playerPawns[i]);
+            console.log("pawns nog in home: " + this.availablePawns)
           }
         }
 
@@ -535,6 +591,7 @@ export default {
       for (let i = 0; i < playerPawns.length; i++) {
         if (playerPawns[i].home === 0) {
           this.existingPawns.push(playerPawns[i]);
+          console.log("pawns die al op het bord staan: " + this.existingPawns)
         }
       }
 
@@ -574,6 +631,7 @@ export default {
           this.board[this.homeCells[playerContent[1]][playerContent[2]].i][this.homeCells[playerContent[1]][playerContent[2]].j] =
               playerContent;
 
+          console.log("test")
           this.board[i][j] = 'p' + this.currentPlayer + (chosenPawnIndex + 1);
           try {
             await this.userLobbyService.asyncUpdateHome(this.lobbyNumber, this.playerNumber, whichPawn, 1);
