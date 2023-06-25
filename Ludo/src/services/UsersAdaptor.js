@@ -1,4 +1,4 @@
-import { User } from "../models/User.js";
+import {User} from "../models/User.js";
 
 export class UsersAdaptor {
   resourcesUrl;
@@ -90,10 +90,17 @@ export class UsersAdaptor {
   }
 
   async asyncRemoveFriend(userId, friendId){
-    console.log("OrdersAdaptor.asyncAddFriend()...");
+    console.log("OrdersAdaptor.asyncRemoveFriend()...");
     const user = this.fetchJson(this.resourcesUrl + "/" + userId + "/friend/" + friendId, {
       method: "DELETE"
     });
     return User.copyConstructor(user);
+  }
+
+  async asyncInvitePlayer(userId, friendId, matchId){
+    console.log("OrdersAdaptor.asyncInvitePlayer()...");
+    return this.fetchJson(this.resourcesUrl + "/" + userId + "/invite/" + friendId + "/" + matchId,{
+      method: "POST"
+    });
   }
 }
