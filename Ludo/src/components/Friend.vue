@@ -11,6 +11,7 @@
       <div class="col-md-3 col-sm-3">
         <button class="btn btn-primary pull-right" v-on:click="addFriend" v-if="button == 'add'">Add Friend</button>
         <button class="btn btn-primary pull-right" v-on:click="invitePlayer" v-else-if="button == 'invite'">Invite</button>
+        <button class="btn btn-primary pull-right remove" v-on:click="removeFriend" v-else>Remove</button>
       </div>
     </div>
   </div>
@@ -50,6 +51,9 @@ export default {
       const matchId = window.location.pathname.split('/').pop();
       await this.registerService.asyncInvitePlayer(this.userId, this.id, matchId)
     },
+    async removeFriend(){
+      await this.registerService.asyncRemoveFriend(this.userId, this.id)
+    },
     checkUrl(){
       if (window.location.href.indexOf("find-players") != -1){
         this.button = "add"
@@ -62,5 +66,9 @@ export default {
 </script>
 
 <style scoped>
+.remove{
+  background-color: red;
+  border-color: red;
+}
 
 </style>
