@@ -42,9 +42,9 @@
       <div class="form-outline mb-4">
         <label class="form-label">Picture</label>
         <input
-          type="file"
+          type="text"
           class="form-control"
-          @change="onFileChange"
+          v-model="picture"
           placeholder="Profile picture"
         />
       </div>

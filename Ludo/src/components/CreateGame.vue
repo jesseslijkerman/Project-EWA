@@ -48,17 +48,6 @@
         />
       </div>
 
-      <!-- Password input -->
-      <div class="form-outline mb-4">
-        <label class="form-label">Password</label>
-        <input
-          type="text"
-          class="form-control"
-          v-model="password"
-          placeholder="Password (optional)"
-        />
-      </div>
-
       <!-- Turn timer input -->
       <div class="form-outline mb-4">
         <label class="form-label">Turn Timer (in seconds)</label>
