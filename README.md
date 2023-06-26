@@ -1,5 +1,7 @@
 # ISS201_5
 
+FE: https://ewafrontend.z6.web.core.windows.net/
+BE: https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/
 
 
 
