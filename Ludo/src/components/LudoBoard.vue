@@ -375,11 +375,22 @@ export default {
 
     },
 
-    getRollPicture(src) {
-      if (src === undefined) {
-        return;
-      } else {
-        return "/src/assets/dice" + src + ".png";
+    getRollPicture() {
+      switch(this.rolled_dice){
+        case 1:
+          return 'https://i.imgur.com/WPho98Y.png';
+        case 2:
+          return 'https://i.imgur.com/iJMY57q.png';
+        case 3:
+          return 'https://i.imgur.com/0c7GABY.png';
+        case 4:
+          return 'https://i.imgur.com/yQG8xu4.png';
+        case 5:
+          return 'https://i.imgur.com/XG4mJzy.png';
+        case 6:
+          return 'https://i.imgur.com/v1hEGWG.png';
+        default:
+          return;
       }
     },
 
