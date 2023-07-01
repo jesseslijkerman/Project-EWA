@@ -1,5 +1,6 @@
 package app;
 import app.models.User;
+import app.models.Lobby;
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,13 +9,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import app.repositories.LobbiesRepository;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +39,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 public class UnitTestMartijn {
+
+
     private final WebClient client = WebClient.create();
+
+    @Autowired
+    private LobbiesRepository lobbiesRepository;
 
     @Test
     void testToFetchOneUser() {
@@ -127,5 +137,50 @@ public class UnitTestMartijn {
         }
 
         return characterCount;
+    }
+    @Test
+    public void testRollDice() {
+        // Invoke the rollDice method
+        int diceRoll = lobbiesRepository.rollDice();
+
+        // Assert that the diceRoll is within the expected range (1 to 6)
+        Assertions.assertTrue(diceRoll >= 1 && diceRoll <= 6, "Dice roll should be between 1 and 6");
+    }
+
+    @Test
+    public void testFindAllJoinableLobbies() {
+        Lobby lobby1 = new Lobby();
+        lobby1.setId(191L);
+        lobby1.setGameMode(1);
+        lobby1.setMaxPlayers(2);
+        lobby1.setName("juup");
+        lobby1.setPassword(null);
+        lobby1.setStatus("INACTIVE");
+        lobby1.setTurnTimer(20);
+        lobby1.setWhoseTurn(2);
+        lobby1.setBoardState("['pR1','pR2','X','X',1,1,'pB1','X','X','pB1','pB2'],['pR3','pR4','X','X',1,'pB1',1,'X','X','pB3','pB4'],['X','X','X','X',1,'hB2',1,'X','X','X','X'],['X','X','X','X',1,'hB3',1,'X','X','X','X'],[1,'pR1',1,1,1,'hB4',1,1,1,1,1],[1,'hR1','hR2','hR3','hR4',0,'hY4','hY3','hY2','hY1',1],[1,1,1,1,1,'hG4',1,1,1,1,1],['X','X','X','X',1,'hG3',1,'X','X','X','X'],['X','X','X','X',1,'hG2',1,'X','X','X','X'],['pG1','pG2','X','X',1,'hG1',1,'X','X','pY1','pY2'],['pG3','pG4','X','X',1,1,1,'X','X','pY3','pY4']");
+        lobbiesRepository.save(lobby1);
+
+        Lobby lobby2 = new Lobby();
+        lobby2.setId(192L);
+        lobby2.setGameMode(1);
+        lobby2.setMaxPlayers(2);
+        lobby2.setName("yep1");
+        lobby2.setPassword(null);
+        lobby2.setStatus("INACTIVE");
+        lobby2.setTurnTimer(23);
+        lobby2.setWhoseTurn(1);
+        lobby2.setBoardState("['pR1','pR2','X','X','pB1',1,1,'X','X','pB1','pB2'],['X','X','X','X',1,'hB2',1,'X','X','X','X'],['X','X','X','X',1,'hB3',1,'X','X','X','X'],[1,'pR1',1,1,1,'hB4',1,1,1,1,1],[1,'hR1','hR2','hR3','hR4',0,'hY4','hY3','hY2','hY1',1],[1,1,1,1,1,'hG4',1,1,1,1,1],['X','X','X','X',1,'hG3',1,'X','X','X','X'],['X','X','X','X',1,'hG2',1,'X','X','X','X'],['pG1','pG2','X','X',1,'hG1',1,'X','X','pY1','pY2'],['pG3','pG4','X','X',1,1,1,'X','X','pY3','pY4']");
+        lobbiesRepository.save(lobby2);
+
+        Long userId = 123L; // Set the user ID to test
+
+        // Retrieve all joinable lobbies for a user
+        List<Lobby> lobbies = lobbiesRepository.findAllJoinableLobbies(userId);
+
+        // Assert that the retrieved lobbies are joinable (based on your criteria)
+        for (Lobby lobby : lobbies) {
+            Assertions.assertEquals("INACTIVE", lobby.getStatus(), "Lobby should be joinable");
+        }
     }
 }
