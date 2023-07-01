@@ -1,21 +1,13 @@
 package app;
 
-import app.controllers.UserController;
 import app.models.User;
-import app.repositories.LobbiesRepository;
 import app.repositories.UsersRepository;
-import app.services.EmailService;
-import app.services.MailConfig;
-import app.services.UserService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,18 +22,6 @@ public class UnitTestCalvin {
 
     private final WebClient client = WebClient.create();
 
-    @Autowired
-    private LobbiesRepository lobbiesRepository;
-    @Autowired
-    private UserController userController;
-
-    @Autowired
-    private MailConfig mailConfig;
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private EmailService emailService;
     @Autowired
     private UsersRepository usersRepo;
 
@@ -89,5 +69,10 @@ public class UnitTestCalvin {
          } catch (WebClientResponseException e){
              fail("An exception occurred while making the request: " + e.getRawStatusCode());
          }
+    }
+
+    @Test
+    public void resetPasswordWithToken(){
+
     }
 }
