@@ -166,6 +166,7 @@ public class UnitTestJesse {
     void repoFindFriendsByUserId(){
         // Set up the test data
         User user = new User();
+        user.setId(1L);
         user.setEmail("user@example.com");
         user.setUsername("user123");
 
@@ -180,9 +181,10 @@ public class UnitTestJesse {
         user.addFriend(friend1);
         user.addFriend(friend2);
 
-        // usersRepo.findFriendsByUserId()
+        List<User> friends = usersRepo.findFriendsByUserId(1L);
 
-
+        Assertions.assertNotNull(friends, "Result should not be null");
+        Assertions.assertEquals(2, friends.size(), "User should have 2 friends");
     }
 
 
