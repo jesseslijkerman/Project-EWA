@@ -1,19 +1,30 @@
 package app;
 
 import app.models.Lobby;
+import app.models.User;
+import app.repositories.UsersRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import javax.swing.text.html.parser.Entity;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,17 +36,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 @SpringBootTest
 public class UnitTestJesse {
 
+    @Autowired
+    private UsersRepository usersRepo;
+
     private WebClient client = WebClient.create();
-
-    @Value("${server.servlet.context-path}")
-    private String servletContextPath;
-
-    @BeforeEach
-    void setup() {
-        if (servletContextPath == null) {
-            servletContextPath = "/";
-        }
-    }
 
     @Test
     void canRetrieveAllLobbies(){
@@ -125,6 +129,60 @@ public class UnitTestJesse {
         } catch (WebClientResponseException ex) {
             Assertions.fail("API request failed: " + ex.getMessage());
         }
+    }
+
+    @Test
+    void repoAddFriend(){
+        // Set up the test data
+        User user = new User();
+        user.setEmail("user@example.com");
+        user.setUsername("user123");
+
+        User friend = new User();
+        friend.setEmail("friend@example.com");
+        friend.setUsername("friend456");
+
+        // Perform the method call
+        User result = usersRepo.addFriend(user, friend);
+
+        // Verify the result
+        Assertions.assertNotNull(result, "Result should not be null");
+        Assertions.assertEquals(user, result, "Result should be the same instance as user");
+
+        // Verify the user's friends list
+        List<User> friends = user.getFriends();
+        Assertions.assertTrue(friends.contains(friend), "User should have the friend added");
+        Assertions.assertEquals(1, friends.size(), "User's friends list size should be 1");
+
+        usersRepo.addFriend(friend, user);
+
+        // Verify the friend's friends list
+        List<User> friendFriends = friend.getFriends();
+        Assertions.assertTrue(friendFriends.contains(user), "Friend should have the user added");
+        Assertions.assertEquals(1, friendFriends.size(), "Friend's friends list size should be 1");
+    }
+
+    @Test
+    void repoFindFriendsByUserId(){
+        // Set up the test data
+        User user = new User();
+        user.setEmail("user@example.com");
+        user.setUsername("user123");
+
+        User friend1 = new User();
+        friend1.setEmail("friend1@example.com");
+        friend1.setUsername("friend1");
+
+        User friend2 = new User();
+        friend2.setEmail("friend2@example.com");
+        friend2.setUsername("friend2");
+
+        user.addFriend(friend1);
+        user.addFriend(friend2);
+
+        // usersRepo.findFriendsByUserId()
+
+
     }
 
 
