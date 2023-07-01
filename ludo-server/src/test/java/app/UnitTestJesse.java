@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -71,7 +72,6 @@ public class UnitTestJesse {
     @Test
     void canAddLobby(){
         String backendUrl = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/lobbies";
-        Lobby lobby = new Lobby(4, 20, 1, "Fun game", "password123", "INACTIVE", 1, "['R','R','X','X',1,1,1,'X','X','B','B'],['R','R','X','X',1,0,1,'X','X','B','B'],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],[1,1,1,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],['G','G','X','X',1,0,1,'X','X','Y','Y'],['G','G','X','X',1,1,1,'X','X','Y','Y']"); // Replace with the desired lobby data
         String requestBody = "{\n" +
                 "    \"maxPlayers\": 2,\n" +
                 "    \"turnTimer\": 20,\n" +
@@ -87,12 +87,13 @@ public class UnitTestJesse {
         try {
             ClientResponse response = client.post()
                     .uri(backendUrl)
-                    .body(BodyInserters.fromValue(lobby))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue(requestBody))
                     .exchange()
                     .block();
 
             Assertions.assertNotNull(response, "Response should not be null");
-            Assertions.assertEquals(HttpStatus.OK, response.statusCode(), "HTTP status should be 200 OK");
+            Assertions.assertEquals(HttpStatus.CREATED, response.statusCode(), "HTTP status should be 200 OK");
 
         } catch (WebClientResponseException ex) {
             Assertions.fail("Failed to add lobby: " + ex.getMessage());
