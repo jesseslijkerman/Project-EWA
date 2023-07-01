@@ -100,6 +100,32 @@ public class UnitTestJesse {
         }
     }
 
+    @Test
+    void canInvitePlayer(){
+        // Set up the test data
+        int userId = 12;
+        int friendId = 15;
+        int matchId = 232;
+
+        String apiUrl = String.format("https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/users/%d/invite/%d/%d",
+                userId, friendId, matchId);
+
+        try {
+            // Perform the API call
+            String responseBody = client.post()
+                    .uri(apiUrl)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            // Verify the response
+            Assertions.assertNotNull(responseBody, "Response should not be null");
+            Assertions.assertEquals("Invite email sent", responseBody, "Response body should match");
+
+        } catch (WebClientResponseException ex) {
+            Assertions.fail("API request failed: " + ex.getMessage());
+        }
+    }
 
 
 }
