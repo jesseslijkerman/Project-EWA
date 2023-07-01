@@ -1,6 +1,7 @@
 package app;
 
 import app.models.Lobby;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -35,12 +38,6 @@ public class UnitTestJesse {
 
     @Test
     void canRetrieveAllLobbies(){
-//        ResponseEntity<Lobby[]> response = this.restTemplate.getForEntity("/lobbies", Lobby[].class);
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        Lobby[] lobbies = response.getBody();
-//        assertThat(lobbies.length, is(greaterThan(0)));
-
         String url = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/lobbies";
 
         try{
@@ -54,6 +51,51 @@ public class UnitTestJesse {
             assertEquals(HttpStatus.OK, status, "HTTP status should be OK");
         } catch (WebClientResponseException e){
             fail("An exception occurred while making the request: " + e.getRawStatusCode());
+        }
+
+        try {
+            String response = client.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            Assertions.assertNotNull(response, "Response should not be null");
+            // Add additional assertions or checks on the response if needed
+
+        } catch (WebClientResponseException ex) {
+            Assertions.fail("Failed to retrieve lobbies: " + ex.getMessage());
+        }
+    }
+
+    @Test
+    void canAddLobby(){
+        String backendUrl = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/lobbies";
+        Lobby lobby = new Lobby(4, 20, 1, "Fun game", "password123", "INACTIVE", 1, "['R','R','X','X',1,1,1,'X','X','B','B'],['R','R','X','X',1,0,1,'X','X','B','B'],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],[1,1,1,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1],['X','X','X','X',1,0,1,'X','X','X','X'],['X','X','X','X',1,0,1,'X','X','X','X'],['G','G','X','X',1,0,1,'X','X','Y','Y'],['G','G','X','X',1,1,1,'X','X','Y','Y']"); // Replace with the desired lobby data
+        String requestBody = "{\n" +
+                "    \"maxPlayers\": 2,\n" +
+                "    \"turnTimer\": 20,\n" +
+                "    \"gameMode\": 1,\n" +
+                "    \"name\": \"juup\",\n" +
+                "    \"password\": null,\n" +
+                "    \"created\": \"2023-06-15T14:04:39\",\n" +
+                "    \"status\": \"ACTIVE\",\n" +
+                "    \"whoseTurn\": 2,\n" +
+                "    \"boardState\": \"['pR1','pR2','X','X',1,1,'pB1','X','X','pB1','pB2'],['pR3','pR4','X','X',1,'pB1',1,'X','X','pB3','pB4'],['X','X','X','X',1,'hB2',1,'X','X','X','X'],['X','X','X','X',1,'hB3',1,'X','X','X','X'],[1,'pR1',1,1,1,'hB4',1,1,1,1,1],[1,'hR1','hR2','hR3','hR4',0,'hY4','hY3','hY2','hY1',1],[1,1,1,1,1,'hG4',1,1,1,1,1],['X','X','X','X',1,'hG3',1,'X','X','X','X'],['X','X','X','X',1,'hG2',1,'X','X','X','X'],['pG1','pG2','X','X',1,'hG1',1,'X','X','pY1','pY2'],['pG3','pG4','X','X',1,1,1,'X','X','pY3','pY4']\"\n" +
+                "}";
+
+        try {
+            ClientResponse response = client.post()
+                    .uri(backendUrl)
+                    .body(BodyInserters.fromValue(lobby))
+                    .exchange()
+                    .block();
+
+            Assertions.assertNotNull(response, "Response should not be null");
+            Assertions.assertEquals(HttpStatus.OK, response.statusCode(), "HTTP status should be 200 OK");
+
+        } catch (WebClientResponseException ex) {
+            Assertions.fail("Failed to add lobby: " + ex.getMessage());
         }
     }
 
