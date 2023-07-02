@@ -29,7 +29,7 @@
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/test-utils": "^2.2.6",
     "@vue/vue3-jest": "^27.0.0-alpha.1",
-    "babel-jest": "^27.0.6",
+    "babel-jest": "^27.5.1",
     "eslint": "8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "jest": "^27.0.5",
@@ -39,6 +39,7 @@
     "vitest": "^0.25.6",
     "vue-jwt-decode": "^0.1.0"
   },
+
   "jest": {
     "preset": "@vue/cli-plugin-unit-jest",
     "setupFilesAfterEnv": [
@@ -63,5 +64,14 @@
     "no-unused-vars": "off",
     "no-unreachable": "off",
     "vue/require-v-for-key": "warn"
-  }
+  },
+  "eslintConfig": {
+    "node": true,
+    "jest": true
+  },
+  "overrides": [{
+    "files": [
+      "**/src/**/*.spec.js"
+    ]
+  }]
 }
