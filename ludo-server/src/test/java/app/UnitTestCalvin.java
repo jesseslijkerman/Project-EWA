@@ -2,22 +2,26 @@ package app;
 
 import app.models.User;
 import app.repositories.UsersRepository;
+import app.services.EmailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.mail.SimpleMailMessage;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.*;
-
-
 
 @SpringBootTest
 public class UnitTestCalvin {
@@ -27,6 +31,9 @@ public class UnitTestCalvin {
 
     @Autowired
     private UsersRepository usersRepo;
+
+    @MockBean
+    private JavaMailSender mailSender;
 
     private PasswordEncoder passwordEncoder;
 
@@ -97,8 +104,8 @@ public class UnitTestCalvin {
     }
 
     @Test
-    public void canRetrieveAllUsers(){
-        String url = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/users";
+    public void canRetrieveUserByName(){
+        String url = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/users/nameOrEmail/test";
 
 
         try {
@@ -129,7 +136,15 @@ public class UnitTestCalvin {
     }
 
     @Test
-    public void asd(){
+    void testSendResetPasswordEmail() {
+        String email = "user@example.com";
+        String resetToken = "abcdef123456";
 
+        EmailService emailService = new EmailService();
+        emailService.sendResetPasswordEmail(mailSender, email, resetToken);
+
+        // Verify that the send method of JavaMailSender is called with the expected email message
+        verify(mailSender).send(any(SimpleMailMessage.class));
     }
+
 }
