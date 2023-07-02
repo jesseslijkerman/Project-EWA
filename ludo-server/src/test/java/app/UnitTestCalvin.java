@@ -2,6 +2,7 @@ package app;
 
 import app.models.User;
 import app.repositories.UsersRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +11,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 
 @SpringBootTest
 public class UnitTestCalvin {
 
 
-    private final WebClient client = WebClient.create();
+    private WebClient client = WebClient.create();
 
     @Autowired
     private UsersRepository usersRepo;
@@ -55,24 +58,78 @@ public class UnitTestCalvin {
     }
 
     @Test
-    public void findById(){
-        String url = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/users/1";
-         try {
-             HttpStatus status = client.get()
-                     .uri(url)
-                     .retrieve()
-                     .toBodilessEntity()
-                     .map(ResponseEntity::getStatusCode)
-                     .block();
+    public void findByIdByToken(){
+        // Create a sample user
+        User user = new User();
+        user.setEmail("user@example.com");
+        user.setUsername("user123");
+        user.setId(62L);
+        user.setResetPasswordToken("testToken");
+        usersRepo.save(user);
 
-             assertEquals(HttpStatus.OK, status, "HTTP status should be OK");
-         } catch (WebClientResponseException e){
-             fail("An exception occurred while making the request: " + e.getRawStatusCode());
-         }
+        // Call the method to be tested
+        User foundUser = usersRepo.findIdByToken("testToken");
+
+        // Assertions
+        assertEquals(user.getId(), foundUser.getId(), "User IDs should match");
     }
 
     @Test
-    public void resetPasswordWithToken(){
+    public void testResetPasswordWithToken(){
+        // Create a test user with an initial password
+        User user = new User();
+        user.setId(1L);
+        String initialPassword = "password123";
+        String token = "ExampleToken";
+        user.setPassword(passwordEncoder.encode(initialPassword));
+        usersRepo.save(user);
+
+        // Define the new password
+        String newPassword = "newPassword456";
+
+        // Call the resetPassword method
+        User updatedUser = usersRepo.resetPassword(user.getId(), newPassword);
+
+        // Verify the updated password
+        assertNotNull(updatedUser, "User should not be null");
+        assertTrue(passwordEncoder.matches(newPassword, updatedUser.getPassword()), "Password should be updated");
+        assertEquals(null, updatedUser.getResetPasswordToken(), "Password token should be null") ;
+    }
+
+    @Test
+    public void canRetrieveAllUsers(){
+        String url = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io/users";
+
+
+        try {
+            HttpStatus status = client.get()
+                    .uri(url)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .map(ResponseEntity::getStatusCode)
+                    .block();
+
+            Assertions.assertEquals(HttpStatus.OK, status, "HTTP status should be OK");
+
+            String response = client.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            Assertions.assertNotNull(response, "Response should not be null");
+
+        } catch (HttpClientErrorException ex) {
+            Assertions.fail("Client error occurred: " + ex.getRawStatusCode() + " - " + ex.getStatusText());
+        } catch (HttpServerErrorException ex) {
+            Assertions.fail("Server error occurred: " + ex.getRawStatusCode() + " - " + ex.getStatusText());
+        } catch (Exception ex) {
+            Assertions.fail("An exception occurred while making the request: " + ex.getMessage());
+        }
+    }
+
+    @Test
+    public void asd(){
 
     }
 }
