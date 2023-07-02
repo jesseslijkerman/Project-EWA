@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form @submit.prevent="handleSumbit">
+    <form @submit.prevent="handleSubmit">
       <!-- Username input -->
       <div class="form-outline mb-4">
         <label class="form-label">Username</label>
@@ -76,7 +76,7 @@
         <button
           type="button"
           class="btn btn-primary btn-block mb-4"
-          v-on:click="handleSumbit"
+          v-on:click="handleSubmit"
         >
           Sign up
         </button>
@@ -100,7 +100,7 @@ export default {
   name: "Register",
   inject: ["registerService"],
   methods: {
-    async handleSumbit() {
+    async handleSubmit() {
       const result = {
         countryCode: this.countryCode,
         email: this.email,
@@ -111,10 +111,10 @@ export default {
       console.log(JSON.stringify(result))
       console.log(this.countryCode)
       await this.registerService.asyncSave(JSON.stringify(result));
-      await router.push("/login");
+      await this.$router.push("/login");
     },
     handleRedirect() {
-      router.push("/login");
+      this.$router.push("/login");
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;

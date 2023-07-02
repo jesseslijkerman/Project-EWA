@@ -1,6 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
+import {shallowMount} from "@vue/test-utils";
 import ResetPassword from '@/components/ResetPassword.vue';
+import Register from "@/components/Register.vue";
 import ForgotPassword from '@/components/ForgotPassword.vue';
+import router from "@/router";
 
 describe('ResetPassword', () =>{
     it('should not call changePassword method if confirmation is canceled', async () => {
@@ -37,61 +39,66 @@ describe('ResetPassword', () =>{
 });
 
 
-describe('ResetPassword', () => {
-    it('should call changePassword method if confirmation is true', async () => {
-        // Mock the registerService dependency
-        const mockRegisterService = {
-            changePassword: jest.fn()
+describe('Register', () => {
+    let wrapper;
+    let registerServiceMock;
+
+    it('redirects to login page on "Login here" link click', async () => {
+        // Create a mock for the registerService
+        registerServiceMock = {
+            asyncSave: jest.fn().mockResolvedValueOnce(),
         };
 
-        // Shallow mount the component with the mocked registerService
-        const wrapper = shallowMount(ResetPassword, {
-            mocks: {
-                registerService: mockRegisterService,
-                sessionService: {
-                    currentAccount: {
-                        id: 123
-                    }
-                }
-            }
+        wrapper = shallowMount(Register, {
+            // Provide the registerService and router mocks as global Vue plugins
+            global: {
+                plugins: [
+                    {
+                        provide: 'registerService', // Provide the service name
+                        useValue: registerServiceMock, // Use the mock object
+                    },
+                    {
+                        provide: 'router', // Provide the router name
+                        useValue: router, // Use the mock object
+                    },
+                ],
+            },
         });
+        const routerPushMock = jest.fn();
+        wrapper.vm.$router = {
+            push: routerPushMock,
+        };
 
-        // Set the entered new password
-        wrapper.vm.entered_new_password = 'newPassword';
+        // Trigger link click
+        await wrapper.vm.handleRedirect();
 
-        // Trigger the handlePassChange method
-        await wrapper.vm.handlePassChange();
-
-        // Mock the confirm function to return true
-        global.confirm = jest.fn(() => true);
+        // Verify that the router.push method was called with the correct route
+        expect(routerPushMock).toHaveBeenCalledWith('/login');
     });
 });
 
 describe('ForgotPassword', () => {
-    it('should call forgotPassword method with the entered email', async () => {
-        // Mock the registerService dependency
-        const mockRegisterService = {
-            forgotPassword: jest.fn()
-        };
+    let wrapper;
 
-        // Shallow mount the component with the mocked registerService
-        const wrapper = shallowMount(ForgotPassword, {
-            mocks: {
-                registerService: mockRegisterService
-            }
+    beforeEach(() => {
+        wrapper = shallowMount(ForgotPassword, {
+            global: {
+                plugins: [router],
+            },
         });
+    });
 
-        // Set the entered email
-        wrapper.vm.email = 'test@example.com';
+    it('redirects to login page when backToLogin is called', async () => {
+        // Spy on the router's push method
+        const pushSpy = jest.spyOn(router, 'push');
 
-        // Trigger the handleSubmit method
-        await wrapper.vm.handleSubmit();
+        // Call the backToLogin method
+        await wrapper.vm.backToLogin();
 
-        // Expect the forgotPassword method to have been called with the entered email
-        expect(mockRegisterService.forgotPassword).toHaveBeenCalledWith('test@example.com');
+        // Assert that the router's push method was called with the correct argument
+        expect(pushSpy).toHaveBeenCalledWith('/login');
     });
 });
-
 
 
 
