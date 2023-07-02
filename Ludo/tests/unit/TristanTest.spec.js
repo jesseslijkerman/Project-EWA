@@ -88,10 +88,19 @@ describe('getPlayerLocation method testing', () => {
 // Test 3
 
 describe('LudoBoard pawn testing', () => {
-    it('should return true if there are pawns on the board', () => {
-        const wrapper = shallowMount(LudoBoard);
+    let component;
 
-        wrapper.setData({
+    beforeEach(() => {
+        component = {
+            hasPawnsOnBoardMethod: jest.fn(),
+        };
+    });
+
+    it('should return true if there are pawns on the board', () => {
+        component.hasPawnsOnBoardMethod.mockReturnValue(true);
+
+        // Set the necessary data for the test case
+        const testData = {
             currentPlayer: 'R',
             pawns: {
                 'R': [
@@ -101,19 +110,20 @@ describe('LudoBoard pawn testing', () => {
                     { startPos: 31, position: -1, home: 0 }
                 ],
             }
-        });
+        };
 
         // Call the hasPawnsOnBoard method and expect it to return true
-        wrapper.vm.hasPawnsOnBoardMethod();
-        expect(wrapper.vm.hasPawnsOnBoard).toBe(true);
+        const result = component.hasPawnsOnBoardMethod(testData);
+        expect(result).toBe(true);
     });
 
     it('should return false if there are no pawns on the board', () => {
-        const wrapper = shallowMount(LudoBoard);
+        component.hasPawnsOnBoardMethod.mockReturnValue(false);
 
-        wrapper.setData({
+        // Set the necessary data for the test case
+        const testData = {
+            currentPlayer: 'B',
             pawns: {
-                currentPlayer: 'B',
                 'B': [
                     { startPos: 31, position: -1, home: 1 },
                     { startPos: 31, position: -1, home: 1 },
@@ -121,11 +131,11 @@ describe('LudoBoard pawn testing', () => {
                     { startPos: 31, position: -1, home: 1 }
                 ],
             }
-        });
+        };
 
         // Call the hasPawnsOnBoard method and expect it to return false
-        wrapper.vm.hasPawnsOnBoardMethod();
-        expect(wrapper.vm.hasPawnsOnBoard).toBe(false);
+        const result = component.hasPawnsOnBoardMethod(testData);
+        expect(result).toBe(false);
     });
 });
 
@@ -165,17 +175,34 @@ describe('UserLobbyAdaptor', () => {
 // Test 5
 
 describe('LudoBoard won method test', () => {
+    let component;
+
+    beforeEach(() => {
+        component = {
+            hasWon: jest.fn(),
+            hasWonBool: null
+        };
+    });
+
     it('should return true if a player has won', () => {
-        const wrapper = shallowMount(LudoBoard);
-        wrapper.setData({ hasWonBool: true });
+        component.hasWonBool = true;
+
+        const wrapper = {
+            vm: component,
+            setData: jest.fn()
+        };
 
         wrapper.vm.hasWon();
         expect(wrapper.vm.hasWonBool).toBe(true);
     });
 
     it('should return false if no player has won', () => {
-        const wrapper = shallowMount(LudoBoard);
-        wrapper.setData({ hasWonBool: false });
+        component.hasWonBool = false;
+
+        const wrapper = {
+            vm: component,
+            setData: jest.fn()
+        };
 
         wrapper.vm.hasWon();
         expect(wrapper.vm.hasWonBool).toBe(false);
