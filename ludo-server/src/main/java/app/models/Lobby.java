@@ -39,8 +39,21 @@ public class Lobby {
     @JsonIgnoreProperties("lobby")
     private List<UserLobby> userLobbies = new ArrayList<>();
 
+    public Lobby(int maxPlayers, int turnTimer, int gameMode, String name, String password, String status, int whoseTurn, String boardState) {
+        this.maxPlayers = maxPlayers;
+        this.turnTimer = turnTimer;
+        this.gameMode = gameMode;
+        this.name = name;
+        this.password = password;
+        this.status = status;
+        this.whoseTurn = whoseTurn;
+        this.boardState = boardState;
+    }
+
     public Lobby(String name, String sessionId, int maxPlayers, LocalDateTime created) {
     }
+
+
 
     public Lobby() {
 
