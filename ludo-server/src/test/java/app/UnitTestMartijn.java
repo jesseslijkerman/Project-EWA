@@ -1,39 +1,24 @@
 package app;
-import app.models.User;
+
 import app.models.Lobby;
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import app.repositories.LobbiesRepository;
-
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
@@ -82,6 +67,7 @@ public class UnitTestMartijn {
             fail("Failed to retrieve user: " + ex.getMessage());
         }
     }
+
     @Test
     void testCorrectBoardSizeCount() {
         String baseUrl = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io";
@@ -100,11 +86,11 @@ public class UnitTestMartijn {
             String boardState = responseEntity.getBody();
             assertNotNull(boardState, "Board state should not be null");
 
-            System.out.println("Board State: " + boardState); // Print the board state to the console
+            System.out.println("Board State: " + boardState); 
 
             // Verify the character count
             int characterCount = countCharacters(boardState);
-            int expectedCharacterCount = 150; // Update with the expected character count
+            int expectedCharacterCount = 150; //amount of characters that are in the boardstate string
 
             assertEquals(expectedCharacterCount, characterCount, "Character count should match");
 
@@ -138,10 +124,13 @@ public class UnitTestMartijn {
 
         return characterCount;
     }
+
     @Test
     public void testRollDice() {
         // Invoke the rollDice method
         int diceRoll = lobbiesRepository.rollDice();
+
+        System.out.println("Rolled dice: " + diceRoll);
 
         // Assert that the diceRoll is within the expected range (1 to 6)
         Assertions.assertTrue(diceRoll >= 1 && diceRoll <= 6, "Dice roll should be between 1 and 6");
@@ -173,14 +162,57 @@ public class UnitTestMartijn {
         lobby2.setBoardState("['pR1','pR2','X','X','pB1',1,1,'X','X','pB1','pB2'],['X','X','X','X',1,'hB2',1,'X','X','X','X'],['X','X','X','X',1,'hB3',1,'X','X','X','X'],[1,'pR1',1,1,1,'hB4',1,1,1,1,1],[1,'hR1','hR2','hR3','hR4',0,'hY4','hY3','hY2','hY1',1],[1,1,1,1,1,'hG4',1,1,1,1,1],['X','X','X','X',1,'hG3',1,'X','X','X','X'],['X','X','X','X',1,'hG2',1,'X','X','X','X'],['pG1','pG2','X','X',1,'hG1',1,'X','X','pY1','pY2'],['pG3','pG4','X','X',1,1,1,'X','X','pY3','pY4']");
         lobbiesRepository.save(lobby2);
 
-        Long userId = 123L; // Set the user ID to test
+        Long userId = 123L;
 
         // Retrieve all joinable lobbies for a user
         List<Lobby> lobbies = lobbiesRepository.findAllJoinableLobbies(userId);
 
-        // Assert that the retrieved lobbies are joinable (based on your criteria)
+
         for (Lobby lobby : lobbies) {
             Assertions.assertEquals("INACTIVE", lobby.getStatus(), "Lobby should be joinable");
         }
     }
+
+    @Test
+    void testAuthenticateUser() {
+        String baseUrl = "https://pauperzooi.agreeablemeadow-c9c78c36.westeurope.azurecontainerapps.io";
+        String loginEndpoint = "/usersAuth/login";
+        String logoutEndpoint = "/usersAuth/logout";
+
+        String loginUrl = baseUrl + loginEndpoint;
+        String logoutUrl = baseUrl + logoutEndpoint;
+
+        JsonObject loginBody = new JsonObject();
+        loginBody.addProperty("email", "testvoorJUnit@lol.com");
+        loginBody.addProperty("password", "eenpassword");
+
+        try {
+            // Test login
+            ResponseEntity<String> loginResponse = client.post()
+                    .uri(loginUrl)
+                    .header("Content-Type", "application/json")
+                    .body(BodyInserters.fromValue(loginBody.toString()))
+                    .retrieve()
+                    .toEntity(String.class)
+                    .block();
+
+            assertEquals(HttpStatus.ACCEPTED, loginResponse.getStatusCode(), "HTTP status should be ACCEPTED");
+
+            System.out.println("Login status: " + loginResponse.getStatusCode());
+            System.out.println("Login response body: " + loginResponse.getBody());
+
+
+
+            ResponseEntity<String> logoutResponse = client.post()
+                    .uri(logoutUrl)
+                    .retrieve()
+                    .toEntity(String.class)
+                    .block();
+
+            assertEquals(HttpStatus.OK, logoutResponse.getStatusCode(), "HTTP status should be OK");
+        } catch (WebClientResponseException e) {
+            fail("An exception occurred while making the request: " + e.getRawStatusCode());
+        }
+    }
+
 }
