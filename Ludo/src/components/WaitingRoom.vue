@@ -76,10 +76,10 @@
 </template>
 
 <script>
-import FriendsList from "./FriendsList.vue";
+//import FriendsList from "./FriendsList.vue";
 export default {
   name: "WaitingRoom",
-  components: {FriendsList},
+  components: {},
   inject: ["lobbyService", "sessionService", "userLobbyService"],
   data() {
     return {
