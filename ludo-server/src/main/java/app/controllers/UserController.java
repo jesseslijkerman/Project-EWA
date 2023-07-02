@@ -108,8 +108,6 @@ public class UserController {
         return ResponseEntity.ok("Invite email sent");
     }
 
-    @GetMapping
-
     @DeleteMapping(path = "/{id}")
     public User deleteUser(@PathVariable Long id){
         User user = usersRepo.deleteById(id);
