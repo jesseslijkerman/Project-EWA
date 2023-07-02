@@ -19,7 +19,7 @@
             <div class="mb-2"><label class="form-label">
               Password
               <span class="form-label-description">
-                    <a href="/ForgotPassword">I forgot password</a>
+                    <a href="" @click="handleForgotPasswordPage">I forgot password</a>
                   </span>
             </label>
               <div class="input-group input-group-flat"><input type="password"
@@ -49,7 +49,7 @@
           </form>
         </div>
       </div>
-      <div class="text-center text-muted mt-3"> Don't have account yet? <a href="./register" tabindex="-1">Sign
+      <div class="text-center text-muted mt-3"> Don't have account yet? <a href="" @click="handleRegisterPage" tabindex="-1">Sign
         up</a></div>
     </div>
   </div>
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: 'LoginPageTemp',
   inject: ['userService', 'sessionService'],
@@ -88,6 +90,12 @@ export default {
       } else {
         this.$router.push("/ongoing-matches")
       }
+    },
+    handleForgotPasswordPage(){
+      router.push("/ForgotPassword")
+    },
+    handleRegisterPage(){
+      router.push("/Register")
     }
 
   },
