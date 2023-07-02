@@ -659,7 +659,6 @@ export default {
     },
 
 
-// Add this method to the Vue component
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
