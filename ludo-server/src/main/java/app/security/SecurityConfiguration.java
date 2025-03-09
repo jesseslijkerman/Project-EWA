@@ -17,9 +17,14 @@ public class SecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/login*").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .csrf().disable()
-                .headers().frameOptions().disable();
+                .csrf()
+                .ignoringAntMatchers("/h2-console/**")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
+                .headers()
+                .frameOptions().disable();
 
         return http.build();
     }
