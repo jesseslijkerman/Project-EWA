@@ -16,7 +16,7 @@
     <description>Intelligent Spring Boot Application for Game Development</description>
     <properties>
         <java.version>17</java.version>
-        <jjwt.version>0.11.2</jjwt.version>
+        <jjwt.version>0.12.6</jjwt.version>
     </properties>
     <dependencies>
         <dependency>
